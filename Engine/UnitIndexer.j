@@ -3,11 +3,19 @@ library UnitIndexer initializer Start uses Table
     globals
         private HashTable handleTable
         
+        private integer 
+
     endglobals
 
     globals
-        
+
+
     endglobals
+
+
+    function GetIndexRate takes nothing returns real
+        return 
+    endfunction
 
     
     function GetTriggerIndex takes nothing returns integer
