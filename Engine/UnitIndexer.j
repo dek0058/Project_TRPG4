@@ -1,20 +1,26 @@
 library UnitIndexer initializer Start uses Table
 
     globals
-        private HashTable handleTable
+        private Table HandleTable
         
-        private integer 
+        // 맵 상의 유닛 개수
+        private integer UnitCount = 0
+        
+        // 생성된 현재 유닛들의 최대 개수
+        private integer UnitPoolCount = 0
+        
+        // 유닛 ID 인덱스 집합
+        private integer UnitIndices = 0
 
-    endglobals
-
-    globals
-
-
+        private integer array UnitIndexArr
+        private integer array UnitIdArr
+        private unit array UnitArr
+        private trigger array UnitEventArr
     endglobals
 
 
     function GetIndexRate takes nothing returns real
-        return 
+        return UnitCount / JASS_MAX_ARRAY_SIZE
     endfunction
 
     
@@ -53,15 +59,41 @@ library UnitIndexer initializer Start uses Table
     endfunction
 
     function UnitIndex takes unit inUnit returns integer
-        
+        local integer handleId = GetTriggerUnit(inUnit)
+        local integer id
+
+        if true == HandleTable.has(handleId) then
+            set id = HandleTable.integer[handleId]
+        else
+            if 0 == GetUnitTypeId(inUnit) then
+                return 0
+            endif
+            
+            if UnitIndices == 0 then
+                set UnitPoolCount = UnitPoolCount + 1
+                set id = UnitPoolCount
+            else
+                set UnitIndices + UnitIndices - 1
+                set id = 
+            endif
+
+            set UnitCount = UnitCount + 1
+
+
+            call RegisterReferance(inUnit, id)
+        endif
+
+        return id
+    endfunction
+
+
+    /* [Tooltip] 맵 초기화시 이미 생성된 유닛들에 한해서 트리거 발동 */
+    private function OnAllocateCondition takes nothing returns boolean
+        return not HandleTable.has(GetHandleId(GetTriggerUnit()))
     endfunction
 
     private function OnAllocateAction takes nothing returns nothing
-
-    endfunction
-
-    private function OnAllocateCondition takes nothing returns boolean
-
+        call UnitIndex(GetTriggerUnit())
     endfunction
 
     private function OnPostAllocate takes nothing returns nothing
@@ -71,7 +103,9 @@ library UnitIndexer initializer Start uses Table
         call TriggerRegisterEnterRectSimple(enterRectSimpTrig, GetWorldBounds())
         set enterRectSimpTrig = null
     endfunction
+    /* end */
 
+    /* [Tooltip] 유닛 생성시 트리거 발동 */
     private function OnEnumPreAllocate takes nothing returns boolean
         call UnitIndex(GetFilterUnit())
         return false
@@ -83,10 +117,10 @@ library UnitIndexer initializer Start uses Table
         call DestroyGroup(preAllocateGroup)
         set preAllocateGroup = null
     endfunction
+    /* end */
 
     private function Start takes nothing returns nothing
-        set handleTable = handleTable.create()
-        set unitIndexerTable = unitIndexerTable.create()
+        set HandleTable = Table.create()
         call OnPreAllocate()
         call OnPostAllocate()
     endfunction
