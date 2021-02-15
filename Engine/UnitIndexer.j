@@ -12,12 +12,16 @@ library UnitIndexer initializer Start uses Table
         // 유닛 ID 인덱스 집합
         private integer UnitIndices = 0
 
-        private integer array UnitIndexArr
         private integer array UnitIdArr
+        private integer array UnitHandleIdArr
         private unit array UnitArr
         private trigger array UnitEventArr
-    endglobals
 
+        private timer array CGTimerArr
+        private real array CGTimeArr
+        private trigger array DeathTrigArr
+        private trigger array DeathTrigActArr
+    endglobals
 
     function GetIndexRate takes nothing returns real
         return UnitCount / JASS_MAX_ARRAY_SIZE
@@ -40,22 +44,37 @@ library UnitIndexer initializer Start uses Table
         
     endfunction
 
-    private function bbb takes nothing returns nothing
+    /* 유닛이 맵상에 존재하지 않을 경우 Deindex 호출 */
+    private function OnGarbageCollector takes nothing returns nothing
         
     endfunction
 
-    private function aaa takes nothing returns nothing
+    /* 유닛이 죽었을 경우 딜레이 타임을 초기화 시키고 가비지 컬렉션 재실행 */
+    private function OnUnitDeathEvent takes nothing returns nothing
         
     endfunction
 
     private function RegisterReferance takes unit inUnit, integer inId returns nothing
-        
+        set CGTimerArr[inId] = CreateTimer()
+        set DeathTrigArr[inId] = CreateTrigger()
+        set DeathTrigActArr[inId] = TriggerAddAction(DeathTrigActArr[inId], function OnUnitDeathEvent)
+        call TriggerRegisterUnitEvent(DeathTrigActArr[inId], inUnit, EVENT_UNIT_DEATH)
+
+        call HandleTable.integer[GetHandleId[CGTimerArr[inId]]] = id
+        call HandleTable.integer[GetHandleId[DeathTrigArr[inId]]] = id
+
+        if IsUnitType(inUnit, UNIT_TYPE_DEAD) then
+            set CGTimeArr[inId] = 1.00
+            call TimerStart(CGTimerArr[inId], CGTimeArr[inId], false, function OnGarbageCollector)
+        endif
     endfunction
     
     function GetUnitIndex takes unit inUnit returns integer
+        return HandleTable.integer[GetHandleId(inUnit)]
     endfunction
 
     function IsUnitIndexed takes unit inUnit returns boolean
+        return HandleTable.has(GetHandleId(inUnit))
     endfunction
 
     function UnitIndex takes unit inUnit returns integer
@@ -73,12 +92,16 @@ library UnitIndexer initializer Start uses Table
                 set UnitPoolCount = UnitPoolCount + 1
                 set id = UnitPoolCount
             else
-                set UnitIndices + UnitIndices - 1
-                set id = 
+                set UnitIndices = UnitIndices - 1
+                set id = UnitIdArr[UnitIndices]
             endif
 
             set UnitCount = UnitCount + 1
+            set UnitArr[id] = inUnit
+            set UnitHandleIdArr[id] = handleId
+            set UnitEventArr[id] = CreateTrigger()
 
+            set HandleTable.integer[handleId] = id
 
             call RegisterReferance(inUnit, id)
         endif
