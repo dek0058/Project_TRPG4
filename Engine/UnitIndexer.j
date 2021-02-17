@@ -12,10 +12,12 @@ library UnitIndexer initializer Start uses Table
         // 유닛 ID 인덱스 집합
         private integer UnitIndices = 0
 
+        private integer TriggerIndex = 0
+
         private integer array UnitIdArr
         private integer array UnitHandleIdArr
         private unit array UnitArr
-        private trigger array UnitEventArr
+        private trigger array RemoveTrigArr
 
         private timer array CGTimerArr
         private real array CGTimeArr
@@ -23,35 +25,73 @@ library UnitIndexer initializer Start uses Table
         private trigger array DeathTrigActArr
     endglobals
 
+
     function GetIndexRate takes nothing returns real
         return UnitCount / JASS_MAX_ARRAY_SIZE
     endfunction
-
     
     function GetTriggerIndex takes nothing returns integer
-        return
+        return TriggerIndex
     endfunction
 
     function GetUnitRemoveTrigger takes unit inUnit returns trigger
-        return
+        return RemoveTrigArr[HandleTable.integer[GetHandleId(inUnit)]]
     endfunction
 
     private function Deindex takes integer inId returns nothing
+        local integer temp = TriggerIndex
 
+        set TriggerIndex = inId
+        call TriggerExecute(RemoveTrigArr[inId])
+        set TriggerIndex = temp
+
+        // 트리거 제거
+        call DestroyTrigger(RemoveTrigArr[inId])
+        set RemoveTrigArr[inId] = null
+
+        call HandleTable.remove(GetHandleId(UnitHandleIdArr[inId]))
+        set UnitArr[inId] = null
+        set UnitHandleIdArr[inId] = 0
+        set UnitIdArr[UnitIndices] = inId
+        set UnitIndices = UnitIndices + 1
+        set UnitCount = UnitCount - 1
     endfunction
 
     private function UnregisterReferance takes integer inId returns nothing
+        // 핸들 테이블 제거
+        call HandleTable.remove(GetHandleId(CGTimerArr[inId]))
+        call HandleTable.remove(GetHandleId(DeathTrigArr[inId]))
         
+        // 타이머 제거
+        call DestroyTimer(CGTimerArr[inId])
+        set CGTimerArr[inId] = null
+
+        // 트리거 제거
+        call TriggerRemoveAction(DeathTrigArr[inId], DeathTrigActArr[inId])
+        set DeathTrigActArr[inId] = null
+        call DestroyTrigger(DeathTrigArr[inId])
+        set DeathTrigArr[inId] = null
     endfunction
 
     /* 유닛이 맵상에 존재하지 않을 경우 Deindex 호출 */
     private function OnGarbageCollector takes nothing returns nothing
-        
+        local integer id = HandleTable.integer[GetHandleId(GetExpiredTimer())]
+        if GetUnitTypeId(UnitArr[id]) != 0 then
+            if IsUnitType(UnitArr[id], UNIT_TYPE_DEAD) then
+                set R[id] = R[id] + 1.00
+                call TimerStart(CGTimerArr[id], CGTimeArr[id], false, function OnGarbageCollector)
+            endif
+            return
+        endif
+        call UnregisterReferance(id)
+        call Deindex(id)
     endfunction
 
     /* 유닛이 죽었을 경우 딜레이 타임을 초기화 시키고 가비지 컬렉션 재실행 */
     private function OnUnitDeathEvent takes nothing returns nothing
-        
+        local integer id = HandleTable.integer[GetHandleId(GetTriggeringTrigger())]
+        set CGTimeArr[id] = 1.00
+        call TimerStart(CGTimerArr[id], CGTimeArr[id], false, function OnGarbageCollector)
     endfunction
 
     private function RegisterReferance takes unit inUnit, integer inId returns nothing
@@ -99,7 +139,7 @@ library UnitIndexer initializer Start uses Table
             set UnitCount = UnitCount + 1
             set UnitArr[id] = inUnit
             set UnitHandleIdArr[id] = handleId
-            set UnitEventArr[id] = CreateTrigger()
+            set RemoveTrigArr[id] = CreateTrigger()
 
             set HandleTable.integer[handleId] = id
 
