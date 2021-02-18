@@ -22,12 +22,12 @@ library UnitIndexer initializer Start uses Table
         private timer array CGTimerArr
         private real array CGTimeArr
         private trigger array DeathTrigArr
-        private trigger array DeathTrigActArr
+        private triggeraction array DeathTrigActArr
     endglobals
 
 
     function GetIndexRate takes nothing returns real
-        return UnitCount / JASS_MAX_ARRAY_SIZE
+        return UnitCount / I2R(JASS_MAX_ARRAY_SIZE)
     endfunction
     
     function GetTriggerIndex takes nothing returns integer
@@ -49,7 +49,7 @@ library UnitIndexer initializer Start uses Table
         call DestroyTrigger(RemoveTrigArr[inId])
         set RemoveTrigArr[inId] = null
 
-        call HandleTable.remove(GetHandleId(UnitHandleIdArr[inId]))
+        call HandleTable.remove(UnitHandleIdArr[inId])
         set UnitArr[inId] = null
         set UnitHandleIdArr[inId] = 0
         set UnitIdArr[UnitIndices] = inId
@@ -78,7 +78,7 @@ library UnitIndexer initializer Start uses Table
         local integer id = HandleTable.integer[GetHandleId(GetExpiredTimer())]
         if GetUnitTypeId(UnitArr[id]) != 0 then
             if IsUnitType(UnitArr[id], UNIT_TYPE_DEAD) then
-                set R[id] = R[id] + 1.00
+                set CGTimeArr[id] = CGTimeArr[id] + 1.00
                 call TimerStart(CGTimerArr[id], CGTimeArr[id], false, function OnGarbageCollector)
             endif
             return
@@ -97,11 +97,11 @@ library UnitIndexer initializer Start uses Table
     private function RegisterReferance takes unit inUnit, integer inId returns nothing
         set CGTimerArr[inId] = CreateTimer()
         set DeathTrigArr[inId] = CreateTrigger()
-        set DeathTrigActArr[inId] = TriggerAddAction(DeathTrigActArr[inId], function OnUnitDeathEvent)
-        call TriggerRegisterUnitEvent(DeathTrigActArr[inId], inUnit, EVENT_UNIT_DEATH)
+        set DeathTrigActArr[inId] = TriggerAddAction(DeathTrigArr[inId], function OnUnitDeathEvent)
+        call TriggerRegisterUnitEvent(DeathTrigArr[inId], inUnit, EVENT_UNIT_DEATH)
 
-        call HandleTable.integer[GetHandleId[CGTimerArr[inId]]] = id
-        call HandleTable.integer[GetHandleId[DeathTrigArr[inId]]] = id
+        set HandleTable.integer[GetHandleId(CGTimerArr[inId])] = inId
+        set HandleTable.integer[GetHandleId(DeathTrigArr[inId])] = inId
 
         if IsUnitType(inUnit, UNIT_TYPE_DEAD) then
             set CGTimeArr[inId] = 1.00
@@ -118,7 +118,7 @@ library UnitIndexer initializer Start uses Table
     endfunction
 
     function UnitIndex takes unit inUnit returns integer
-        local integer handleId = GetTriggerUnit(inUnit)
+        local integer handleId = GetHandleId(inUnit)
         local integer id
 
         if true == HandleTable.has(handleId) then
@@ -150,7 +150,7 @@ library UnitIndexer initializer Start uses Table
     endfunction
 
 
-    /* [Tooltip] 맵 초기화시 이미 생성된 유닛들에 한해서 트리거 발동 */
+    // [Tooltip] 맵 초기화시 이미 생성된 유닛들에 한해서 트리거 발동
     private function OnAllocateCondition takes nothing returns boolean
         return not HandleTable.has(GetHandleId(GetTriggerUnit()))
     endfunction
@@ -166,9 +166,9 @@ library UnitIndexer initializer Start uses Table
         call TriggerRegisterEnterRectSimple(enterRectSimpTrig, GetWorldBounds())
         set enterRectSimpTrig = null
     endfunction
-    /* end */
+    // end
 
-    /* [Tooltip] 유닛 생성시 트리거 발동 */
+    // [Tooltip] 유닛 생성시 트리거 발동
     private function OnEnumPreAllocate takes nothing returns boolean
         call UnitIndex(GetFilterUnit())
         return false
@@ -176,11 +176,11 @@ library UnitIndexer initializer Start uses Table
 
     private function OnPreAllocate takes nothing returns nothing
         local group preAllocateGroup = CreateGroup()
-        set GroupEnumUnitsInRect(preAllocateGroup, GetWorldBounds(), Filter(function OnEnumPreAllocate))
+        call GroupEnumUnitsInRect(preAllocateGroup, GetWorldBounds(), Filter(function OnEnumPreAllocate))
         call DestroyGroup(preAllocateGroup)
         set preAllocateGroup = null
     endfunction
-    /* end */
+    // end
 
     private function Start takes nothing returns nothing
         set HandleTable = Table.create()
