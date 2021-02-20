@@ -7,13 +7,37 @@ library MainThread initializer Start
         private integer State = 0
     endglobals
 
+    // [Tooltip] 즉발 이벤트를 추가하거나 제거합니다.
+    globals
+        private TArraytrigger EventList
+    endglobals
+
+    function AddEvent takes trigger inTrig returns nothing
+        call EventList.Push(inTrig)
+    endfunction
+
+    function RemoveEvent takes trigger inTrig returns nothing
+        local integer targetId = GetHandleId(inTrig)
+        local integer i = 0
+
+        loop
+            exitwhen i == EventList.Size()
+            if GetHandleId(EventList[i]) == targetId then
+                EventList.Erase(i, 1)
+                return
+            endif
+            set i = i + 1
+        endloop
+    endfunction
+    //
+
+    // [ToolTip] 게임 상태를 설정하거나 가져옵니다.
     struct GameState
         static constant integer INITIALIZE = 0
         static constant integer PLAYING = 1
         static constant integer PAUSE = 2
     endstruct
 
-    // [ToolTip] 게임 상태를 설정하거나 가져옵니다.
     function SetGameState takes integer inState returns nothing
         set State = inState
     endfunction
@@ -31,12 +55,22 @@ library MainThread initializer Start
 
     private function Update takes nothing returns nothing
         if State == GameState.INITIALIZE then
+            // 기본 초기화
+            set EventList = TArraytrigger.create()
 
-        else if State == GameState.PLAYING then
+            // 임시 우선 초기화에 사용되는 리소스가 없으므로...
+            call SetGameState(GameState.PLAYING)
+            
+        elseif State == GameState.PLAYING then
             set GameTime = GameTime + DeltaTime
             
+            loop
+                exitwhen EventList.Size() == 0
+                call TriggerExecute(EventList.Back())
+                call EventList.Pop()
+            endloop
 
-        else if State == GameState.PAUSE then
+        elseif State == GameState.PAUSE then
 
         endif
     endfunction
