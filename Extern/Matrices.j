@@ -2,7 +2,7 @@ library Matrices /* v 1.4.0.0
     **********************************************************************************
     *
     *   Matrices
-    *   ¯¯¯¯¯¯¯¯
+    *   ????????
     *   By looking_for_help aka eey
     *
     *   This system provides advanced methods for handling Matrices in Warcraft 3.
@@ -16,13 +16,13 @@ library Matrices /* v 1.4.0.0
     **********************************************************************************
     *
     *   Requirements
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ????????????
     *   */  uses Maths   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
     *
     **********************************************************************************
     *
     *   Implementation
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ??????????????
     *   To use this system just copy it into an empty trigger in your map. As this
     *   system uses the Math library you should install it first to get the system
     *   to work. The Math library can be found under the link above.
@@ -30,7 +30,7 @@ library Matrices /* v 1.4.0.0
     **********************************************************************************
     *
     *   System API
-    *   ¯¯¯¯¯¯¯¯¯¯
+    *   ??????????
     *
     *   Struct usage
     *   -----------------------------

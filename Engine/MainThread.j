@@ -9,7 +9,7 @@ library MainThread initializer Start uses ShotEvent
 
     
 
-    // [ToolTip] ê²Œì„ ìƒíƒœë¥¼ ì„¤ì •í•˜ê±°ë‚˜ ê°€ì ¸ì˜µë‹ˆë‹¤.
+    // [ToolTip] °ÔÀÓ »óÅÂ¸¦ ¼³Á¤ÇÏ°Å³ª °¡Á®¿É´Ï´Ù.
     globals
         constant integer GAMESTATE_INITIALIZE   = 0
         constant integer GAMESTATE_PLAYING      = 1
@@ -26,7 +26,7 @@ library MainThread initializer Start uses ShotEvent
     //
 
 
-    // [ToolTip] MainThreadì—ì„œ ì‹¤í–‰ë˜ëŠ” ì´ë²¤íŠ¸ë¥¼ ë“±ë¡í•©ë‹ˆë‹¤.
+    // [ToolTip] MainThread¿¡¼­ ½ÇÇàµÇ´Â ÀÌº¥Æ®¸¦ µî·ÏÇÕ´Ï´Ù.
     globals
         private TArrayShotEvent ShotEventList
     endglobals
@@ -37,18 +37,18 @@ library MainThread initializer Start uses ShotEvent
     //
 
 
-    // [ToolTip] ê²Œì„ì´ ì‹œì‘í•˜ê³  ë‚˜ì„œ ì‹œê°„ì„ ë°˜í™˜í•©ë‹ˆë‹¤.
+    // [ToolTip] °ÔÀÓÀÌ ½ÃÀÛÇÏ°í ³ª¼­ ½Ã°£À» ¹İÈ¯ÇÕ´Ï´Ù.
     function GetGameTime takes nothing returns real
         return GameTime
     endfunction
     
 
-    // [ToolTip] ê²Œì„ ì´ˆê¸°í™”
+    // [ToolTip] °ÔÀÓ ÃÊ±âÈ­
     private function OnInitialize takes nothing returns nothing
         set ShotEventList = TArrayShotEvent.create()
     
         
-        // ì„ì‹œ ìš°ì„  ì´ˆê¸°í™”ì— ì‚¬ìš©ë˜ëŠ” ë¦¬ì†ŒìŠ¤ê°€ ì—†ìœ¼ë¯€ë¡œ...
+        // ÀÓ½Ã ¿ì¼± ÃÊ±âÈ­¿¡ »ç¿ëµÇ´Â ¸®¼Ò½º°¡ ¾øÀ¸¹Ç·Î...
         call SetGameState(GAMESTATE_PLAYING)
     endfunction
 
@@ -58,7 +58,7 @@ library MainThread initializer Start uses ShotEvent
         local ShotEvent tmpShotEvent
         
         if State == GAMESTATE_INITIALIZE then
-            // ê¸°ë³¸ ì´ˆê¸°í™”
+            // ±âº» ÃÊ±âÈ­
             call OnInitialize()
         elseif State == GAMESTATE_PLAYING then
             set GameTime = GameTime + DeltaTime

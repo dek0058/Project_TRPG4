@@ -2,7 +2,7 @@ library Maths/* v 1.2.0.0
     **********************************************************************************
     *
     *   Advanced Mathematics
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ????????????????????
     *   By looking_for_help aka eey
     *
     *   This system provides a large amount of standard mathematical functions that
@@ -12,13 +12,13 @@ library Maths/* v 1.2.0.0
     ***********************************************************************************
     *
     *   Requirements
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ????????????
     *   */  uses ErrorMessage   /*  hiveworkshop.com/forums/jass-resources-412/snippet-error-message-239210/
     *
     ***********************************************************************************
     *
     *   Implementation
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ??????????????
     *   To use this system, just copy this script to your trigger editor, then you
     *   can use it straight away. To see how the evaluation function works, compare
     *   the example IngameCalculator trigger.
@@ -26,7 +26,7 @@ library Maths/* v 1.2.0.0
     **********************************************************************************
     *
     *   Available Plug-Ins and Extensions
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ?????????????????????????????????
     *       library MathParser
     *           - A library that allows you to parse string expressions. Compare the
     *             IngameCalculator Trigger for an example usage.
@@ -39,9 +39,9 @@ library Maths/* v 1.2.0.0
     **********************************************************************************
     *
     *   System API
-    *   ¯¯¯¯¯¯¯¯¯¯
+    *   ??????????
     *       struct Math
-    *       ¯ ¯ ¯ ¯ ¯ ¯
+    *       ? ? ? ? ? ?
     *       readonly static real Pi
     *           - Refer to this field for the number Pi, the ratio of a circle's
     *             circumference to its diameter

@@ -2,7 +2,7 @@ library MathParser /* v 1.1.0.0
     **********************************************************************************
     *
     *   MathParser
-    *   ¯¯¯¯¯¯¯¯¯¯
+    *   ??????????
     *   By looking_for_help aka eey
     *
     *   This system provides methods for parsing mathematically string expressions,
@@ -12,13 +12,13 @@ library MathParser /* v 1.1.0.0
     ***********************************************************************************
     *
     *   Requirements
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ????????????
     *   */  uses Maths   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
     *
     ***********************************************************************************
     *
     *   Implementation
-    *   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+    *   ??????????????
     *   To use this system, you need the library Math. Once you implemented it, just
     *   copy this script to your trigger editor, then you can use it straight away. To
     *   see how the evaluation function works, compare the example IngameCalculator
@@ -27,7 +27,7 @@ library MathParser /* v 1.1.0.0
     ***********************************************************************************
     *
     *   System API
-    *   ¯¯¯¯¯¯¯¯¯¯
+    *   ??????????
     *   readonly static real ans
     *       - Stores the last result of the evaluation method. Initialized as 0.
     *

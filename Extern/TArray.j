@@ -1,12 +1,12 @@
 library TArray requires Table, ErrorMessage, Alloc
 
-// ê¸°ë³¸ ë³€ìˆ˜
+// ±âº» º¯¼ö
 //! runtextmacro DEFINE_TARRAY("boolean", "boolean")
 //! runtextmacro DEFINE_TARRAY("integer", "integer")
 //! runtextmacro DEFINE_TARRAY("real", "real")
 //! runtextmacro DEFINE_TARRAY("string", "string")
 
-// ì›Œí¬ í´ë˜ìŠ¤ ë³€ìˆ˜
+// ¿öÅ© Å¬·¡½º º¯¼ö
 //! runtextmacro DEFINE_TARRAY("player", "player")
 //! runtextmacro DEFINE_TARRAY("widget", "widget")
 //! runtextmacro DEFINE_TARRAY("destructable", "destructable")
@@ -61,11 +61,11 @@ library TArray requires Table, ErrorMessage, Alloc
             return table.$TYPE$[inPos]
         endmethod
         
-        // [Tooltip] ë°°ì—´ì˜ ìœ„ì¹˜ê°€ ì˜ëª»ë˜ì—ˆì„ ë•Œ ì˜¤ë¥˜
+        // [Tooltip] ¹è¿­ÀÇ À§Ä¡°¡ Àß¸øµÇ¾úÀ» ¶§ ¿À·ù
         private method AssertPosition takes integer inPos, string exception returns boolean
             local string str = ""
             debug if inPos < 0 or inPos >= length then
-                set str = "í¬ì§€ì…˜ì˜ ê°’ì´ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤."
+                set str = "Æ÷Áö¼ÇÀÇ °ªÀÌ Àß¸øµÇ¾ú½À´Ï´Ù."
                 set str = str + "(" + exception + " " + "pos :"  +  I2S(inPos) + ", lenth : " + I2S(length) + ")"
                 debug call ThrowError(true, "TArray$NAME$", "AssertPosition", this, str)
             debug endif
@@ -75,7 +75,7 @@ library TArray requires Table, ErrorMessage, Alloc
         private method AssertRange takes integer inPos, string exception returns boolean
             local string str = ""
             debug if inPos < 0 or inPos > length then
-                set str = "ë°°ì—´ì˜ ë²”ìœ„ ë°–ì˜ ê°’ì„ í˜¸ì¶œí•˜ì˜€ìŠµë‹ˆë‹¤."
+                set str = "¹è¿­ÀÇ ¹üÀ§ ¹ÛÀÇ °ªÀ» È£ÃâÇÏ¿´½À´Ï´Ù."
                 set str = str + "(" + exception + " " + "pos :"  +  I2S(inPos) + ", lenth : " + I2S(length) + ")"
                 debug call ThrowError(true, "TArray$NAME$", )
             debug endif
