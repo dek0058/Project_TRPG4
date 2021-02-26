@@ -4,11 +4,13 @@ library UnitGroup
         implement Alloc
 
         private group unitGroup
+        private integer count
 
         static method create takes nothing returns thistype
             local thistype this = allocate()
 
             set unitGroup = CreateGroup()
+            set count = 0
 
             return this
         endmethod
@@ -21,6 +23,17 @@ library UnitGroup
         endmethod
 
 
+        method Add takes Actor inActor returns nothing
 
+        endmethod
+
+        method Remove takes Actor inActor returns nothing
+
+        endmethod
+
+        method Count takes nothing returns integer
+            return count
+        endmethod
+        
     endstruct
 endlibrary
