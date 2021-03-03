@@ -4,15 +4,21 @@ library Actor uses Alloc, Controller
         implement Alloc
         
         private unit gameUnit
-        
-        static method create takes real inX, real inY, real inFace, integer inId, Controller inController returns thistype
+        private Controller controller
+
+        static method create takes real inX, real inY, real inFace, integer inId, player inPlayer returns thistype
             local thistype this = allocate()
             
-            //set gameUnit = CreateUnit(inController, inId, inX, inY, inFace)
-
+            set gameUnit = CreateUnit(inPlayer, inId, inX, inY, inFace)
+            set controller = Controller.Get(inPlayer)
+            call controller.RegisterUnit(gameUnit)
+            
             return this
         endmethod
 
-    endstruct
+        
+        
 
+
+    endstruct
 endlibrary
