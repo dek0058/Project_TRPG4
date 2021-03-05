@@ -4,7 +4,6 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         implement GlobalAlloc
 
         private player gamePlayer
-
         private UnitGroup unitGroup
 
         //private string id
@@ -32,6 +31,14 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             return -1
         endmethod
 
+        method RegisterUnit takes unit inUnit returns nothing
+            call unitGroup.Add(inUnit)
+        endmethod
+
+        method ExecuteUnitGroup takes code inCallback returns nothing
+            call unitGroup.Execute(inCallback)
+        endmethod
+        
     endstruct
 
 

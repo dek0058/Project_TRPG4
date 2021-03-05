@@ -2,7 +2,6 @@ library MathParser /* v 1.1.0.0
     **********************************************************************************
     *
     *   MathParser
-    *   ??????????
     *   By looking_for_help aka eey
     *
     *   This system provides methods for parsing mathematically string expressions,
@@ -12,14 +11,12 @@ library MathParser /* v 1.1.0.0
     ***********************************************************************************
     *
     *   Requirements
-    *   ????????????
-    *   */  uses Maths   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
+    *   */  uses FMath   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
     *
     ***********************************************************************************
     *
     *   Implementation
-    *   ??????????????
-    *   To use this system, you need the library Math. Once you implemented it, just
+    *   To use this system, you need the library FMath. Once you implemented it, just
     *   copy this script to your trigger editor, then you can use it straight away. To
     *   see how the evaluation function works, compare the example IngameCalculator
     *   trigger for an example usage.
@@ -27,7 +24,6 @@ library MathParser /* v 1.1.0.0
     ***********************************************************************************
     *
     *   System API
-    *   ??????????
     *   readonly static real ans
     *       - Stores the last result of the evaluation method. Initialized as 0.
     *
@@ -36,7 +32,7 @@ library MathParser /* v 1.1.0.0
     *         a string. Allowed values are numbers, the decimal seperator, basic
     *         arithmetic operators like +, -, *, / and ^ as well as parenthesis.
     *         You can also put "ans" into the expression to refer to the last
-    *         calculation result. Error messages on math and syntax errors will
+    *         calculation result. Error messages on FMath and syntax errors will
     *         be displayed if specified so in the configurable globals. The
     *         syntax parsing strictly follows Matlab conventions.
     *
@@ -113,7 +109,7 @@ library MathParser /* v 1.1.0.0
                 exitwhen i > stringLen
                 set prevChar = SubString(expression, i - 1, i)
                 set actualChar = SubString(expression, i, i + 1)
-                set unaryOperator = not (prevChar == ")" or Math.isDigit(prevChar))
+                set unaryOperator = not (prevChar == ")" or FMath.isDigit(prevChar))
 
                 if actualChar == ")" and openBraces < 1 then
                     call thistype.error("Unbalanced parenthesis!", 1)
@@ -131,12 +127,12 @@ library MathParser /* v 1.1.0.0
                 elseif actualChar == "+" and unaryOperator and prevChar == "^" then
                     set actualChar = "P"
                 endif
-                if Math.isDigit(actualChar) then
+                if FMath.isDigit(actualChar) then
                     set postfix = postfix+actualChar
                     set numberDetected = true
                     set numberOnceDetected = true
                 elseif actualChar == "." then
-                    if decimalDetected == false and Math.isDigit(SubString(expression, i - 1, i)) and Math.isDigit(SubString(expression, i + 1, i + 2)) then
+                    if decimalDetected == false and FMath.isDigit(SubString(expression, i - 1, i)) and FMath.isDigit(SubString(expression, i + 1, i + 2)) then
                         set postfix = postfix+actualChar
                         set decimalDetected = true
                     else
@@ -213,7 +209,7 @@ library MathParser /* v 1.1.0.0
                 endloop
             endif
             set stringLen = StringLength(postfix)
-            if Math.isDigit(SubString(postfix, stringLen - 1, stringLen)) then
+            if FMath.isDigit(SubString(postfix, stringLen - 1, stringLen)) then
                 set postfix = postfix+" "
             endif
 
@@ -244,7 +240,7 @@ library MathParser /* v 1.1.0.0
                     endif
                     return r1/r2
                 else
-                    if r1 < 0.0 and not Math.isInteger(r2) then
+                    if r1 < 0.0 and not FMath.isInteger(r2) then
                         call thistype.error("(N-th) square root from negativ value not defined!", 0)
                     endif
                     return Pow(r1, r2)
@@ -290,7 +286,7 @@ library MathParser /* v 1.1.0.0
                 
                 if actualChar == "+" then
                     if SubString(expression, i + 1, i + 2) == "+" then
-                        if Math.isDigit(SubString(expression, i - 1, i)) then
+                        if FMath.isDigit(SubString(expression, i - 1, i)) then
                             set expression = SubString(expression, 0, i)+"+"+SubString(expression, i + 2, stringLen)
                         else
                             set expression = SubString(expression, 0, i)+SubString(expression, i + 2, stringLen)
@@ -305,18 +301,18 @@ library MathParser /* v 1.1.0.0
                         set expression = SubString(expression, 0, i)+"-"+SubString(expression, i + 2, stringLen)
                         set i = i - 1
                     elseif SubString(expression, i + 1, i + 2) == "-" then
-                        if Math.isDigit(SubString(expression, i - 1, i)) then
+                        if FMath.isDigit(SubString(expression, i - 1, i)) then
                             set expression = SubString(expression, 0, i)+"+"+SubString(expression, i + 2, stringLen)
                         else
                             set expression = SubString(expression, 0, i)+SubString(expression, i + 2, stringLen)
                         endif
                         set i = i - 1
                     endif
-                elseif actualChar == "(" and (Math.isDigit(prevChar) or prevChar == ")") then
+                elseif actualChar == "(" and (FMath.isDigit(prevChar) or prevChar == ")") then
                     set expression = SubString(expression, 0, i)+"*"+SubString(expression, i, stringLen)
                     set stringLen = StringLength(expression)
                     set i = i - 1
-                elseif actualChar == ")" and Math.isDigit(nextChar) then
+                elseif actualChar == ")" and FMath.isDigit(nextChar) then
                     set expression = SubString(expression, 0, i + 1)+"*"+SubString(expression, i + 1, stringLen)
                     set stringLen = StringLength(expression)
                     set i = i - 1
@@ -341,7 +337,7 @@ library MathParser /* v 1.1.0.0
                 exitwhen i == stringLen
                 if SubString(postfix, i, i + 1) == " " then
                     set actualToken = SubString(postfix, position, position + counter)
-                    if Math.isDigit(SubString(actualToken, 0, 1)) then
+                    if FMath.isDigit(SubString(actualToken, 0, 1)) then
                         set stackCounter = stackCounter + 1
                         set stack[stackCounter] = actualToken
                     else
@@ -401,7 +397,7 @@ library MathParser /* v 1.1.0.0
                 set actualChar = SubString(expression, i, i + 1)
                 if actualChar == "+" then
                     if SubString(expression, i + 1, i + 2) == "+" then
-                        if Math.isDigit(SubString(expression, i - 1, i)) then
+                        if FMath.isDigit(SubString(expression, i - 1, i)) then
                             set expression = SubString(expression, 0, i)+"+"+SubString(expression, i + 2, stringLen)
                         else
                             set expression = SubString(expression, 0, i)+SubString(expression, i + 2, stringLen)
@@ -416,7 +412,7 @@ library MathParser /* v 1.1.0.0
                         set expression = SubString(expression, 0, i)+"-"+SubString(expression, i + 2, stringLen)
                         set i = i - 1
                     elseif SubString(expression, i + 1, i + 2) == "-" then
-                        if Math.isDigit(SubString(expression, i - 1, i)) then
+                        if FMath.isDigit(SubString(expression, i - 1, i)) then
                             set expression = SubString(expression, 0, i)+"+"+SubString(expression, i + 2, stringLen)
                         else
                             set expression = SubString(expression, 0, i)+SubString(expression, i + 2, stringLen)
@@ -437,7 +433,7 @@ library MathParser /* v 1.1.0.0
                 set prevAnsToken = SubString(expression, i - 3, i)
                 set nextAnsToken = SubString(expression, i + 1, i + 4)
                 
-                set unaryOperator = not (prevChar == ")" or Math.isDigit(prevChar) or prevAnsToken == "ans")
+                set unaryOperator = not (prevChar == ")" or FMath.isDigit(prevChar) or prevAnsToken == "ans")
                 if actualChar == "+" and not unaryOperator then
                     set expression = SubString(expression, 0, i)+" + "+SubString(expression, i + 1, stringLen)
                     set stringLen = StringLength(expression)
@@ -450,11 +446,11 @@ library MathParser /* v 1.1.0.0
                     set expression = SubString(expression, 0, i)+" - "+SubString(expression, i + 1, stringLen)
                     set stringLen = StringLength(expression)
                     set i = i + 1
-                elseif actualChar == "(" and (Math.isDigit(prevChar) or prevChar == ")") then
+                elseif actualChar == "(" and (FMath.isDigit(prevChar) or prevChar == ")") then
                     set expression = SubString(expression, 0, i)+"*"+SubString(expression, i, stringLen)
                     set stringLen = StringLength(expression)
                     set i = i - 1
-                elseif actualChar == ")" and Math.isDigit(nextChar) then
+                elseif actualChar == ")" and FMath.isDigit(nextChar) then
             
                     set expression = SubString(expression, 0, i + 1)+"*"+SubString(expression, i + 1, stringLen)
                     set stringLen = StringLength(expression)

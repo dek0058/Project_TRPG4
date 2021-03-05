@@ -1,42 +1,38 @@
-library Matrices /* v 1.4.0.0
+library FMatrices /* v 1.4.0.0
     **********************************************************************************
     *
-    *   Matrices
-    *   ????????
+    *   FMatrices
     *   By looking_for_help aka eey
     *
-    *   This system provides advanced methods for handling Matrices in Warcraft 3.
+    *   This system provides advanced methods for handling FMatrices in Warcraft 3.
     *   Features like Matrix multiplication, calculation of norms or trace as well as
     *   solving a system of linear equations with Gauss-Elimination are implemented.
     *   The system also provides a big variety of functions to initialize, copy or
-    *   reshape Matrices.
+    *   reshape FMatrices.
     *
     *   Credits go to Magtheridon for helping with the Systems API.
     *  
     **********************************************************************************
     *
     *   Requirements
-    *   ????????????
-    *   */  uses Maths   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
+    *   */  uses FMath   /*  hiveworkshop.com/forums/spells-569/advanced-maths-ingame-calculator-234024/?prev=r%3D20%26page%3D5
     *
     **********************************************************************************
     *
     *   Implementation
-    *   ??????????????
     *   To use this system just copy it into an empty trigger in your map. As this
-    *   system uses the Math library you should install it first to get the system
-    *   to work. The Math library can be found under the link above.
+    *   system uses the FMath library you should install it first to get the system
+    *   to work. The FMath library can be found under the link above.
     *
     **********************************************************************************
     *
     *   System API
-    *   ??????????
     *
     *   Struct usage
     *   -----------------------------
     *
     *       struct Matrix
-    *           - This struct provides the methods and logic to use Matrices in
+    *           - This struct provides the methods and logic to use FMatrices in
     *             Warcraft 3 with this system. Use the create method to allocate a
     *             new instance of a Matrix of your desired size. The Matrix can then
     *             be used like a 2D-Array (example displayed above) and provides  
@@ -114,7 +110,7 @@ library Matrices /* v 1.4.0.0
     *           - Checks whether a given Matrix is valid (means: not empty) or not.
     *
     *       method isEqual takes Matrix mat returns boolean
-    *           - Checks whether two Matrices are equal or not. If A == B then
+    *           - Checks whether two FMatrices are equal or not. If A == B then
     *             A.isEqual(B) returns true.
     *
     *       method init takes real value returns nothing
@@ -165,7 +161,7 @@ library Matrices /* v 1.4.0.0
     *
     *       method add takes Matrix whichMatrix returns Matrix
     *           - Matrix addition. The expression A.add(B) where both A and B are
-    *             Matrices returns the resulting Matrix A + B. Note that the Matrices
+    *             FMatrices returns the resulting Matrix A + B. Note that the FMatrices
     *             must follow common Matrix calculation rules, like here that A and B
     *             have the same size.
     *
@@ -235,10 +231,10 @@ library Matrices /* v 1.4.0.0
     *             condition will be infinity.
     *
     *       method kron takes Matrix mat returns Matrix
-    *           - Computes the Kronecker Product of two Matrices. The result of for
+    *           - Computes the Kronecker Product of two FMatrices. The result of for
     *             example A.kron(B) where A is a n x m and B is a p x q Matrix is
     *             a n*p x m*q Matrix. As you see this operation potentially produces
-    *             very big Matrices so use it with care.
+    *             very big FMatrices so use it with care.
     *
     *       method subMatrix takes integer startRow, integer startCol, integer endRow,
     *                        integer endCol returns Matrix
@@ -260,17 +256,17 @@ library Matrices /* v 1.4.0.0
     *             embed it into, otherwise an error will be thrown.
     *
     *       method concatH takes Matrix mat returns Matrix
-    *           - Use this method to concatenate two Matrices. The Matrices must
-    *             have the same amount of rows for this operation to work. The Matrices
+    *           - Use this method to concatenate two FMatrices. The FMatrices must
+    *             have the same amount of rows for this operation to work. The FMatrices
     *             will get concatenated horizontal, resulting for  two n x m
-    *             Matrices in a n x 2*m Matrix. Example: A.concatH(B) will concate-
+    *             FMatrices in a n x 2*m Matrix. Example: A.concatH(B) will concate-
     *             nate A to B (from the left side).
     *
     *       method concatV takes Matrix mat returns Matrix
-    *           - Use this method to concatenate two Matrices. The Matrices must
+    *           - Use this method to concatenate two FMatrices. The FMatrices must
     *             have the same amount of columns for this operation to work. The
-    *             Matrices will get concatenated vertically, resulting for two n x m
-    *             Matrices in a 2*n x m Matrix. Example: A.concatV(B) will stack
+    *             FMatrices will get concatenated vertically, resulting for two n x m
+    *             FMatrices in a 2*n x m Matrix. Example: A.concatV(B) will stack
     *             the Matrix B on A.
     *
     *       method reShape takes integer newN, integer newM, integer whichMethod
@@ -317,13 +313,13 @@ library Matrices /* v 1.4.0.0
         integer maxCols
     
         method operator [] takes integer column returns real
-            debug call ThrowError(this == 0, "Matrices", "[]", "MatrixRow", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "[]", "MatrixRow", this, "Attempt to access null reference!")
             return this.values[column]
         endmethod
 
         method operator []= takes integer column, real value returns nothing
-            debug call ThrowError(this == 0, "Matrices", "[]=", "MatrixRow", this, "Attempt to access null reference!")
-            debug call ThrowError(column < 0 or column >= maxCols, "Matrices", "[]=", "MatrixRow", this, "Can't access Matrix! Column index "+I2S(column)+" exceeds Matrix dimensions!")
+            debug call ThrowError(this == 0, "FMatrices", "[]=", "MatrixRow", this, "Attempt to access null reference!")
+            debug call ThrowError(column < 0 or column >= maxCols, "FMatrices", "[]=", "MatrixRow", this, "Can't access Matrix! Column index "+I2S(column)+" exceeds Matrix dimensions!")
             set this.values[column] = value
         endmethod
         
@@ -345,20 +341,20 @@ library Matrices /* v 1.4.0.0
         private integer _m
         
         method operator n takes nothing returns integer
-            debug call ThrowError(this == 0, "Matrices", "n", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "n", "Matrix", this, "Attempt to access null reference!")
             return _n
         endmethod
         method operator n= takes integer value returns nothing
-            debug call ThrowError(this == 0, "Matrices", "n=", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "n=", "Matrix", this, "Attempt to access null reference!")
             set _n = value
         endmethod
         
         method operator m takes nothing returns integer
-            debug call ThrowError(this == 0, "Matrices", "m", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "m", "Matrix", this, "Attempt to access null reference!")
             return _m
         endmethod
         method operator m= takes integer value returns nothing
-            debug call ThrowError(this == 0, "Matrices", "m=", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "m=", "Matrix", this, "Attempt to access null reference!")
             set _m = value
         endmethod
     endmodule
@@ -377,8 +373,8 @@ library Matrices /* v 1.4.0.0
         implement GETTER_MODULE
 
         method operator [] takes integer row returns MatrixRow
-            debug call ThrowError(this == 0, "Matrices", "[]", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(row < 0 or row >= n, "Matrices", "[]", "Matrix", this, "Can't access Matrix! Row index "+I2S(row)+" exceeds Matrix dimensions!")
+            debug call ThrowError(this == 0, "FMatrices", "[]", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(row < 0 or row >= n, "FMatrices", "[]", "Matrix", this, "Can't access Matrix! Row index "+I2S(row)+" exceeds Matrix dimensions!")
             return this.matRow[row]
         endmethod
         
@@ -386,10 +382,10 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local thistype this
             
-            debug call ThrowError(nDim < 1, "Matrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(nDim)+" rows! Number of rows must be larger than zero!")
-            debug call ThrowError(mDim < 1, "Matrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(mDim)+" columns! Number of columns must be larger than zero!")
-            debug call ThrowError(nDim > MAX_MATRIX_SIZE, "Matrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(nDim)+" rows! Number of rows exceeds maximum row count of "+I2S(MAX_MATRIX_SIZE)+"!")
-            debug call ThrowError(mDim > MAX_MATRIX_SIZE, "Matrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(mDim)+" columns! Number of columns exceeds maximum column count "+I2S(MAX_MATRIX_SIZE)+"!")
+            debug call ThrowError(nDim < 1, "FMatrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(nDim)+" rows! Number of rows must be larger than zero!")
+            debug call ThrowError(mDim < 1, "FMatrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(mDim)+" columns! Number of columns must be larger than zero!")
+            debug call ThrowError(nDim > MAX_MATRIX_SIZE, "FMatrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(nDim)+" rows! Number of rows exceeds maximum row count of "+I2S(MAX_MATRIX_SIZE)+"!")
+            debug call ThrowError(mDim > MAX_MATRIX_SIZE, "FMatrices", "create", "Matrix", 0, "Can't create Matrix with "+I2S(mDim)+" columns! Number of columns exceeds maximum column count "+I2S(MAX_MATRIX_SIZE)+"!")
             
             set this = Matrix.allocate()
             loop
@@ -413,7 +409,7 @@ library Matrices /* v 1.4.0.0
         endmethod
         
         method isValid takes nothing returns boolean
-            debug call ThrowError(this == 0, "Matrices", "isValid", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "isValid", "Matrix", this, "Attempt to access null reference!")
             return this.n == 0
         endmethod
         
@@ -421,7 +417,7 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
         
-            debug call ThrowError(this == 0, "Matrices", "isEqual", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "isEqual", "Matrix", this, "Attempt to access null reference!")
         
             if this.n != mat.n or this.m != mat.m then
                 return false
@@ -448,8 +444,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat
 
-            debug call ThrowError(this == 0, "Matrices", "addScalar", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "addScalar", "Matrix", this, "Cannot add "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "addScalar", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "addScalar", "Matrix", this, "Cannot add "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
             
             set mat = Matrix.create(n, m)
             loop
@@ -471,8 +467,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat
             
-            debug call ThrowError(this == 0, "Matrices", "subScalar", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "subScalar", "Matrix", this, "Cannot subtract "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "subScalar", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "subScalar", "Matrix", this, "Cannot subtract "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
             
             set mat = Matrix.create(n, m)
             loop
@@ -494,8 +490,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat
             
-            debug call ThrowError(this == 0, "Matrices", "multScalar", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "multScalar", "Matrix", this, "Cannot multiply "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "multScalar", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "multScalar", "Matrix", this, "Cannot multiply "+R2S(value)+" to Matrix elements of and Invalid Matrix!")
             
             set mat = Matrix.create(n, m)
             loop
@@ -517,8 +513,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat
             
-            debug call ThrowError(this == 0, "Matrices", "divScalar", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "divScalar", "Matrix", this, "Cannot divide Matrix elements of Invalid Matrix by "+R2S(value)+"!")
+            debug call ThrowError(this == 0, "FMatrices", "divScalar", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "divScalar", "Matrix", this, "Cannot divide Matrix elements of Invalid Matrix by "+R2S(value)+"!")
             
             set mat = Matrix.create(n, m)
             loop
@@ -540,8 +536,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat
             
-            debug call ThrowError(this == 0, "Matrices", "abs", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "abs", "Matrix", this, "Cannot perform absolute value to Matrix elements of and Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "abs", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "abs", "Matrix", this, "Cannot perform absolute value to Matrix elements of and Invalid Matrix!")
             
             set mat = Matrix.create(n, m)
             loop
@@ -566,8 +562,8 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "eye", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "eye", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "eye", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "eye", "Matrix", this, "Invalid Matrix!")
             
             loop
                 exitwhen j >= n
@@ -590,8 +586,8 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local integer minDim
             
-            debug call ThrowError(this == 0, "Matrices", "diag", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "diag", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "diag", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "diag", "Matrix", this, "Invalid Matrix!")
             
             if n <= m then
                 set minDim = n - 1
@@ -599,7 +595,7 @@ library Matrices /* v 1.4.0.0
                 set minDim = m - 1
             endif
             
-            debug call ThrowError(whichDiagonal > minDim, "Matrices", "diag", "Matrix", this, "Diagonal Index "+I2S(whichDiagonal)+" exceeds Matrix dimensions!")
+            debug call ThrowError(whichDiagonal > minDim, "FMatrices", "diag", "Matrix", this, "Diagonal Index "+I2S(whichDiagonal)+" exceeds Matrix dimensions!")
             
             loop
                 exitwhen j >= n
@@ -621,8 +617,8 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "init", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "init", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "init", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "init", "Matrix", this, "Invalid Matrix!")
             
             loop
                 exitwhen j >= n
@@ -640,8 +636,8 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "rand", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "rand", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "rand", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "rand", "Matrix", this, "Invalid Matrix!")
             
             loop
                 exitwhen j >= n
@@ -659,9 +655,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "initStepWise", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "initStepWise", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(whichMethod != METHOD_ROW_WISE and whichMethod != METHOD_COL_WISE, "Matrices", "initStepWise", "Matrix", this, "Invalid method of number "+I2S(whichMethod)+" for initializing!")
+            debug call ThrowError(this == 0, "FMatrices", "initStepWise", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "initStepWise", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(whichMethod != METHOD_ROW_WISE and whichMethod != METHOD_COL_WISE, "FMatrices", "initStepWise", "Matrix", this, "Invalid method of number "+I2S(whichMethod)+" for initializing!")
             
             if whichMethod == METHOD_ROW_WISE then
                 loop
@@ -695,9 +691,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "add", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "add", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(mat.n != this.n or mat.m != this.m, "Matrices", "add", "Matrix", this, "Cannot perform addition of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "add", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "add", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(mat.n != this.n or mat.m != this.m, "FMatrices", "add", "Matrix", this, "Cannot perform addition of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
             
             set result = Matrix.create(n, m)
             loop
@@ -719,9 +715,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             
-            debug call ThrowError(this == 0, "Matrices", "sub", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "sub", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(mat.n != this.n or mat.m != this.m, "Matrices", "sub", "Matrix", this, "Cannot perform subtraction of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "sub", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "sub", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(mat.n != this.n or mat.m != this.m, "FMatrices", "sub", "Matrix", this, "Cannot perform subtraction of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
             
             set result = Matrix.create(n, m)
             loop
@@ -745,9 +741,9 @@ library Matrices /* v 1.4.0.0
             local integer k = 0
             local real temp = 0.0
             
-            debug call ThrowError(this == 0, "Matrices", "multiply", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "multiply", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(this.m != mat.n, "Matrices", "multiply", "Matrix", this, "Cannot perform multiplication of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "multiply", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "multiply", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this.m != mat.n, "FMatrices", "multiply", "Matrix", this, "Cannot perform multiplication of a "+I2S(n)+" x "+I2S(m)+" with a "+I2S(mat.n)+" x "+I2S(mat.m)+" Matrix!")
             
             set result = Matrix.create(n, mat.m)
             loop
@@ -776,8 +772,8 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
 
-            debug call ThrowError(this == 0, "Matrices", "transpose", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "transpose", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "transpose", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "transpose", "Matrix", this, "Invalid Matrix!")
             
             loop
                 exitwhen j >= m
@@ -799,11 +795,11 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local integer k = 0
             local integer row
-            local real maxVal = -Math.Inf
+            local real maxVal = -FMath.Inf
             local real pivot
             
-            debug call ThrowError(this == 0, "Matrices", "gauss", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "gauss", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "gauss", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "gauss", "Matrix", this, "Invalid Matrix!")
             
             set mat = this.assign()
             loop
@@ -812,7 +808,7 @@ library Matrices /* v 1.4.0.0
                 set row = i
                 loop
                     exitwhen j >= m
-                    set pivot = Math.abs(mat[j][i])
+                    set pivot = FMath.abs(mat[j][i])
                     if pivot > maxVal then
                         set maxVal = pivot
                         set row = j
@@ -820,8 +816,8 @@ library Matrices /* v 1.4.0.0
                     set j = j + 1
                 endloop
                 
-                if Math.abs(pivot) < EPSILON then
-                    debug call ThrowWarning(true, "Matrices", "gauss", "Matrix", this, "Can't perform Gauss Elimination, Matrix too close to singularity!")
+                if FMath.abs(pivot) < EPSILON then
+                    debug call ThrowWarning(true, "FMatrices", "gauss", "Matrix", this, "Can't perform Gauss Elimination, Matrix too close to singularity!")
                 endif
 
                 if row != i then
@@ -862,12 +858,12 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local integer k = 0
             local integer row
-            local real maxVal = -Math.Inf
+            local real maxVal = -FMath.Inf
             local real pivot
             local real temp_inv
             
-            debug call ThrowError(this == 0, "Matrices", "invert", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "invert", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "invert", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "invert", "Matrix", this, "Invalid Matrix!")
             
             set mat = this.assign()
             set inv = Matrix.create(n, n)
@@ -878,7 +874,7 @@ library Matrices /* v 1.4.0.0
                 set row = i
                 loop
                     exitwhen j >= n
-                    set pivot = Math.abs(mat[j][i])
+                    set pivot = FMath.abs(mat[j][i])
                     if pivot > maxVal then
                         set maxVal = pivot
                         set row = j
@@ -886,8 +882,8 @@ library Matrices /* v 1.4.0.0
                     set j = j + 1
                 endloop
                 
-                if Math.abs(pivot) < EPSILON then
-                    debug call ThrowWarning(true, "Matrices", "invert", "Matrix", this, "Can't invert Matrix, too close to singularity!")
+                if FMath.abs(pivot) < EPSILON then
+                    debug call ThrowWarning(true, "FMatrices", "invert", "Matrix", this, "Can't invert Matrix, too close to singularity!")
                     return Matrix.Invalid_Matrix
                 endif
                 
@@ -961,8 +957,8 @@ library Matrices /* v 1.4.0.0
             local integer minDim
             local real result = 0.0
             
-            debug call ThrowError(this == 0, "Matrices", "trace", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "trace", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "trace", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "trace", "Matrix", this, "Invalid Matrix!")
             
             if n <= m then
                 set minDim = n - 1
@@ -984,7 +980,7 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local Matrix mat = Matrix.create(n, m)
             
-            debug call ThrowError(this == 0, "Matrices", "assign", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(this == 0, "FMatrices", "assign", "Matrix", this, "Attempt to access null reference!")
     
             if n < 1 then
                 set mat = Invalid_Matrix
@@ -1011,8 +1007,8 @@ library Matrices /* v 1.4.0.0
             local integer i
             local integer rank
             
-            debug call ThrowError(this == 0, "Matrices", "rank", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "rank", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "rank", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "rank", "Matrix", this, "Invalid Matrix!")
             
             if n <= m then
                 set minDim = n - 1
@@ -1026,7 +1022,7 @@ library Matrices /* v 1.4.0.0
             
             loop
                 exitwhen i < 1
-                if Math.abs(mat[i][i]) < EPSILON then
+                if FMath.abs(mat[i][i]) < EPSILON then
                     set rank = rank - 1
                 endif
                 set i = i - 1
@@ -1039,15 +1035,15 @@ library Matrices /* v 1.4.0.0
             local Matrix mat
             local real result
 
-            debug call ThrowError(this == 0, "Matrices", "cond", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "cond", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "cond", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "cond", "Matrix", this, "Invalid Matrix!")
             
             set mat = this.assign()
             set mat = mat.invert()
             
             if not mat.isValid() then
-                debug call ThrowError(true, "Matrices", "cond", "Matrix", this, "Matrix has infinite condition!")
-                return Math.Inf
+                debug call ThrowError(true, "FMatrices", "cond", "Matrix", this, "Matrix has infinite condition!")
+                return FMath.Inf
             endif
             
             set mat = this.multiply(mat)
@@ -1061,9 +1057,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local real result = 1.0
             
-            debug call ThrowError(this == 0, "Matrices", "det", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "det", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(n != m, "Matrices", "det", "Matrix", this, "Matrix "+I2S(n)+" x "+I2S(m)+" isn't square! Matrix must be square!")
+            debug call ThrowError(this == 0, "FMatrices", "det", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "det", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(n != m, "FMatrices", "det", "Matrix", this, "Matrix "+I2S(n)+" x "+I2S(m)+" isn't square! Matrix must be square!")
             
             set mat = this.assign()
             set mat = mat.gauss()
@@ -1073,7 +1069,7 @@ library Matrices /* v 1.4.0.0
                 set result = result*mat[i][i]
                 set i = i + 1
             endloop
-            if Math.abs(result) < EPSILON then
+            if FMath.abs(result) < EPSILON then
                 set result = 0.0
             endif
             
@@ -1089,12 +1085,12 @@ library Matrices /* v 1.4.0.0
             local integer j = 0
             local integer k = 0
             local integer row
-            local real maxVal = -Math.Inf
+            local real maxVal = -FMath.Inf
             local real pivot
             
-            debug call ThrowError(this == 0, "Matrices", "solveSLE", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "solveSLE", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(this.n != this.m or b.n != this.n or b.m > 1, "Matrices", "solveSLE", "Matrix", this, "Invalid Matrices used! Can't solve SLE!")
+            debug call ThrowError(this == 0, "FMatrices", "solveSLE", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "solveSLE", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(this.n != this.m or b.n != this.n or b.m > 1, "FMatrices", "solveSLE", "Matrix", this, "Invalid FMatrices used! Can't solve SLE!")
             
             set mat = this.assign()
             set sol = b.assign()
@@ -1105,7 +1101,7 @@ library Matrices /* v 1.4.0.0
                 set row = i
                 loop
                     exitwhen j >= n
-                    set pivot = Math.abs(mat[j][i])
+                    set pivot = FMath.abs(mat[j][i])
                     if pivot > maxVal then
                         set maxVal = pivot
                         set row = j
@@ -1114,7 +1110,7 @@ library Matrices /* v 1.4.0.0
                 endloop
                 set pivot = maxVal
                 
-                if Math.abs(pivot) < EPSILON then
+                if FMath.abs(pivot) < EPSILON then
                     return Matrix.Invalid_Matrix
                 endif
                 
@@ -1172,11 +1168,11 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
             local real result
-            local real maxVal = -Math.Inf
+            local real maxVal = -FMath.Inf
            
-            debug call ThrowError(this == 0, "Matrices", "norm", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "norm", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(whichNorm != ONE_NORM and whichNorm != EUCLIDEAN_NORM and whichNorm != INFINITY_NORM, "Matrices", "[]", "Matrix", this, "Invalid Norm with number "+I2S(whichNorm)+" used!")
+            debug call ThrowError(this == 0, "FMatrices", "norm", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "norm", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(whichNorm != ONE_NORM and whichNorm != EUCLIDEAN_NORM and whichNorm != INFINITY_NORM, "FMatrices", "[]", "Matrix", this, "Invalid Norm with number "+I2S(whichNorm)+" used!")
            
             if whichNorm == ONE_NORM then
                 set result = 0.0
@@ -1184,7 +1180,7 @@ library Matrices /* v 1.4.0.0
                     exitwhen i >= m
                     loop
                         exitwhen j >= n
-                        set result = result + Math.abs(this.matRow[j][i])
+                        set result = result + FMath.abs(this.matRow[j][i])
                         set j = j + 1
                     endloop
                     if result > maxVal then
@@ -1214,7 +1210,7 @@ library Matrices /* v 1.4.0.0
                     exitwhen i >= n
                     loop
                         exitwhen j >= m
-                        set result = result + Math.abs(this.matRow[i][j])
+                        set result = result + FMath.abs(this.matRow[i][j])
                         set j = j + 1
                     endloop
                     if result > maxVal then
@@ -1235,8 +1231,8 @@ library Matrices /* v 1.4.0.0
             local integer k = 0
             local integer l = 0
            
-            debug call ThrowError(this == 0, "Matrices", "kron", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1 or mat.n < 1, "Matrices", "kron", "Matrix", this, "Can't compute Kronecker Product of Invalid Matrix!")
+            debug call ThrowError(this == 0, "FMatrices", "kron", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1 or mat.n < 1, "FMatrices", "kron", "Matrix", this, "Can't compute Kronecker Product of Invalid Matrix!")
            
             loop
                 exitwhen i >= n
@@ -1267,10 +1263,10 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "dotProduct", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1 or mat.n < 1, "Matrices", "dotProduct", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(mat.m != 1 or this.m != 1, "Matrices", "dotProduct", "Matrix", this, "Dot-Product is only defined for Vectors!")
-            debug call ThrowError(mat.n != this.n, "Matrices", "dotProduct", "Matrix", this, "Dot-Product is only defined for Vectors of same length!")
+            debug call ThrowError(this == 0, "FMatrices", "dotProduct", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1 or mat.n < 1, "FMatrices", "dotProduct", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(mat.m != 1 or this.m != 1, "FMatrices", "dotProduct", "Matrix", this, "Dot-Product is only defined for Vectors!")
+            debug call ThrowError(mat.n != this.n, "FMatrices", "dotProduct", "Matrix", this, "Dot-Product is only defined for Vectors of same length!")
            
             loop
                 exitwhen i > n
@@ -1284,11 +1280,11 @@ library Matrices /* v 1.4.0.0
         method crossProduct takes Matrix mat returns Matrix
             local Matrix result
        
-            debug call ThrowError(this == 0, "Matrices", "crossProduct", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1 or mat.n < 1, "Matrices", "crossProduct", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(mat.m != 1 or this.m != 1, "Matrices", "crossProduct", "Matrix", this, "Cross-Product is only defined for Vectors!")
-            debug call ThrowError(mat.n != this.n, "Matrices", "crossProduct", "Matrix", this, "Cross-Product is only defined for Vectors of same length!")
-            debug call ThrowError(mat.n != 3 or this.n != 3, "Matrices", "crossProduct", "Matrix", this, "This implementation only supports Cross-Products for Vectors in R^3")
+            debug call ThrowError(this == 0, "FMatrices", "crossProduct", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1 or mat.n < 1, "FMatrices", "crossProduct", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(mat.m != 1 or this.m != 1, "FMatrices", "crossProduct", "Matrix", this, "Cross-Product is only defined for Vectors!")
+            debug call ThrowError(mat.n != this.n, "FMatrices", "crossProduct", "Matrix", this, "Cross-Product is only defined for Vectors of same length!")
+            debug call ThrowError(mat.n != 3 or this.n != 3, "FMatrices", "crossProduct", "Matrix", this, "This implementation only supports Cross-Products for Vectors in R^3")
            
             set result = Matrix.create(3, 1)
             set result[0][0] = this.matRow[1][0]*mat[2][0] - this.matRow[2][0]*mat[1][0]
@@ -1305,11 +1301,11 @@ library Matrices /* v 1.4.0.0
             local integer row = 0
             local integer col = 0
            
-            debug call ThrowError(this == 0, "Matrices", "reShape", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "reShape", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(newN*newM != n*m, "Matrices", "reShape", "Matrix", this, "Can't reshape a "+I2S(n)+" x "+I2S(m)+" Matrix to a "+I2S(newN)+" x "+I2S(newM)+" Matrix! Dimension missmatch!")
-            debug call ThrowError(newN < 1 or newM < 1, "Matrices", "reShape", "Matrix", this, "Reshape not possible! Index must be greater than zero!")
-            debug call ThrowError(whichMethod != METHOD_ROW_WISE and whichMethod != METHOD_COL_WISE, "Matrices", "reShape", "Matrix", this, "Invalid method with number "+I2S(whichMethod)+" for reshaping!")
+            debug call ThrowError(this == 0, "FMatrices", "reShape", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "reShape", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(newN*newM != n*m, "FMatrices", "reShape", "Matrix", this, "Can't reshape a "+I2S(n)+" x "+I2S(m)+" Matrix to a "+I2S(newN)+" x "+I2S(newM)+" Matrix! Dimension missmatch!")
+            debug call ThrowError(newN < 1 or newM < 1, "FMatrices", "reShape", "Matrix", this, "Reshape not possible! Index must be greater than zero!")
+            debug call ThrowError(whichMethod != METHOD_ROW_WISE and whichMethod != METHOD_COL_WISE, "FMatrices", "reShape", "Matrix", this, "Invalid method with number "+I2S(whichMethod)+" for reshaping!")
            
             set mat = Matrix.create(newN, newM)
            
@@ -1355,10 +1351,10 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "embed", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n == 0 or subMat.n == 0, "Matrices", "embed", "Matrix", this, "Can't embed sub Matrix! This is an invalid Matrix!")
-            debug call ThrowError(startRow < 0 or startCol < 0, "Matrices", "embed", "Matrix", this, "Can't merge Matrices to start row "+I2S(startRow)+" and start column "+I2S(startCol)+"! Index must be greater than 0!")
-            debug call ThrowError(startRow + subMat.n - 1 > n or startCol + subMat.m - 1 > m, "Matrices", "embed", "Matrix", this, "Can't merge Matrices to start row "+I2S(startRow)+" and start column "+I2S(startCol)+"! Matrices don't fit!")
+            debug call ThrowError(this == 0, "FMatrices", "embed", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n == 0 or subMat.n == 0, "FMatrices", "embed", "Matrix", this, "Can't embed sub Matrix! This is an invalid Matrix!")
+            debug call ThrowError(startRow < 0 or startCol < 0, "FMatrices", "embed", "Matrix", this, "Can't merge FMatrices to start row "+I2S(startRow)+" and start column "+I2S(startCol)+"! Index must be greater than 0!")
+            debug call ThrowError(startRow + subMat.n - 1 > n or startCol + subMat.m - 1 > m, "FMatrices", "embed", "Matrix", this, "Can't merge FMatrices to start row "+I2S(startRow)+" and start column "+I2S(startCol)+"! FMatrices don't fit!")
            
             set mat = this.assign()
             loop
@@ -1380,10 +1376,10 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "subMatrix", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n == 0, "Matrices", "subMatrix", "Matrix", this, "Can't determine sub Matrix! This is an invalid Matrix!")
-            debug call ThrowError(endRow < startRow or endCol < startCol, "Matrices", "subMatrix", "Matrix", this, "Can't determine sub Matrix! Size of sub Matrix smaller 1 x 1!")
-            debug call ThrowError(endRow > n - 1 or endCol > m - 1, "Matrices", "subMatrix", "Matrix", this, "Sub Matrix of size "+I2S(endRow - startRow + 1)+" x "+I2S(endCol - startCol + 1)+" exceeds Matrix dimensions!")
+            debug call ThrowError(this == 0, "FMatrices", "subMatrix", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n == 0, "FMatrices", "subMatrix", "Matrix", this, "Can't determine sub Matrix! This is an invalid Matrix!")
+            debug call ThrowError(endRow < startRow or endCol < startCol, "FMatrices", "subMatrix", "Matrix", this, "Can't determine sub Matrix! Size of sub Matrix smaller 1 x 1!")
+            debug call ThrowError(endRow > n - 1 or endCol > m - 1, "FMatrices", "subMatrix", "Matrix", this, "Sub Matrix of size "+I2S(endRow - startRow + 1)+" x "+I2S(endCol - startCol + 1)+" exceeds Matrix dimensions!")
            
             set mat = Matrix.create(endRow - startRow + 1, endCol - startCol + 1)
             loop
@@ -1405,9 +1401,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "concatV", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n == 0 or m == 0, "Matrices", "concatV", "Matrix", this, "Can't concat Invalid Matrices!")
-            debug call ThrowError(m != mat.m, "Matrices", "concatV", "Matrix", this, "Can't concat Matrices! Matrix column dimensions must be equal!")
+            debug call ThrowError(this == 0, "FMatrices", "concatV", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n == 0 or m == 0, "FMatrices", "concatV", "Matrix", this, "Can't concat Invalid FMatrices!")
+            debug call ThrowError(m != mat.m, "FMatrices", "concatV", "Matrix", this, "Can't concat FMatrices! Matrix column dimensions must be equal!")
    
             set result = Matrix.create(n + mat.n, m)
             loop
@@ -1441,9 +1437,9 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "concatH", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n == 0 or m == 0, "Matrices", "concatH", "Matrix", this, "Can't concat Invalid Matrices!")
-            debug call ThrowError(n != mat.n, "Matrices", "concatH", "Matrix", this, "Can't concat Matrices! Matrix row dimensions must be equal!")
+            debug call ThrowError(this == 0, "FMatrices", "concatH", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n == 0 or m == 0, "FMatrices", "concatH", "Matrix", this, "Can't concat Invalid FMatrices!")
+            debug call ThrowError(n != mat.n, "FMatrices", "concatH", "Matrix", this, "Can't concat FMatrices! Matrix row dimensions must be equal!")
            
             set result = Matrix.create(n, m + mat.m)
             loop
@@ -1476,9 +1472,9 @@ library Matrices /* v 1.4.0.0
             local real temp
             local integer i = 0
            
-            debug call ThrowError(this == 0, "Matrices", "switchRow", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "switchRow", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(whichRow < 0 or whichRow >= n or newRow < 0 or newRow >= n, "Matrices", "switchRow", "Matrix", this, "Can't switch row "+I2S(whichRow)+" with "+I2S(newRow)+". Index exceeds Matrix dimensions!")
+            debug call ThrowError(this == 0, "FMatrices", "switchRow", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "switchRow", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(whichRow < 0 or whichRow >= n or newRow < 0 or newRow >= n, "FMatrices", "switchRow", "Matrix", this, "Can't switch row "+I2S(whichRow)+" with "+I2S(newRow)+". Index exceeds Matrix dimensions!")
            
             loop
                 exitwhen i >= this.m
@@ -1493,9 +1489,9 @@ library Matrices /* v 1.4.0.0
             local real temp
             local integer i = 0
            
-            debug call ThrowError(this == 0, "Matrices", "switchCol", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowError(n < 1, "Matrices", "switchCol", "Matrix", this, "Invalid Matrix!")
-            debug call ThrowError(whichCol < 0 or whichCol >= n or newCol < 0 or newCol >= n, "Matrices", "switchCol", "Matrix", this, "Can't switch column "+I2S(whichCol)+" with "+I2S(newCol)+". Index exceeds Matrix dimensions!")
+            debug call ThrowError(this == 0, "FMatrices", "switchCol", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowError(n < 1, "FMatrices", "switchCol", "Matrix", this, "Invalid Matrix!")
+            debug call ThrowError(whichCol < 0 or whichCol >= n or newCol < 0 or newCol >= n, "FMatrices", "switchCol", "Matrix", this, "Can't switch column "+I2S(whichCol)+" with "+I2S(newCol)+". Index exceeds Matrix dimensions!")
            
             loop
                 exitwhen i >= this.n
@@ -1511,8 +1507,8 @@ library Matrices /* v 1.4.0.0
             local integer i = 0
             local integer j = 0
            
-            debug call ThrowError(this == 0, "Matrices", "display", "Matrix", this, "Attempt to access null reference!")
-            debug call ThrowWarning(n < 1, "Matrices", "display", "Matrix", this, "Invalid Matrix can't be displayed!")
+            debug call ThrowError(this == 0, "FMatrices", "display", "Matrix", this, "Attempt to access null reference!")
+            debug call ThrowWarning(n < 1, "FMatrices", "display", "Matrix", this, "Invalid Matrix can't be displayed!")
            
             loop
                 exitwhen j >= this.n

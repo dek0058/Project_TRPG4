@@ -1,8 +1,7 @@
-library Maths/* v 1.2.0.0
+library FMath/* v 1.2.0.0
     **********************************************************************************
     *
     *   Advanced Mathematics
-    *   ????????????????????
     *   By looking_for_help aka eey
     *
     *   This system provides a large amount of standard mathematical functions that
@@ -12,7 +11,6 @@ library Maths/* v 1.2.0.0
     ***********************************************************************************
     *
     *   Requirements
-    *   ????????????
     *   */  uses ErrorMessage   /*  hiveworkshop.com/forums/jass-resources-412/snippet-error-message-239210/
     *
     ***********************************************************************************
@@ -26,7 +24,6 @@ library Maths/* v 1.2.0.0
     **********************************************************************************
     *
     *   Available Plug-Ins and Extensions
-    *   ?????????????????????????????????
     *       library MathParser
     *           - A library that allows you to parse string expressions. Compare the
     *             IngameCalculator Trigger for an example usage.
@@ -39,9 +36,7 @@ library Maths/* v 1.2.0.0
     **********************************************************************************
     *
     *   System API
-    *   ??????????
-    *       struct Math
-    *       ? ? ? ? ? ?
+    *       struct FMath
     *       readonly static real Pi
     *           - Refer to this field for the number Pi, the ratio of a circle's
     *             circumference to its diameter
@@ -55,7 +50,7 @@ library Maths/* v 1.2.0.0
     *
     *       readonly static real Inf
     *           - Refer to this field for 2^128, the biggest real number Wc3 can
-    *             handle. You can use -Math.Inf to get the smallest real number.
+    *             handle. You can use -FMath.Inf to get the smallest real number.
     *
     *       readonly static integer MinInt
     *           - Refer to this field for -2147483648, the smallest integer number
@@ -183,7 +178,7 @@ library Maths/* v 1.2.0.0
             private constant real LN_FACTOR_INV = 0.7788008
         endglobals
        
-        struct Math //extends array
+        struct FMath //extends array
             // Constants
             static constant real Pi = 3.141593
             static constant real E = 2.718282
@@ -320,7 +315,7 @@ library Maths/* v 1.2.0.0
                 local real sum = 0.0
                 local real sign = 1.0
                 debug if r < 0.0 then
-                    debug call ThrowError(true, "Maths", "ln", "Math", 0, "Logarithm of negative number is undefined!")
+                    debug call ThrowError(true, "FMath", "ln", "FMath", 0, "Logarithm of negative number is undefined!")
                 debug endif
                 if r < 1.0 then
                     set r = 1.0/r
@@ -589,7 +584,7 @@ library Maths/* v 1.2.0.0
                 local real z = 1.0
                 if floor(r) == r then
                     debug if r < 0 then
-                        debug call ThrowError(true, "Maths", "factorial", "Math", 0, "Factorial of negative number is not defined!")
+                        debug call ThrowError(true, "FMath", "factorial", "FMath", 0, "Factorial of negative number is not defined!")
                     debug endif
                     if r == 0 then
                         return 1.0
