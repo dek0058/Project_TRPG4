@@ -74,7 +74,7 @@ library MathParser /* v 1.1.0.0
         private static constant integer EXPONENTIATION = 5
         
         private static method getPriority takes string op returns integer
-            return LoadInteger(Maths_h, StringHash(op), 0)
+            return LoadInteger(FMath_h, StringHash(op), 0)
         endmethod
     
         private static method error takes string s, integer flag returns nothing
@@ -224,7 +224,7 @@ library MathParser /* v 1.1.0.0
             if op1 == null or op2 == null then
                 call thistype.error("Unbalanced operators!", 1)
             endif
-            set localOp = LoadInteger(Maths_h, StringHash(op), 1)
+            set localOp = LoadInteger(FMath_h, StringHash(op), 1)
             if localOp < MULTIPLICATION then
                 if localOp == ADDITION then
                     return r1 + r2
@@ -463,21 +463,21 @@ library MathParser /* v 1.1.0.0
         endmethod
         
         private static method init takes nothing returns nothing
-            call SaveInteger(Maths_h, StringHash("+"), 0, 1)
-            call SaveInteger(Maths_h, StringHash("-"), 0, 1)
-            call SaveInteger(Maths_h, StringHash("*"), 0, 2)
-            call SaveInteger(Maths_h, StringHash("/"), 0, 2)
-            call SaveInteger(Maths_h, StringHash("m"), 0, 3)
-            call SaveInteger(Maths_h, StringHash("p"), 0, 3)
-            call SaveInteger(Maths_h, StringHash("^"), 0, 4)
-            call SaveInteger(Maths_h, StringHash("M"), 0, 5)
-            call SaveInteger(Maths_h, StringHash("P"), 0, 5)
-            call SaveInteger(Maths_h, StringHash("("), 0, 6)
-            call SaveInteger(Maths_h, StringHash("+ "), 1, ADDITION)
-            call SaveInteger(Maths_h, StringHash("- "), 1, SUBSTRACTION)
-            call SaveInteger(Maths_h, StringHash("* "), 1, MULTIPLICATION)
-            call SaveInteger(Maths_h, StringHash("/ "), 1, DIVISION)
-            call SaveInteger(Maths_h, StringHash("^ "), 1, EXPONENTIATION)
+            call SaveInteger(FMath_h, StringHash("+"), 0, 1)
+            call SaveInteger(FMath_h, StringHash("-"), 0, 1)
+            call SaveInteger(FMath_h, StringHash("*"), 0, 2)
+            call SaveInteger(FMath_h, StringHash("/"), 0, 2)
+            call SaveInteger(FMath_h, StringHash("m"), 0, 3)
+            call SaveInteger(FMath_h, StringHash("p"), 0, 3)
+            call SaveInteger(FMath_h, StringHash("^"), 0, 4)
+            call SaveInteger(FMath_h, StringHash("M"), 0, 5)
+            call SaveInteger(FMath_h, StringHash("P"), 0, 5)
+            call SaveInteger(FMath_h, StringHash("("), 0, 6)
+            call SaveInteger(FMath_h, StringHash("+ "), 1, ADDITION)
+            call SaveInteger(FMath_h, StringHash("- "), 1, SUBSTRACTION)
+            call SaveInteger(FMath_h, StringHash("* "), 1, MULTIPLICATION)
+            call SaveInteger(FMath_h, StringHash("/ "), 1, DIVISION)
+            call SaveInteger(FMath_h, StringHash("^ "), 1, EXPONENTIATION)
         endmethod
         
         implement Init
