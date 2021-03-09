@@ -49,48 +49,48 @@ library FVector uses Alloc
 
         endmethod
 
-         /*µ¡¼À*/
+        //µ¡¼À
         method Add takes nothing returns nothing
 
         endmethod
 
-        /*»¬›»*/
+        //»¬¼À
         method Sub takes nothing returns nothing
 
         endmethod
 
-        /*°ö¼À*/
+        //°ö¼À
         method Mul takes nothing returns nothing
 
         endmethod
 
-        /*³ª´°¼À*/
+        //³ª´°¼À
         method Div takes nothing returns nothing
 
         endmethod
 
-        /*º¤ÅÍÀÇ Å©±â*/
+        //º¤ÅÍÀÇ Å©±â
         method Size takes nothing returns nothing
 
         endmethod
 
-        /*³»Àû*/
-        method Dot takes nothing returns nothing
+        //º¤ÅÍÀÇ Á¦°öÀÇ Å©±â
+        method Squared takes nothing returns nothing
 
         endmethod
 
-        /*¿ÜÀû*/
-        method Cross takes nothing returns nothing
-
-        endmethod
-
-        /*Á¤±ÔÈ­*/
+        //Á¤±ÔÈ­
         method Normalize takes nothing returns nothing
 
         endmethod
 
-        /*º¤ÅÍÀÇ Á¦°öÀÇ Å©±â*/
-        method Squared takes nothing returns nothing
+        //³»Àû
+        method Dot takes nothing returns nothing
+
+        endmethod
+
+        //¿ÜÀû
+        method Cross takes nothing returns nothing
 
         endmethod
     endstruct
