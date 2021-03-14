@@ -77,7 +77,7 @@ library TArray requires Table, ErrorMessage, Alloc
             debug if inPos < 0 or inPos > length then
                 set str = "배열의 범위 밖의 값을 호출하였습니다."
                 set str = str + "(" + exception + " " + "pos :"  +  I2S(inPos) + ", lenth : " + I2S(length) + ")"
-                debug call ThrowError(true, "TArray$NAME$", )
+                debug call ThrowError(true, "TArray$NAME$", "AssertRange", this, str)
             debug endif
             return inPos >= 0 and inPos <= length
         endmethod
