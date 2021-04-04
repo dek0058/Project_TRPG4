@@ -28,7 +28,7 @@ library FTick uses Alloc
         endmethod
         
         method Release takes nothing returns nothing
-
+            
         endmethod
 
         method Pause takes nothing returns nothing
