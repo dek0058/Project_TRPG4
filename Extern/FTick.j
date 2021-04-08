@@ -43,21 +43,9 @@ library FTick uses Alloc, Table, TArray initializer Start
             call TimerStart(tick, inDeltaTime, inLoop, inCallback)
             return this
         endmethod
-        
-        method Release takes nothing returns nothing
 
-        endmethod
-
-        method Pause takes nothing returns nothing
-
-        endmethod
-
-        method Restart takes nothing returns nothing
-
-        endmethod
-    
         static method GetTick takes nothing returns thistype
-            
+                        
         endmethod
     endstruct
 
