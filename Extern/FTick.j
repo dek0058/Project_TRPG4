@@ -22,14 +22,15 @@ library FTick uses Alloc, Table, TArray initializer Start
             else
                 set temp = allocate()
                 set temp.tick = CreateTimer()
+                set TickTable.integer[GetHandleId(temp.tick)] = temp
             endif
 
             set temp.pointer = 0
-
             return temp
         endmethod
 
         method destroy takes nothing returns nothing
+            call TimerStart(tick, 0.0, false, null)
             call WaitingTickList.Push(this)
         endmethod
 
@@ -45,7 +46,7 @@ library FTick uses Alloc, Table, TArray initializer Start
         endmethod
 
         static method GetTick takes nothing returns thistype
-                        
+            return TickTable.integer[GetHandleId(GetExpiredTimer())]
         endmethod
     endstruct
 

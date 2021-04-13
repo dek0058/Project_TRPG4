@@ -16,7 +16,6 @@ library FMath/* v 1.2.0.0
     ***********************************************************************************
     *
     *   Implementation
-    *   ??????????????
     *   To use this system, just copy this script to your trigger editor, then you
     *   can use it straight away. To see how the evaluation function works, compare
     *   the example IngameCalculator trigger.
