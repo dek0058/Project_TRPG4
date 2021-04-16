@@ -12,8 +12,10 @@ library FTick uses Alloc, Table, TArray initializer Start
 
         timer tick
         integer pointer
+        real deltaTime
+        code callback
 
-        static method create takes nothing returns thistype
+        static method create takes integer inPointer, real inDeletaTime, code inCallback returns thistype
             local thistype temp = 0
 
             if WaitingTickList.Size() > 0 then
@@ -25,12 +27,17 @@ library FTick uses Alloc, Table, TArray initializer Start
                 set TickTable.integer[GetHandleId(temp.tick)] = temp
             endif
 
-            set temp.pointer = 0
+            set temp.pointer = inPointer
+            set temp.deltaTime inDeletaTime
+            set temp.code = inCallback
             return temp
         endmethod
 
         method destroy takes nothing returns nothing
             call TimerStart(tick, 0.0, false, null)
+            set pointer = 0
+            set deletaTime = 0.00
+            set callback = null
             call WaitingTickList.Push(this)
         endmethod
 
@@ -39,10 +46,13 @@ library FTick uses Alloc, Table, TArray initializer Start
         endmethod
 
         static method Start takes integer inPointer, real inDeltaTime, bool inLoop, code inCallback returns thistype
-            local thistype this = create()
-            set pointer = inPointer
-            call TimerStart(tick, inDeltaTime, inLoop, inCallback)
+            local thistype this = create(inPointer, inDeltaTime, inCallback)
+            call TimerStart(tick, deltaTime, inLoop, callback)
             return this
+        endmethod
+
+        method Run takes bool inLoop returns nothing
+            call TimerStart(tick, deltaTime, inLoop, callback)
         endmethod
 
         static method GetTick takes nothing returns thistype
