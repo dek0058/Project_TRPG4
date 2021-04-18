@@ -1,4 +1,4 @@
-library UnitGroup
+library UnitGroup uses Alloc
 
     globals
         private integer TmpUnitGroup

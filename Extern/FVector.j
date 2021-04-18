@@ -1,11 +1,13 @@
 library FVector uses Alloc
 
+    //! runtextmacro DEFINE_STRUCT_TARRAY("Vector", "FVector")
+
     /*
     Right, Left     = XÁÂÇ¥
     Up, Down        = YÁÂÇ¥
     Forward, Back   = ZÁÂÇ¥
     */
-
+        
     struct FVector extends array
         implement Alloc
 
@@ -22,25 +24,23 @@ library FVector uses Alloc
         real y
         real z
 
-        bool isTransient
-
         private static method onInit takes nothing returns nothing
-            set Zero = create(0, 0, 0, false)
-            set One = create(1, 1, 1, false)
-            set Right = create(1, 0 , 0, false)
-            set Left = create(-1, 0, 0, false)
-            set Up = create(0, 1, 0, false)
-            set Down = create(0, -1, 0, false)
-            set Forward = create(0, 0, 1, false)
-            set Back = create(0, 0, -1, false)
+            set Zero = create(0, 0, 0)
+            set One = create(1, 1, 1)
+            set Right = create(1, 0 , 0)
+            set Left = create(-1, 0, 0)
+            set Up = create(0, 1, 0)
+            set Down = create(0, -1, 0)
+            set Forward = create(0, 0, 1)
+            set Back = create(0, 0, -1)
         endmethod
 
-        static method create takes real inX, real inY, real inZ, bool inTransient returns thistype
+        static method create takes real inX, real inY, real inZ returns thistype
             local thistype this = allocate()
             set x = inX
             set y = inY
             set z = inZ
-            set isTransient = inTransient
+
             return this
         endmethod
 
@@ -115,11 +115,11 @@ library FVector uses Alloc
         endmethod
 
         //¿ÜÀû
-        static method Cross takes thistype inRight, thistype inLeft, bool inTransient returns thistype
+        static method Cross takes thistype inRight, thistype inLeft, boolean inTransient returns thistype
             local real x = (inRight.y * inLeft.z) - (inRight.z * inLeft.y)
             local real y = (inRight.z * inLeft.x) - (inRight.x * inLeft.z)
             local real z = (inRight.x * inLeft.y) - (inRight.y * inLeft.x)
-            local thistype vector = create(x, y, z, inTransient)
+            local thistype vector = create(x, y, z)
             return vector
         endmethod
     endstruct

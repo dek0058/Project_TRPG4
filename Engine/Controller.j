@@ -1,5 +1,9 @@
 library Controller initializer Start uses UnitGroup, ErrorMessage
     
+    globals
+        private Controller array AAA
+    endglobals
+    
     struct Controller extends array
         implement GlobalAlloc
 
@@ -10,7 +14,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         //private string nickname
 
         static method create takes integer inIndex returns thistype
-            local this = allocate()
+            local thistype this = allocate()
 
             set gamePlayer = Player(inIndex)
             set unitGroup = UnitGroup.create()
@@ -22,7 +26,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             return gamePlayer
         endmethod
 
-        method Get takes player inPlayer returns thistype
+        static method Get takes player inPlayer returns thistype
             local integer id = GetPlayerId(inPlayer)
             if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
                 return Controller[id]
@@ -43,11 +47,11 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
 
     private function Start takes nothing returns nothing
-        integer i = 0
+        local integer i = 0
 
         loop
             exitwhen i > bj_MAX_PLAYER_SLOTS
-            set Controller[i] = Controller.create(i)
+            //set Controller[i] = Controller.create(i)
             set i = i + 1
         endloop
     endfunction

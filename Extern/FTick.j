@@ -1,4 +1,4 @@
-library FTick uses Alloc, Table, TArray initializer Start
+library FTick initializer Start uses Alloc, Table, TArray
 
     //! runtextmacro DEFINE_STRUCT_TARRAY("Tick", "FTick")
 
@@ -13,9 +13,8 @@ library FTick uses Alloc, Table, TArray initializer Start
         timer tick
         integer pointer
         real deltaTime
-        code callback
 
-        static method create takes integer inPointer, real inDeletaTime, code inCallback returns thistype
+        static method create takes integer inPointer, real inDeletaTime returns thistype
             local thistype temp = 0
 
             if WaitingTickList.Size() > 0 then
@@ -28,16 +27,14 @@ library FTick uses Alloc, Table, TArray initializer Start
             endif
 
             set temp.pointer = inPointer
-            set temp.deltaTime inDeletaTime
-            set temp.code = inCallback
+            set temp.deltaTime = inDeletaTime
             return temp
         endmethod
 
         method destroy takes nothing returns nothing
             call TimerStart(tick, 0.0, false, null)
             set pointer = 0
-            set deletaTime = 0.00
-            set callback = null
+            set deltaTime = 0.00
             call WaitingTickList.Push(this)
         endmethod
 
@@ -45,14 +42,14 @@ library FTick uses Alloc, Table, TArray initializer Start
             return tick
         endmethod
 
-        static method Start takes integer inPointer, real inDeltaTime, bool inLoop, code inCallback returns thistype
-            local thistype this = create(inPointer, inDeltaTime, inCallback)
-            call TimerStart(tick, deltaTime, inLoop, callback)
+        static method Start takes integer inPointer, real inDeltaTime, boolean inLoop, code inCallback returns thistype
+            local thistype this = create(inPointer, inDeltaTime)
+            call TimerStart(tick, deltaTime, inLoop, inCallback)
             return this
         endmethod
 
-        method Run takes bool inLoop returns nothing
-            call TimerStart(tick, deltaTime, inLoop, callback)
+        method Run takes boolean inLoop, code inCallback returns nothing
+            call TimerStart(tick, deltaTime, inLoop, inCallback)
         endmethod
 
         static method GetTick takes nothing returns thistype
