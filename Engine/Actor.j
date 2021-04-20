@@ -60,7 +60,39 @@ library Actor uses Alloc, Controller, FVector
             call SetUnitFlyHeight(gameUnit, position.z, 0)
         endmethod
 
+        method OrderPoint takes integer inId, real inX, real inY returns boolean
+            return IssuePointOrderById(gameUnit, inId, inX, inY)
+        endmethod
+        method OrderTarget takes integer inId, widget inTarget returns boolean
+            return IssueTargetOrderById(gameUnit, inId, inTarget)
+        endmethod
+        method Order takes integer inId returns boolean
+            return IssueImmediateOrderById(gameUnit, inId)
+        endmethod
 
+        //Extra Order
+        // 이 메소드는 아이템을 해당 위치에 버리는데 사용 됩니다.
+        method OrderInstant takes integer inId, real inX, real inY, widget inItem returns boolean
+            return IssueInstantPointOrderById(gameUnit, inId, inX, inY, inItem)
+        endmethod
+        // 이 메소드는 아이템을 다른 유닛에게 전달하는데 사용 됩니다.
+        method OrderInstantTarget takes integer inId, widget inTarget, widget inItem returns boolean
+            return IssueInstantTargetOrderById(gameUnit, inId, inTarget, inItem)
+        endmethod
+        // 이 메소드들은 영웅을 구매한다는데 사용 한다고는 합니다...
+        method OrderNeutral takes player inPlayer, unit inUnit, integer inUnitId returns boolean
+            return IssueNeutralImmediateOrderById(inPlayer, inUnit, inUnitId)
+        endmethod
+        method OrderNeutralPoint takes player inPlayer, unit inUnit, integer inUnitId, real inX, real inY returns boolean
+            return IssueNeutralPointOrderById(inPlayer, inUnit, inUnitId, inX, inY)
+        endmethod
+        method OrderNeutralTarget takes player inPlayer, unit inUnit, integer inUnitId, widget inTarget returns boolean
+            return IssueNeutralTargetOrderById(inPlayer, inUnit, inUnitId, inTarget)
+        endmethod
+        // 이 메소드는 건물 건설 명령을 내릴 때 사용 됩니다.
+        method OrderBuild takes integer inId, integer inUnitId, real inX, real inY returns boolean
+            return IssueBuildOrderById(gameUnit, inId, inUnitId, inX, inY)
+        endmethod
 
 
     endstruct
