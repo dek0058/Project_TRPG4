@@ -16,7 +16,6 @@ library Actor uses Alloc, Controller, FVector
         private FVector position
         private real scale
 
-
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
             local thistype this = allocate()
             
@@ -60,6 +59,28 @@ library Actor uses Alloc, Controller, FVector
             call SetUnitFlyHeight(gameUnit, position.z, 0)
         endmethod
 
+        method GetPosition takes nothing returns FVector
+            return position
+        endmethod
+
+        method GetPositionZ takes nothing returns real
+            return position.z
+        endmethod
+
+        method SetScale takes float inValue returns nothing
+            if inValue <= 0 then
+                set scale = 0.01
+            endif
+            set scale = inValue
+            call SetUnitScale(gameUnit, scale, scale, scale)
+        endmethod
+
+        method GetScale takes nothing returns real
+            return scale
+        endmethod
+
+        
+
         method OrderPoint takes integer inId, real inX, real inY returns boolean
             return IssuePointOrderById(gameUnit, inId, inX, inY)
         endmethod
@@ -92,6 +113,10 @@ library Actor uses Alloc, Controller, FVector
         // 이 메소드는 건물 건설 명령을 내릴 때 사용 됩니다.
         method OrderBuild takes integer inId, integer inUnitId, real inX, real inY returns boolean
             return IssueBuildOrderById(gameUnit, inId, inUnitId, inX, inY)
+        endmethod
+
+        method SetAnimation takes integer inIndex returns nothing
+            call SetUnitAnimationByIndex(gameUnit, inIndex)
         endmethod
 
 

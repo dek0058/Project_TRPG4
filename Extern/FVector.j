@@ -40,7 +40,6 @@ library FVector uses Alloc
             set x = inX
             set y = inY
             set z = inZ
-
             return this
         endmethod
 
