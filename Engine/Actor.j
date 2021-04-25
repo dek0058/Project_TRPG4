@@ -1,4 +1,4 @@
-library Actor uses Alloc, Controller, FVector
+library Actor uses Alloc, Controller, FVector, FColor
 
     //! runtextmacro DEFINE_STRUCT_TARRAY("Actor", "Actor")
 
@@ -15,11 +15,13 @@ library Actor uses Alloc, Controller, FVector
         // Unit Status
         private FVector position
         private real scale
+        private FColor color
 
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
             local thistype this = allocate()
             
             set position = FVector.create(inX, inY, inZ)
+            set color = FColor.create(255, 255, 255, 255)
 
             set gameUnit = CreateUnit(inPlayer, inId, position.x, position.y, inFace)
             call UnitAddAbility(gameUnit, FLYING_ABILITY)
@@ -67,7 +69,7 @@ library Actor uses Alloc, Controller, FVector
             return position.z
         endmethod
 
-        method SetScale takes float inValue returns nothing
+        method SetScale takes real inValue returns nothing
             if inValue <= 0 then
                 set scale = 0.01
             endif
@@ -111,8 +113,8 @@ library Actor uses Alloc, Controller, FVector
             return IssueNeutralTargetOrderById(inPlayer, inUnit, inUnitId, inTarget)
         endmethod
         // 이 메소드는 건물 건설 명령을 내릴 때 사용 됩니다.
-        method OrderBuild takes integer inId, integer inUnitId, real inX, real inY returns boolean
-            return IssueBuildOrderById(gameUnit, inId, inUnitId, inX, inY)
+        method OrderBuild takes integer inUnitId, real inX, real inY returns boolean
+            return IssueBuildOrderById(gameUnit, inUnitId, inX, inY)
         endmethod
 
         method SetAnimation takes integer inIndex returns nothing

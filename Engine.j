@@ -1,5 +1,6 @@
 // Extern Jass
 //! import "Extern\Alloc.j"
+//! import "Extern\Ascii.j"
 //! import "Extern\ErrorMessage.j"
 //! import "Extern\FColor.j"
 //! import "Extern\FMath.j"
