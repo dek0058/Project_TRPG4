@@ -1,9 +1,11 @@
-library Actor uses Alloc, Controller, FVector, FColor
+library Actor initializer Start uses Alloc, Controller, FVector, FColor
 
     //! runtextmacro DEFINE_STRUCT_TARRAY("Actor", "Actor")
 
     globals
         private constant integer FLYING_ABILITY = 'Amrf'
+
+        private TArrayActor WaitingActorList
     endglobals
 
     struct Actor extends array
@@ -35,13 +37,17 @@ library Actor uses Alloc, Controller, FVector, FColor
         endmethod
 
         method destroy takes nothing returns nothing
-            set controller = 0
-            call position.destroy()
+            //set controller = 0
+            
             call deallocate()
         endmethod
 
         method Value takes nothing returns unit
             return gameUnit
+        endmethod
+
+        method IsValid takes nothing returns boolean
+            return not (gameUnit == null)
         endmethod
 
         method SetPositionXY takes real inX, real inY returns nothing
@@ -121,6 +127,9 @@ library Actor uses Alloc, Controller, FVector, FColor
             call SetUnitAnimationByIndex(gameUnit, inIndex)
         endmethod
 
-
     endstruct
+
+    private function Start takes nothing returns nothing
+        set WaitingActorList = TArrayActor.create()
+    endfunction
 endlibrary
