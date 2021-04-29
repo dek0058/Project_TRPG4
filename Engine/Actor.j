@@ -20,26 +20,37 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private FColor color
 
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
-            local thistype this = allocate()
+            local thistype temp = 0
             
-            set position = FVector.create(inX, inY, inZ)
-            set color = FColor.create(255, 255, 255, 255)
+            if WaitingActorList.Size() > 0 then
+                set temp = WaitingActorList.Back()
+                call WaitingActorList.Pop()
+                call temp.position.Set(inX, inY, inZ)
+            else
+                set temp = allocate()
+                set temp.position = FVector.create(inX, inY, inZ)
+                set temp.color = FColor.create(255, 255, 255, 255)
+            endif
 
-            set gameUnit = CreateUnit(inPlayer, inId, position.x, position.y, inFace)
-            call UnitAddAbility(gameUnit, FLYING_ABILITY)
-            call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
-            call SetUnitFlyHeight(gameUnit, position.z, 0.00)
+            set temp.gameUnit = CreateUnit(inPlayer, inId, temp.position.x, temp.position.y, inFace)
+            call UnitAddAbility(temp.gameUnit, FLYING_ABILITY)
+            call UnitRemoveAbility(temp.gameUnit, FLYING_ABILITY)
+            call SetUnitFlyHeight(temp.gameUnit, temp.position.z, 0.00)
 
-            set controller = Controller.Get(inPlayer)
-            call controller.RegisterUnit(gameUnit)
+            set temp.controller = Controller.Get(inPlayer)
+            call temp.controller.RegisterUnit(temp.gameUnit)
 
-            return this
+            return temp
+        endmethod
+
+        private static method OnRemove takes nothing returns nothing
+            
         endmethod
 
         method destroy takes nothing returns nothing
-            //set controller = 0
-            
-            call deallocate()
+            call WaitingActorList.Push(this)
+            set gameUnit = null
+            set controller = 0
         endmethod
 
         method Value takes nothing returns unit

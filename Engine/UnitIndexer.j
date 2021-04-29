@@ -73,7 +73,7 @@ library UnitIndexer initializer Start uses Table
         set DeathTrigArr[inId] = null
     endfunction
 
-    /* 유닛이 맵상에 존재하지 않을 경우 Deindex 호출 */
+    // 유닛이 맵상에 존재하지 않을 경우 Deindex 호출
     private function OnGarbageCollector takes nothing returns nothing
         local integer id = HandleTable.integer[GetHandleId(GetExpiredTimer())]
         if GetUnitTypeId(UnitArr[id]) != 0 then
@@ -87,7 +87,7 @@ library UnitIndexer initializer Start uses Table
         call Deindex(id)
     endfunction
 
-    /* 유닛이 죽었을 경우 딜레이 타임을 초기화 시키고 가비지 컬렉션 재실행 */
+    // 유닛이 죽었을 경우 딜레이 타임을 초기화 시키고 가비지 컬렉션 재실행
     private function OnUnitDeathEvent takes nothing returns nothing
         local integer id = HandleTable.integer[GetHandleId(GetTriggeringTrigger())]
         set CGTimeArr[id] = 1.00
