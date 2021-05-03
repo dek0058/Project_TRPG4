@@ -10,7 +10,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         private player gamePlayer
         private UnitGroup unitGroup
 
-        //private string id
+        private string id
         //private string nickname
 
         static method create takes integer inIndex returns thistype
@@ -31,7 +31,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
                 return Controller[id]
             endif
-            debug call ThrowError(true, "Controller", "Get", this, "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
+            debug call ThrowError(true, "Controller", "Get", "Controller", Controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
             return -1
         endmethod
 

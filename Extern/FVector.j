@@ -77,7 +77,7 @@ library FVector uses Alloc
         //나눗셈
         method Div takes real inVal returns nothing
             if inVal == 0 then
-                debug call ThrowError(true, "FVector", "Div", this, "분모가 '0' 입니다.")
+                debug call ThrowError(true, "FVector", "Div", "FVector", this, "분모가 '0' 입니다.")
                 return
             endif
             set x = x / inVal
