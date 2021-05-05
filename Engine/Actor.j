@@ -6,7 +6,23 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private constant integer FLYING_ABILITY = 'Amrf'
 
         private TArrayActor WaitingActorList
+        private hashtable hs
+
+        private integer Count = 0
+        Actor array Actors
     endglobals
+
+    private function GetPointer takes integer inIndex returns integer
+        return LoadInteger(hs, 0, inIndex)
+    endfunction
+
+    private function SetPointer takes integer inIndex, integer inPointer returns nothing
+        call SaveInteger(hs, 0, inIndex, inPointer)
+    endfunction
+
+    private function DeletePointer takes integer inIndex returns nothing
+        call RemoveSavedInteger(hs, 0, inIndex)
+    endfunction
 
     struct Actor extends array
         implement Alloc
@@ -19,6 +35,16 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private real scale
         private FColor color
 
+        private FVector velocity
+
+        // trigger
+        private trigger GCTrigger
+        private triggeraction GCAction
+
+        static method AllocCount takes nothing returns integer
+            return Count
+        endmethod
+
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
             local thistype temp = 0
             
@@ -26,10 +52,18 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
                 set temp = WaitingActorList.Back()
                 call WaitingActorList.Pop()
                 call temp.position.Set(inX, inY, inZ)
+                call temp.color.Set(255, 255, 255,255)
+
+                call temp.velocity.Set(0.0, 0.0, 0.0)
             else
                 set temp = allocate()
                 set temp.position = FVector.create(inX, inY, inZ)
                 set temp.color = FColor.create(255, 255, 255, 255)
+
+                set temp.velocity = FVector.create(0.0, 0.0, 0.0)
+
+                set Actors[Count] = temp
+                set Count = Count + 1
             endif
 
             set temp.gameUnit = CreateUnit(inPlayer, inId, temp.position.x, temp.position.y, inFace)
@@ -37,14 +71,25 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call UnitRemoveAbility(temp.gameUnit, FLYING_ABILITY)
             call SetUnitFlyHeight(temp.gameUnit, temp.position.z, 0.00)
 
+            set temp.scale = 1.0
+
             set temp.controller = Controller.Get(inPlayer)
             call temp.controller.RegisterUnit(temp.gameUnit)
+            
+            set temp.GCTrigger = GetUnitRemoveTrigger(temp.gameUnit)
+            set temp.GCAction = TriggerAddAction(temp.GCTrigger, function thistype.OnRemove)
+            call SetPointer(UnitIndex(temp.gameUnit), temp)
 
             return temp
         endmethod
 
         private static method OnRemove takes nothing returns nothing
-            
+            local thistype this = GetTriggerIndex()
+
+            call DeletePointer(this)
+            call TriggerRemoveAction(GCTrigger, GCAction)
+            set GCAction = null
+            set GCTrigger = null
         endmethod
 
         method destroy takes nothing returns nothing
@@ -98,8 +143,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             return scale
         endmethod
 
-        
-
         method OrderPoint takes integer inId, real inX, real inY returns boolean
             return IssuePointOrderById(gameUnit, inId, inX, inY)
         endmethod
@@ -138,9 +181,20 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call SetUnitAnimationByIndex(gameUnit, inIndex)
         endmethod
 
+
+        // Extra
+        method SetVelocity takes real inX, real inY, real inZ returns nothing
+            call velocity.Set(inX, inY, inZ)
+        endmethod
+
+        method AddVelocity takes real inX, real inY, real inZ returns nothing
+            call velocity.Add(inX, inY, inZ)
+        endmethod
+
     endstruct
 
     private function Start takes nothing returns nothing
         set WaitingActorList = TArrayActor.create()
+        set hs = InitHashtable()
     endfunction
 endlibrary

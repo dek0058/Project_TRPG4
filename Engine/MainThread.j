@@ -62,21 +62,16 @@ library MainThread initializer Start uses ShotEvent
             call OnInitialize()
         elseif State == GAMESTATE_PLAYING then
             set GameTime = GameTime + DeltaTime
-            
-            
 
         elseif State == GAMESTATE_PAUSE then
 
         endif
         
-        loop
-            exitwhen ShotEventList.Size() == 0
-            set tmpShotEvent = ShotEventList.Back()
-            call tmpShotEvent.Execute()
-            call tmpShotEvent.destroy()
-            set tmpShotEvent = 0
-            call ShotEventList.Pop()
-        endloop
+        set tmpShotEvent = ShotEventList.Back()
+        call tmpShotEvent.Execute()
+        call tmpShotEvent.destroy()
+        set tmpShotEvent = 0
+        call ShotEventList.Pop()
     endfunction
 
     private function Start takes nothing returns nothing
