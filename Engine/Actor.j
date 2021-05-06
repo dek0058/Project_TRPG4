@@ -90,6 +90,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call TriggerRemoveAction(GCTrigger, GCAction)
             set GCAction = null
             set GCTrigger = null
+
+            call destroy()
         endmethod
 
         method destroy takes nothing returns nothing
