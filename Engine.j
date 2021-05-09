@@ -14,7 +14,9 @@
 
 // Engine Jass
 //! import "Engine\Actor.j"
+//! import "Engine\ActorThread.j"
 //! import "Engine\Controller.j"
+//! import "Engine\MainDefine.j"
 //! import "Engine\MainThread.j"
 //! import "Engine\ShotEvent.j"
 //! import "Engine\UnitGroup.j"

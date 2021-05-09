@@ -98,13 +98,17 @@ library FVector uses Alloc
 
         //정규화
         method Normalize takes nothing returns nothing
-            local real size = (x * x) + (y * y) + (z * z)
+            local real size = SquareRoot((x * x) + (y * y) + (z * z))
             if size == 1 or size == 0 then
                 return
             endif
             set x = x / size
             set y = y / size
             set z = z / size
+        endmethod
+
+        method ToString takes nothing returns string
+            return "X:[" + R2S(x) + "], Y:[" + R2S(y) + "] Z:[" + R2S(z) + "]"
         endmethod
 
         //내적

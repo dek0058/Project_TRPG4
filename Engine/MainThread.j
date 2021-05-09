@@ -1,8 +1,6 @@
-library MainThread initializer Start uses ShotEvent
+library MainThread initializer Start uses MainDefine, ShotEvent
 
     globals
-        constant real DeltaTime = 0.005
-
         private real GameTime = 0.00
         private integer State = 0
     endglobals
@@ -67,11 +65,13 @@ library MainThread initializer Start uses ShotEvent
 
         endif
         
-        set tmpShotEvent = ShotEventList.Back()
-        call tmpShotEvent.Execute()
-        call tmpShotEvent.destroy()
-        set tmpShotEvent = 0
-        call ShotEventList.Pop()
+        if ShotEventList.Size() > 0 then
+            set tmpShotEvent = ShotEventList.Back()
+            call tmpShotEvent.Execute()
+            call tmpShotEvent.destroy()
+            set tmpShotEvent = 0
+            call ShotEventList.Pop()
+        endif
     endfunction
 
     private function Start takes nothing returns nothing

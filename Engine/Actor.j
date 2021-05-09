@@ -4,6 +4,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
 
     globals
         private constant integer FLYING_ABILITY = 'Amrf'
+        private constant integer RoomCount = 24
 
         private TArrayActor WaitingActorList
         private hashtable hs
@@ -35,7 +36,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private real scale
         private FColor color
 
-        private FVector velocity
+        FVector velocity
+        FVector physForce
+        real mass
+        real imass
+        real locFriction
 
         // trigger
         private trigger GCTrigger
@@ -55,12 +60,14 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
                 call temp.color.Set(255, 255, 255,255)
 
                 call temp.velocity.Set(0.0, 0.0, 0.0)
+                call temp.physForce.Set(0.0, 0.0, 0.0)
             else
                 set temp = allocate()
                 set temp.position = FVector.create(inX, inY, inZ)
                 set temp.color = FColor.create(255, 255, 255, 255)
 
                 set temp.velocity = FVector.create(0.0, 0.0, 0.0)
+                set temp.physForce = FVector.create(0.0, 0.0, 0.0)
 
                 set Actors[Count] = temp
                 set Count = Count + 1
@@ -72,6 +79,9 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call SetUnitFlyHeight(temp.gameUnit, temp.position.z, 0.00)
 
             set temp.scale = 1.0
+            set temp.mass = 100.0
+            set temp.imass = 1.0 / temp.mass
+            set temp.locFriction = 1
 
             set temp.controller = Controller.Get(inPlayer)
             call temp.controller.RegisterUnit(temp.gameUnit)
@@ -124,12 +134,14 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call SetUnitY(gameUnit, position.y)
             call SetUnitFlyHeight(gameUnit, position.z, 0)
         endmethod
-
+        
         method GetPosition takes nothing returns FVector
+            call position.Set(GetUnitX(gameUnit), GetUnitY(gameUnit), GetUnitFlyHeight(gameUnit))
             return position
         endmethod
 
         method GetPositionZ takes nothing returns real
+            set position.z = GetUnitFlyHeight(gameUnit)
             return position.z
         endmethod
 
@@ -183,15 +195,16 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             call SetUnitAnimationByIndex(gameUnit, inIndex)
         endmethod
 
+    endstruct
 
-        // Extra
-        method SetVelocity takes real inX, real inY, real inZ returns nothing
-            call velocity.Set(inX, inY, inZ)
-        endmethod
+    private struct Room
 
-        method AddVelocity takes real inX, real inY, real inZ returns nothing
-            call velocity.Add(inX, inY, inZ)
-        endmethod
+
+    endstruct
+
+    struct ActorManager
+        
+        
 
     endstruct
 
