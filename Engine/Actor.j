@@ -4,7 +4,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
 
     globals
         private constant integer FLYING_ABILITY = 'Amrf'
-        private constant integer RoomCount = 24
 
         private TArrayActor WaitingActorList
         private hashtable hs
@@ -194,17 +193,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         method SetAnimation takes integer inIndex returns nothing
             call SetUnitAnimationByIndex(gameUnit, inIndex)
         endmethod
-
-    endstruct
-
-    private struct Room
-
-
-    endstruct
-
-    struct ActorManager
-        
-        
 
     endstruct
 

@@ -2,9 +2,30 @@ library ActorThread initializer Start uses MainThread, Actor, FMath
 
     globals
         private constant integer MaxLoop = 24
+        private constant integer RoomCount = 24
         
         private integer Index = 0
     endglobals
+
+
+    private struct Room
+
+        
+        static method create takes nothing returns nothing
+
+        endmethod
+
+
+        private method Update takes nothing returns nothing
+
+        endmethod
+    endstruct
+
+    
+
+
+
+
 
     function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
