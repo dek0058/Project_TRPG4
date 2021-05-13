@@ -77,12 +77,12 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         static method Create takes integer inStart returns nothing
             local thistype this = allocate()
             
-            set start = inStart
-
-            set tick = FTick.Start(this, DeltaTime, true, function thistype.Update)
-
             set Rooms[RoomCount] = this
             set RoomCount = RoomCount + 1
+
+            set start = inStart
+            
+            set tick = FTick.Start(this, DeltaTime, true, function thistype.Update)
         endmethod
 
         private static method Update takes nothing returns nothing
@@ -91,7 +91,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             local integer totalCapacity = RoomCount * Capacity
             local integer i = 0
             local integer iter
-            call BJDebugMsg("테스트")
+
             loop
                 exitwhen i == Capacity
                 set i = i + 1
@@ -119,14 +119,12 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endglobals
 
     private function Once takes nothing returns nothing
-        call BJDebugMsg("테스트 Test a")
         call Room.Create(0)
-        call BJDebugMsg("테스트 Test b")
 
-        //call TriggerRemoveAction(OnceTrigger, OnceAction)
-        //set OnceAction = null
-        //call DestroyTrigger(OnceTrigger)
-        //set OnceTrigger = null
+        call TriggerRemoveAction(OnceTrigger, OnceAction)
+        set OnceAction = null
+        call DestroyTrigger(OnceTrigger)
+        set OnceTrigger = null
     endfunction
 
     private function Start takes nothing returns nothing

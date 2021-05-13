@@ -28,6 +28,7 @@ library FTick initializer Start uses Alloc, Table, TArray
 
             set temp.pointer = inPointer
             set temp.deltaTime = inDeletaTime
+
             return temp
         endmethod
 
@@ -44,6 +45,7 @@ library FTick initializer Start uses Alloc, Table, TArray
 
         static method Start takes integer inPointer, real inDeltaTime, boolean inLoop, code inCallback returns thistype
             local thistype this = create(inPointer, inDeltaTime)
+
             call TimerStart(tick, deltaTime, inLoop, inCallback)
             return this
         endmethod
@@ -58,6 +60,7 @@ library FTick initializer Start uses Alloc, Table, TArray
     endstruct
 
     private function Start takes nothing returns nothing
+        set TickTable = Table.create()
         set WaitingTickList = TArrayTick.create()
     endfunction
 endlibrary

@@ -51,7 +51,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
 
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
             local thistype temp = 0
-            
+
             if WaitingActorList.Size() > 0 then
                 set temp = WaitingActorList.Back()
                 call WaitingActorList.Pop()
@@ -71,6 +71,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
                 set Actors[Count] = temp
                 set Count = Count + 1
             endif
+
+            
 
             set temp.gameUnit = CreateUnit(inPlayer, inId, temp.position.x, temp.position.y, inFace)
             call UnitAddAbility(temp.gameUnit, FLYING_ABILITY)
