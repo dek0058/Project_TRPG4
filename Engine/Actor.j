@@ -167,15 +167,15 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         endmethod
 
         //Extra Order
-        // ÀÌ ¸Ş¼Òµå´Â ¾ÆÀÌÅÛÀ» ÇØ´ç À§Ä¡¿¡ ¹ö¸®´Âµ¥ »ç¿ë µË´Ï´Ù.
+        // ì´ ë©”ì†Œë“œëŠ” ì•„ì´í…œì„ í•´ë‹¹ ìœ„ì¹˜ì— ë²„ë¦¬ëŠ”ë° ì‚¬ìš© ë©ë‹ˆë‹¤.
         method OrderInstant takes integer inId, real inX, real inY, widget inItem returns boolean
             return IssueInstantPointOrderById(gameUnit, inId, inX, inY, inItem)
         endmethod
-        // ÀÌ ¸Ş¼Òµå´Â ¾ÆÀÌÅÛÀ» ´Ù¸¥ À¯´Ö¿¡°Ô Àü´ŞÇÏ´Âµ¥ »ç¿ë µË´Ï´Ù.
+        // ì´ ë©”ì†Œë“œëŠ” ì•„ì´í…œì„ ë‹¤ë¥¸ ìœ ë‹›ì—ê²Œ ì „ë‹¬í•˜ëŠ”ë° ì‚¬ìš© ë©ë‹ˆë‹¤.
         method OrderInstantTarget takes integer inId, widget inTarget, widget inItem returns boolean
             return IssueInstantTargetOrderById(gameUnit, inId, inTarget, inItem)
         endmethod
-        // ÀÌ ¸Ş¼ÒµåµéÀº ¿µ¿õÀ» ±¸¸ÅÇÑ´Ù´Âµ¥ »ç¿ë ÇÑ´Ù°í´Â ÇÕ´Ï´Ù...
+        // ì´ ë©”ì†Œë“œë“¤ì€ ì˜ì›…ì„ êµ¬ë§¤í•œë‹¤ëŠ”ë° ì‚¬ìš© í•œë‹¤ê³ ëŠ” í•©ë‹ˆë‹¤...
         method OrderNeutral takes player inPlayer, unit inUnit, integer inUnitId returns boolean
             return IssueNeutralImmediateOrderById(inPlayer, inUnit, inUnitId)
         endmethod
@@ -185,7 +185,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         method OrderNeutralTarget takes player inPlayer, unit inUnit, integer inUnitId, widget inTarget returns boolean
             return IssueNeutralTargetOrderById(inPlayer, inUnit, inUnitId, inTarget)
         endmethod
-        // ÀÌ ¸Ş¼Òµå´Â °Ç¹° °Ç¼³ ¸í·ÉÀ» ³»¸± ¶§ »ç¿ë µË´Ï´Ù.
+        // ì´ ë©”ì†Œë“œëŠ” ê±´ë¬¼ ê±´ì„¤ ëª…ë ¹ì„ ë‚´ë¦´ ë•Œ ì‚¬ìš© ë©ë‹ˆë‹¤.
         method OrderBuild takes integer inUnitId, real inX, real inY returns boolean
             return IssueBuildOrderById(gameUnit, inUnitId, inX, inY)
         endmethod

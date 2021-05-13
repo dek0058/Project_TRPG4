@@ -1,30 +1,13 @@
-library ActorThread initializer Start uses MainThread, Actor, FMath
+library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     globals
-        private constant integer MaxLoop = 24
-        private constant integer RoomCount = 24
+        private constant integer Capacity = 12
         
         private integer Index = 0
+
+        private Room array Rooms
+        private integer RoomCount = 0
     endglobals
-
-
-    private struct Room
-
-        
-        static method create takes nothing returns nothing
-
-        endmethod
-
-
-        private method Update takes nothing returns nothing
-
-        endmethod
-    endstruct
-
-    
-
-
-
 
 
     function PhysForce takes Actor inActor returns nothing
@@ -85,38 +68,70 @@ library ActorThread initializer Start uses MainThread, Actor, FMath
     endfunction
 
 
-    private function Update takes nothing returns nothing
-        local integer i = 0
-        local integer end = -1
+    struct Room extends array
+        implement GlobalAlloc
 
-        loop
-            exitwhen i == MaxLoop or end == Index
-            set i = i + 1
-            if Index >= Actor.AllocCount() then
-                set Index = 0
-            endif
+        private integer start
+        private FTick tick
+        
+        static method Create takes integer inStart returns nothing
+            local thistype this = allocate()
+            
+            set start = inStart
 
-            if end == -1 then
-                set end = Index
-            endif
+            set tick = FTick.Start(this, DeltaTime, true, function thistype.Update)
 
-            if Actors[Index].IsValid() then
-                call PhysForce(Actors[Index])
-                call PhysVelocity(Actors[Index])
-                call Actors[Index].physForce.Set(0.0, 0.0, 0.0)
-            endif
+            set Rooms[RoomCount] = this
+            set RoomCount = RoomCount + 1
+        endmethod
 
-            set Index = Index + 1
-            if Index >= Actor.AllocCount() then
-                set Index = 0
+        private static method Update takes nothing returns nothing
+            local thistype this = FTick.GetTick()
+            local integer count = Actor.AllocCount()
+            local integer totalCapacity = RoomCount * Capacity
+            local integer i = 0
+            local integer iter
+            call BJDebugMsg("테스트")
+            loop
+                exitwhen i == Capacity
+                set i = i + 1
+                set iter = start + (i - 1)
+
+                exitwhen iter >= count
+                
+                if Actors[iter].IsValid() then
+                    call PhysForce(Actors[iter])
+                    call PhysVelocity(Actors[iter])
+                    call Actors[iter].physForce.Set(0.0, 0.0, 0.0)
+                endif
+            endloop
+
+            if count > totalCapacity then
+                call Create(totalCapacity)
             endif
-        endloop
+        endmethod
+    endstruct
+
+    
+    globals
+        private trigger OnceTrigger
+        private triggeraction OnceAction
+    endglobals
+
+    private function Once takes nothing returns nothing
+        call BJDebugMsg("테스트 Test a")
+        call Room.Create(0)
+        call BJDebugMsg("테스트 Test b")
+
+        //call TriggerRemoveAction(OnceTrigger, OnceAction)
+        //set OnceAction = null
+        //call DestroyTrigger(OnceTrigger)
+        //set OnceTrigger = null
     endfunction
 
     private function Start takes nothing returns nothing
-        local trigger trig = CreateTrigger()
-        call TriggerAddAction(trig, function Update)
-        call TriggerRegisterTimerEvent(trig, DeltaTime, true)
-        set trig = null
+        set OnceTrigger = CreateTrigger()
+        set OnceAction = TriggerAddAction(OnceTrigger, function Once)
+        call TriggerRegisterTimerEvent(OnceTrigger, 1.0, false)
     endfunction
 endlibrary

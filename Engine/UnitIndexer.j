@@ -3,13 +3,13 @@ library UnitIndexer initializer Start uses Table
     globals
         private Table HandleTable
         
-        // ¸Ê »óÀÇ À¯´Ö °³¼ö
+        // ë§µ ìƒì˜ ìœ ë‹› ê°œìˆ˜
         private integer UnitCount = 0
         
-        // »ı¼ºµÈ ÇöÀç À¯´ÖµéÀÇ ÃÖ´ë °³¼ö
+        // ìƒì„±ëœ í˜„ì¬ ìœ ë‹›ë“¤ì˜ ìµœëŒ€ ê°œìˆ˜
         private integer UnitPoolCount = 0
         
-        // À¯´Ö ID ÀÎµ¦½º ÁıÇÕ
+        // ìœ ë‹› ID ì¸ë±ìŠ¤ ì§‘í•©
         private integer UnitIndices = 0
 
         private integer TriggerIndex = 0
@@ -45,7 +45,7 @@ library UnitIndexer initializer Start uses Table
         call TriggerExecute(RemoveTrigArr[inId])
         set TriggerIndex = temp
 
-        // Æ®¸®°Å Á¦°Å
+        // íŠ¸ë¦¬ê±° ì œê±°
         call DestroyTrigger(RemoveTrigArr[inId])
         set RemoveTrigArr[inId] = null
 
@@ -58,22 +58,22 @@ library UnitIndexer initializer Start uses Table
     endfunction
 
     private function UnregisterReferance takes integer inId returns nothing
-        // ÇÚµé Å×ÀÌºí Á¦°Å
+        // í•¸ë“¤ í…Œì´ë¸” ì œê±°
         call HandleTable.remove(GetHandleId(CGTimerArr[inId]))
         call HandleTable.remove(GetHandleId(DeathTrigArr[inId]))
         
-        // Å¸ÀÌ¸Ó Á¦°Å
+        // íƒ€ì´ë¨¸ ì œê±°
         call DestroyTimer(CGTimerArr[inId])
         set CGTimerArr[inId] = null
 
-        // Æ®¸®°Å Á¦°Å
+        // íŠ¸ë¦¬ê±° ì œê±°
         call TriggerRemoveAction(DeathTrigArr[inId], DeathTrigActArr[inId])
         set DeathTrigActArr[inId] = null
         call DestroyTrigger(DeathTrigArr[inId])
         set DeathTrigArr[inId] = null
     endfunction
 
-    // À¯´ÖÀÌ ¸Ê»ó¿¡ Á¸ÀçÇÏÁö ¾ÊÀ» °æ¿ì Deindex È£Ãâ
+    // ìœ ë‹›ì´ ë§µìƒì— ì¡´ì¬í•˜ì§€ ì•Šì„ ê²½ìš° Deindex í˜¸ì¶œ
     private function OnGarbageCollector takes nothing returns nothing
         local integer id = HandleTable.integer[GetHandleId(GetExpiredTimer())]
         if GetUnitTypeId(UnitArr[id]) != 0 then
@@ -87,7 +87,7 @@ library UnitIndexer initializer Start uses Table
         call Deindex(id)
     endfunction
 
-    // À¯´ÖÀÌ Á×¾úÀ» °æ¿ì µô·¹ÀÌ Å¸ÀÓÀ» ÃÊ±âÈ­ ½ÃÅ°°í °¡ºñÁö ÄÃ·º¼Ç Àç½ÇÇà
+    // ìœ ë‹›ì´ ì£½ì—ˆì„ ê²½ìš° ë”œë ˆì´ íƒ€ì„ì„ ì´ˆê¸°í™” ì‹œí‚¤ê³  ê°€ë¹„ì§€ ì»¬ë ‰ì…˜ ì¬ì‹¤í–‰
     private function OnUnitDeathEvent takes nothing returns nothing
         local integer id = HandleTable.integer[GetHandleId(GetTriggeringTrigger())]
         set CGTimeArr[id] = 1.00
@@ -150,7 +150,7 @@ library UnitIndexer initializer Start uses Table
     endfunction
 
 
-    // [Tooltip] ¸Ê ÃÊ±âÈ­½Ã ÀÌ¹Ì »ı¼ºµÈ À¯´Öµé¿¡ ÇÑÇØ¼­ Æ®¸®°Å ¹ßµ¿
+    // [Tooltip] ë§µ ì´ˆê¸°í™”ì‹œ ì´ë¯¸ ìƒì„±ëœ ìœ ë‹›ë“¤ì— í•œí•´ì„œ íŠ¸ë¦¬ê±° ë°œë™
     private function OnAllocateCondition takes nothing returns boolean
         return not HandleTable.has(GetHandleId(GetTriggerUnit()))
     endfunction
@@ -168,7 +168,7 @@ library UnitIndexer initializer Start uses Table
     endfunction
     // end
 
-    // [Tooltip] À¯´Ö »ı¼º½Ã Æ®¸®°Å ¹ßµ¿
+    // [Tooltip] ìœ ë‹› ìƒì„±ì‹œ íŠ¸ë¦¬ê±° ë°œë™
     private function OnEnumPreAllocate takes nothing returns boolean
         call UnitIndex(GetFilterUnit())
         return false

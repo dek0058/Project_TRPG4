@@ -31,7 +31,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
                 return Controller[id]
             endif
-            debug call ThrowError(true, "Controller", "Get", "Controller", Controller[id], "Player Id(" + I2S(id) + ")°¡ Àß¸øµÇ¾ú½À´Ï´Ù.")
+            debug call ThrowError(true, "Controller", "Get", "Controller", Controller[id], "Player Id(" + I2S(id) + ")ê°€ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤.")
             return -1
         endmethod
 
