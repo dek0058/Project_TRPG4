@@ -35,18 +35,19 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private real scale
         private FColor color
 
+        // Physical
         FVector velocity
         FVector physForce
         real mass
         real imass
         real locFriction
 
-        // trigger
-        private trigger GCTrigger
-        private triggeraction GCAction
-
         static method AllocCount takes nothing returns integer
             return Count
+        endmethod
+
+        static method operator [] takes unit inUnit returns thistype
+            return GetPointer(GetHandleId(inUnit))
         endmethod
 
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
@@ -72,8 +73,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
                 set Count = Count + 1
             endif
 
-            
-
             set temp.gameUnit = CreateUnit(inPlayer, inId, temp.position.x, temp.position.y, inFace)
             call UnitAddAbility(temp.gameUnit, FLYING_ABILITY)
             call UnitRemoveAbility(temp.gameUnit, FLYING_ABILITY)
@@ -87,22 +86,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             set temp.controller = Controller.Get(inPlayer)
             call temp.controller.RegisterUnit(temp.gameUnit)
             
-            set temp.GCTrigger = GetUnitRemoveTrigger(temp.gameUnit)
-            set temp.GCAction = TriggerAddAction(temp.GCTrigger, function thistype.OnRemove)
-            call SetPointer(UnitIndex(temp.gameUnit), temp)
+            call SetPointer(GetHandleId(temp.gameUnit), temp)
+
+            // Extern Setting
 
             return temp
-        endmethod
-
-        private static method OnRemove takes nothing returns nothing
-            local thistype this = GetTriggerIndex()
-
-            call DeletePointer(this)
-            call TriggerRemoveAction(GCTrigger, GCAction)
-            set GCAction = null
-            set GCTrigger = null
-
-            call destroy()
         endmethod
 
         method destroy takes nothing returns nothing
@@ -116,6 +104,10 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         endmethod
 
         method IsValid takes nothing returns boolean
+            if gameUnit != null and GetUnitTypeId(gameUnit) == 0 then
+                call destroy()
+            endif
+
             return not (gameUnit == null)
         endmethod
 
@@ -169,15 +161,15 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         endmethod
 
         //Extra Order
-        // ì´ ë©”ì†Œë“œëŠ” ì•„ì´í…œì„ í•´ë‹¹ ìœ„ì¹˜ì— ë²„ë¦¬ëŠ”ë° ì‚¬ìš© ë©ë‹ˆë‹¤.
+        // ?´ ë©”ì†Œ?“œ?Š” ?•„?´?…œ?„ ?•´?‹¹ ?œ„ì¹˜ì— ë²„ë¦¬?Š”?° ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderInstant takes integer inId, real inX, real inY, widget inItem returns boolean
             return IssueInstantPointOrderById(gameUnit, inId, inX, inY, inItem)
         endmethod
-        // ì´ ë©”ì†Œë“œëŠ” ì•„ì´í…œì„ ë‹¤ë¥¸ ìœ ë‹›ì—ê²Œ ì „ë‹¬í•˜ëŠ”ë° ì‚¬ìš© ë©ë‹ˆë‹¤.
+        // ?´ ë©”ì†Œ?“œ?Š” ?•„?´?…œ?„ ?‹¤ë¥? ?œ ?‹›?—ê²? ? „?‹¬?•˜?Š”?° ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderInstantTarget takes integer inId, widget inTarget, widget inItem returns boolean
             return IssueInstantTargetOrderById(gameUnit, inId, inTarget, inItem)
         endmethod
-        // ì´ ë©”ì†Œë“œë“¤ì€ ì˜ì›…ì„ êµ¬ë§¤í•œë‹¤ëŠ”ë° ì‚¬ìš© í•œë‹¤ê³ ëŠ” í•©ë‹ˆë‹¤...
+        // ?´ ë©”ì†Œ?“œ?“¤??? ?˜?›…?„ êµ¬ë§¤?•œ?‹¤?Š”?° ?‚¬?š© ?•œ?‹¤ê³ ëŠ” ?•©?‹ˆ?‹¤...
         method OrderNeutral takes player inPlayer, unit inUnit, integer inUnitId returns boolean
             return IssueNeutralImmediateOrderById(inPlayer, inUnit, inUnitId)
         endmethod
@@ -187,7 +179,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         method OrderNeutralTarget takes player inPlayer, unit inUnit, integer inUnitId, widget inTarget returns boolean
             return IssueNeutralTargetOrderById(inPlayer, inUnit, inUnitId, inTarget)
         endmethod
-        // ì´ ë©”ì†Œë“œëŠ” ê±´ë¬¼ ê±´ì„¤ ëª…ë ¹ì„ ë‚´ë¦´ ë•Œ ì‚¬ìš© ë©ë‹ˆë‹¤.
+        // ?´ ë©”ì†Œ?“œ?Š” ê±´ë¬¼ ê±´ì„¤ ëª…ë ¹?„ ?‚´ë¦? ?•Œ ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderBuild takes integer inUnitId, real inX, real inY returns boolean
             return IssueBuildOrderById(gameUnit, inUnitId, inX, inY)
         endmethod

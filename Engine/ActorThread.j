@@ -1,10 +1,8 @@
 library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     globals
-        private constant integer Capacity = 12
+        private constant integer Capacity = 96
         
-        private integer Index = 0
-
         private Room array Rooms
         private integer RoomCount = 0
     endglobals
@@ -64,16 +62,16 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
             call inActor.physForce.Add(x, y, z)
         endif
-        call PhysForce(Actors[Index])
+        call PhysForce(inActor)
     endfunction
 
 
     struct Room extends array
-        implement GlobalAlloc
+        implement Alloc
 
         private integer start
         private FTick tick
-        
+
         static method Create takes integer inStart returns nothing
             local thistype this = allocate()
             
@@ -86,7 +84,8 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         endmethod
 
         private static method Update takes nothing returns nothing
-            local thistype this = FTick.GetTick()
+            local FTick expiredTick = FTick.GetTick()
+            local thistype this = expiredTick.pointer
             local integer count = Actor.AllocCount()
             local integer totalCapacity = RoomCount * Capacity
             local integer i = 0
@@ -96,7 +95,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
                 exitwhen i == Capacity
                 set i = i + 1
                 set iter = start + (i - 1)
-
+                
                 exitwhen iter >= count
                 
                 if Actors[iter].IsValid() then
@@ -111,8 +110,8 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             endif
         endmethod
     endstruct
-
     
+
     globals
         private trigger OnceTrigger
         private triggeraction OnceAction

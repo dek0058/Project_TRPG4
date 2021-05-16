@@ -20,7 +20,6 @@
 //! import "Engine\MainThread.j"
 //! import "Engine\ShotEvent.j"
 //! import "Engine\UnitGroup.j"
-//! import "Engine\UnitIndexer.j"
 
 // Path
 //! import "Path\PAbility.j"
