@@ -2,11 +2,17 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     globals
         private constant integer Capacity = 96
-        
+        private constant real ApproximatelyZero = 0.001
+
         private Room array Rooms
         private integer RoomCount = 0
     endglobals
 
+    //! textmacro IsNearZero takes Value
+    if ($Value$ >= ApproximatelyZero) or ($Value$ <= ApproximatelyZero) then
+        set $Value$ = 0
+    endif
+    //! endtextmacro
 
     function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
@@ -20,10 +26,13 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         if inActor.physForce.Squared() > 0 then
             set x = (inActor.physForce.x * inActor.imass) * (DeltaTime / 2)
             set y = (inActor.physForce.y * inActor.imass) * (DeltaTime / 2)
+            //! runtextmacro IsNearZero("x")
+            //! runtextmacro IsNearZero("y")
         endif
         
         if not NearToFloor(GetUnitFlyHeight(inActor.Value())) then
             set z = ((inActor.physForce.z * inActor.imass) + Gravity) * (DeltaTime / 2)
+            //! runtextmacro IsNearZero("z")
         endif
         
         call inActor.velocity.Add(x, y, z)
@@ -50,15 +59,24 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         set x = pos.x + (inActor.velocity.x * DeltaTime)
         set y = pos.y + (inActor.velocity.y * DeltaTime)
         set z = pos.z + (inActor.velocity.z * DeltaTime)
+
+        //! runtextmacro IsNearZero("x")
+        //! runtextmacro IsNearZero("y")
+        //! runtextmacro IsNearZero("z")
+
         call inActor.SetPositionXYZ(x, y, z)
 
-        set size = inActor.velocity.Size()
-        if size != 0 then
+        set size = inActor.velocity.Squared()
+        if size > 0 then
             set frictionMag = inActor.locFriction * (inActor.mass * -Gravity) * -1
             
             set x = (inActor.velocity.x / size) * frictionMag
             set y = (inActor.velocity.y / size) * frictionMag
             set z = (inActor.velocity.z / size) * frictionMag
+
+            //! runtextmacro IsNearZero("x")
+            //! runtextmacro IsNearZero("y")
+            //! runtextmacro IsNearZero("z")
 
             call inActor.physForce.Add(x, y, z)
         endif

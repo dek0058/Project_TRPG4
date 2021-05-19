@@ -1,7 +1,7 @@
 library Controller initializer Start uses UnitGroup, ErrorMessage
     
     globals
-        private Controller array AAA
+        private Controller array controller
     endglobals
     
     struct Controller extends array
@@ -12,6 +12,16 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
         private string id
         //private string nickname
+
+
+        static method operator [] takes player inPlayer returns thistype
+            local integer id = GetPlayerId(inPlayer)
+            if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
+                return controller[id]
+            endif
+            debug call ThrowError(true, "Controller", "Get", "Controller", controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
+            return -1
+        endmethod
 
         static method create takes integer inIndex returns thistype
             local thistype this = allocate()
@@ -26,17 +36,16 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             return gamePlayer
         endmethod
 
-        static method Get takes player inPlayer returns thistype
-            local integer id = GetPlayerId(inPlayer)
-            if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
-                return Controller[id]
-            endif
-            debug call ThrowError(true, "Controller", "Get", "Controller", Controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
-            return -1
+        method GetUnitGroup takes nothing returns UnitGroup
+            return unitGroup
         endmethod
 
         method RegisterUnit takes unit inUnit returns nothing
             call unitGroup.Add(inUnit)
+        endmethod
+
+        method UnregisterUnit takes unit inUnit returns nothing
+
         endmethod
 
         method ExecuteUnitGroup takes code inCallback returns nothing
@@ -51,7 +60,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
         loop
             exitwhen i > bj_MAX_PLAYER_SLOTS
-            //set Controller[i] = Controller.create(i)
+            set controller[i] = Controller.create(i)
             set i = i + 1
         endloop
     endfunction

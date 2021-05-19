@@ -2,6 +2,7 @@ library UnitGroup uses Alloc
 
     globals
         private integer TmpUnitGroup
+
     endglobals
 
     struct UnitGroup extends array
