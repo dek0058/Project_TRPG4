@@ -19,10 +19,19 @@ library MainDefine initializer Start
         return GetLocationZ(DynamicLocation) + MinHeight
     endfunction
 
-    function IsPathable takes real inX, real inY, pathingtype inType returns boolean
-        return IsTerrainPathable(inX, inY, inType)
+    // Pathable Functions
+    function PathableWalking takes real inX, real inY returns boolean
+        return IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)
     endfunction
 
+    function PathableWater takes real inX, real inY returns boolean
+        return not IsTerrainPathable(inX, inY, PATHING_TYPE_FLOATABILITY)
+    endfunction
+
+    function PathableNothing takes real inX, real inY returns boolean
+        return (not IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)) and (not IsTerrainPathable(inX, inY, PATHING_TYPE_FLYABILITY)) 
+    endfunction
+    
 
     private function Start takes nothing returns nothing
         
