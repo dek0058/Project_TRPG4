@@ -3,86 +3,148 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     globals
         private constant integer Capacity = 96
         private constant real ApproximatelyZero = 0.001
+        private constant real HalfDeltaTime = (DeltaTime / 2.0)
 
         private Room array Rooms
         private integer RoomCount = 0
+
+        private real LocalVelocityX = 0.0
+        private real LocalVelocityY = 0.0
+        private real LocalVelocityZ = 0.0
+        private real LocalLocationZ = 0.0
     endglobals
 
     //! textmacro IsNearZero takes Value
-    if ($Value$ >= ApproximatelyZero) or ($Value$ <= ApproximatelyZero) then
+    if ($Value$ > 0 and $Value$ <= ApproximatelyZero) or ($Value$ < 0 and $Value$ >= -ApproximatelyZero) then
         set $Value$ = 0
     endif
     //! endtextmacro
 
-    function PhysForce takes Actor inActor returns nothing
+    
+
+    private function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
         local real y = 0.0
         local real z = 0.0
-        
+
         if inActor.imass == 0 then
             return
         endif
 
-        if inActor.physForce.Squared() > 0 then
-            set x = (inActor.physForce.x * inActor.imass) * (DeltaTime / 2)
-            set y = (inActor.physForce.y * inActor.imass) * (DeltaTime / 2)
+        if inActor.forceX != 0 then
+            set x = (inActor.forceX * inActor.imass) * HalfDeltaTime
             //! runtextmacro IsNearZero("x")
+            set inActor.velocityX = inActor.velocityX + x
+        endif
+
+        if inActor.forceY != 0 then
+            set y = (inActor.forceY * inActor.imass) * HalfDeltaTime
             //! runtextmacro IsNearZero("y")
+            set inActor.velocityY = inActor.velocityY + y
         endif
-        
-        if not NearToFloor(GetUnitFlyHeight(inActor.Value())) then
-            set z = ((inActor.physForce.z * inActor.imass) + Gravity) * (DeltaTime / 2)
-            //! runtextmacro IsNearZero("z")
-        endif
-        
-        call inActor.velocity.Add(x, y, z)
+
+        set z = ((inActor.forceZ * inActor.imass) + Gravity) * HalfDeltaTime
+        set inActor.velocityZ = inActor.velocityZ + z
     endfunction
 
-    function PhysVelocity takes Actor inActor returns nothing
-        local real x = 0
-        local real y = 0
-        local real z = 0
-        local real size = inActor.velocity.Squared()
-        local FVector pos
-        local real frictionMag = 0
+    private function PhysVelocity takes Actor inActor returns nothing
+        local real x
+        local real y
+        local real z
+        local real frictionMag
+        local real size
 
-        if size == 0 then
-            return
+
+        if IsPathable(inActor.X, inActor.Y, PATHING_TYPE_FLOATABILITY) then // 물
+            call BJDebugMsg(R2S(LocalLocationZ))
         endif
-
-        if inActor.velocity.z <= 0 and NearToFloor(GetUnitFlyHeight(inActor.Value())) then
-            set inActor.velocity.z = 0.0
-        endif
-
-        set pos = inActor.GetPosition()
         
-        set x = pos.x + (inActor.velocity.x * DeltaTime)
-        set y = pos.y + (inActor.velocity.y * DeltaTime)
-        set z = pos.z + (inActor.velocity.z * DeltaTime)
+        
+        // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
+        if inActor.velocityZ < 0 and inActor.Z <= LocalLocationZ then
+            set inActor.velocityZ = 0.0
+        endif
 
-        //! runtextmacro IsNearZero("x")
-        //! runtextmacro IsNearZero("y")
-        //! runtextmacro IsNearZero("z")
+        if inActor.velocityX != 0 then
+            set x = inActor.velocityX * DeltaTime
+            //! runtextmacro IsNearZero("x")
+            set LocalVelocityX = x
+        endif
 
-        call inActor.SetPositionXYZ(x, y, z)
+        if inActor.velocityY != 0 then
+            set y = inActor.velocityY * DeltaTime
+            //! runtextmacro IsNearZero("y")
+            set LocalVelocityY = y
+        endif
 
-        set size = inActor.velocity.Squared()
-        if size > 0 then
-            set frictionMag = inActor.locFriction * (inActor.mass * -Gravity) * -1
+        if inActor.velocityZ != 0 then
+            set z = inActor.velocityZ * DeltaTime
+            //! runtextmacro IsNearZero("z")
+            set LocalVelocityZ = z
+        endif
+
+        if inActor.mass > 0 then
+            set x = inActor.velocityX
+            set y = inActor.velocityY
+            set z = inActor.velocityZ
             
-            set x = (inActor.velocity.x / size) * frictionMag
-            set y = (inActor.velocity.y / size) * frictionMag
-            set z = (inActor.velocity.z / size) * frictionMag
+            set frictionMag = inActor.locFriction * (inActor.mass * -Gravity) * -1
+            set size = (x * x) + (y * y)
+            if x != 0 then
+                set x = (inActor.velocityX / SquareRoot(size)) * frictionMag                
+                //! runtextmacro IsNearZero("x")
+                set inActor.forceX = inActor.forceX + x
 
-            //! runtextmacro IsNearZero("x")
-            //! runtextmacro IsNearZero("y")
-            //! runtextmacro IsNearZero("z")
+                set x = (inActor.forceX * inActor.imass) * HalfDeltaTime
+                if (inActor.velocityX > 0 and (inActor.velocityX + x) < 0) or (inActor.velocityX < 0 and (inActor.velocityX + x) > 0) then
+                    set inActor.forceX = 0
+                    set inActor.velocityX = 0
+                endif
+            endif
 
-            call inActor.physForce.Add(x, y, z)
+            if y != 0 then
+                set y = (inActor.velocityY / SquareRoot(size)) * frictionMag
+                //! runtextmacro IsNearZero("y")
+                set inActor.forceY = inActor.forceY + y
+
+                set y = (inActor.forceY * inActor.imass) * HalfDeltaTime
+                if (inActor.velocityY > 0 and (inActor.velocityY + y) < 0) or (inActor.velocityY < 0 and (inActor.velocityY + y) > 0) then
+                    set inActor.forceY = 0
+                    set inActor.velocityY = 0
+                endif
+            endif
+
+            if z != 0 then
+                set z = (inActor.velocityZ / SquareRoot(z * z)) * frictionMag
+                //! runtextmacro IsNearZero("z")
+                set inActor.forceZ = inActor.forceZ + z
+
+                set z = (inActor.forceZ * inActor.imass) * HalfDeltaTime
+                if (inActor.velocityZ > 0 and (inActor.velocityZ + z) < 0) or (inActor.velocityZ < 0 and (inActor.velocityZ + z) > 0) then
+                    set inActor.forceZ = 0
+                    set inActor.velocityZ = 0
+                endif
+            endif
         endif
-        call PhysForce(inActor)
     endfunction
 
+    private function Run takes Actor inActor returns nothing
+        set inActor.forceX = 0.0
+        set inActor.forceY = 0.0
+        set inActor.forceZ = 0.0
+
+        if LocalVelocityX != 0.0 then
+            set inActor.X = inActor.X + LocalVelocityX
+        endif
+
+        if LocalVelocityY != 0.0 then
+            set inActor.Y = inActor.Y + LocalVelocityY
+        endif
+
+        if LocalVelocityZ != 0.0 then
+            set inActor.Z = inActor.Z + LocalVelocityZ
+        endif
+    endfunction
 
     struct Room extends array
         implement Alloc
@@ -115,11 +177,14 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
                 set iter = start + (i - 1)
                 
                 exitwhen iter >= count
-                
                 if Actors[iter].IsValid() then
+                    call MoveLocation(DynamicLocation, Actors[iter].X, Actors[iter].Y)
+                    set LocalLocationZ = GetLocationZ(DynamicLocation) + MinHeight
+
                     call PhysForce(Actors[iter])
                     call PhysVelocity(Actors[iter])
-                    call Actors[iter].physForce.Set(0.0, 0.0, 0.0)
+                    call PhysForce(Actors[iter])
+                    call Run(Actors[iter])
                 endif
             endloop
 

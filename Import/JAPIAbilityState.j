@@ -257,7 +257,7 @@ function JNGetUnitAbilityCooldownRemaining takes unit whichUnit, integer abilId 
 static if REFORGED_MODE then
     return BlzGetUnitAbilityCooldownRemaining(whichUnit, abilId)
 else
-    return EXGetAbilityState(EXGetUnitAbility(whichUnit, abilId), 1)
+    return EXGetAbilityState(EXGetUnitAbility(whichUnit, abilId), ABILITY_STATE_COOLDOWN)
 endif
 endfunction
 
@@ -265,7 +265,7 @@ function JNEndUnitAbilityCooldown takes unit whichUnit, integer abilCode returns
 static if REFORGED_MODE then
     call BlzEndUnitAbilityCooldown(whichUnit, abilCode)
 else
-    call EXSetAbilityState(EXGetUnitAbility(whichUnit, abilCode), 1, 0)
+    call EXSetAbilityState(EXGetUnitAbility(whichUnit, abilCode), ABILITY_STATE_COOLDOWN, 0)
 endif
 endfunction
 

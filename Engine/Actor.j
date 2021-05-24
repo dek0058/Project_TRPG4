@@ -1,4 +1,4 @@
-library Actor initializer Start uses Alloc, Controller, FVector, FColor
+library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDefine
 
     //! runtextmacro DEFINE_STRUCT_TARRAY("Actor", "Actor")
 
@@ -11,6 +11,10 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private integer Count = 0
         Actor array Actors
     endglobals
+
+    private function HasPointer takes integer inIndex returns boolean
+        return HaveSavedInteger(hs, 0, inIndex)
+    endfunction
 
     private function GetPointer takes integer inIndex returns integer
         return LoadInteger(hs, 0, inIndex)
@@ -31,16 +35,25 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         private Controller controller
 
         // Unit Status
-        private FVector position
+        private real x
+        private real y
+        private real z
+
         private real scale
-        private FColor color
 
         // Physical
-        FVector velocity
-        FVector physForce
+        real velocityX
+        real velocityY
+        real velocityZ
+
+        real forceX
+        real forceY
+        real forceZ
+
         real mass
         real imass
         real locFriction
+
 
         static method AllocCount takes nothing returns integer
             return Count
@@ -50,45 +63,52 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             return GetPointer(GetHandleId(inUnit))
         endmethod
 
-        static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
+        static method operator Register= takes unit inUnit returns thistype
             local thistype this = 0
+
+            if GetHandleId(inUnit) == 0 then
+                return 0
+            endif
+
+            if HasPointer(GetHandleId(inUnit)) then
+                return Actor[inUnit]
+            endif
 
             if WaitingActorList.Size() == 0 then
                 set this = allocate()
-                set position = FVector.create(inX, inY, inZ)
-                set color = FColor.create(255, 255, 255, 255)
-
-                set velocity = FVector.create(0.0, 0.0, 0.0)
-                set physForce = FVector.create(0.0, 0.0, 0.0)
-
                 set Actors[Count] = this
                 set Count = Count + 1
             else
                 set this = WaitingActorList.Back()
                 call WaitingActorList.Pop()
-                call position.Set(inX, inY, inZ)
-                call color.Set(255, 255, 255,255)
-
-                call velocity.Set(0.0, 0.0, 0.0)
-                call physForce.Set(0.0, 0.0, 0.0)
             endif
-
-            set gameUnit = CreateUnit(inPlayer, inId, position.x, position.y, inFace)
+            
+            set gameUnit = inUnit
             call UnitAddAbility(gameUnit, FLYING_ABILITY)
             call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
-            call SetUnitFlyHeight(gameUnit, position.z, 0.00)
 
-            set scale = 1.0
-            set mass = 100.0
-            set imass = 1.0 / mass
-            set locFriction = 1
+            call Register()
 
-            set controller = Controller[inPlayer]
-            call controller.RegisterUnit(gameUnit)
-            
-            call SetPointer(GetHandleId(gameUnit), this)
+            return this
+        endmethod
 
-            // Extern Setting
+        static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
+            local thistype this = 0
+
+            if WaitingActorList.Size() == 0 then
+                set this = allocate()
+                set Actors[Count] = this
+                set Count = Count + 1
+            else
+                set this = WaitingActorList.Back()
+                call WaitingActorList.Pop()
+            endif
+
+            set gameUnit = CreateUnit(inPlayer, inId, inX, inY, inFace)
+            call UnitAddAbility(gameUnit, FLYING_ABILITY)
+            call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
+            call SetUnitFlyHeight(gameUnit, inZ, 0.00)
+            call Register()
 
             return this
         endmethod
@@ -103,6 +123,30 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             return gameUnit
         endmethod
 
+        private method Register takes nothing returns nothing
+            set controller = Controller[GetOwningPlayer(gameUnit)]
+            call controller.RegisterUnit(gameUnit)
+
+            set x = GetUnitX(gameUnit)
+            set y = GetUnitY(gameUnit)
+            set z = GetUnitFlyHeight(gameUnit)
+
+            set velocityX = 0
+            set velocityY = 0
+            set velocityZ = 0
+
+            set forceX = 0
+            set forceY = 0
+            set forceZ = 0
+
+            set scale = 1.0
+            set mass = 100.0
+            set imass = 1.0 / mass
+            set locFriction = 1
+
+            call SetPointer(GetHandleId(gameUnit), this)
+        endmethod
+
         method IsValid takes nothing returns boolean
             if gameUnit != null and GetUnitTypeId(gameUnit) == 0 then
                 call destroy()
@@ -111,31 +155,38 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
             return not (gameUnit == null)
         endmethod
 
-        method SetPositionXY takes real inX, real inY returns nothing
-            set position.x = inX
-            set position.y = inY
-            call SetUnitX(gameUnit, position.x)
-            call SetUnitY(gameUnit, position.y)
+        method operator X= takes real inValue returns nothing
+            set x = inValue
+            call SetUnitX(gameUnit, x)
         endmethod
-        method SetPositionZ takes real inZ returns nothing
-            set position.z = inZ
-            call SetUnitFlyHeight(gameUnit, position.z, 0)
-        endmethod
-        method SetPositionXYZ takes real inX, real inY, real inZ returns nothing
-            call position.Set(inX, inY, inZ)
-            call SetUnitX(gameUnit, position.x)
-            call SetUnitY(gameUnit, position.y)
-            call SetUnitFlyHeight(gameUnit, position.z, 0)
-        endmethod
-        
-        method GetPosition takes nothing returns FVector
-            call position.Set(GetUnitX(gameUnit), GetUnitY(gameUnit), GetUnitFlyHeight(gameUnit))
-            return position
+        method operator X takes nothing returns real
+            set x = GetUnitX(gameUnit)
+            return x
         endmethod
 
-        method GetPositionZ takes nothing returns real
-            set position.z = GetUnitFlyHeight(gameUnit)
-            return position.z
+        method operator Y= takes real inValue returns nothing
+            set y = inValue
+            call SetUnitY(gameUnit, y)
+        endmethod
+        method operator Y takes nothing returns real
+            set Y = GetUnitY(gameUnit)
+            return y
+        endmethod
+
+        method operator Z= takes real inValue returns nothing
+            local real locZ = GetFloor(X, Y)
+
+            if inValue < locZ then
+                set z = locZ
+            else
+                set z = inValue
+            endif
+            
+            call SetUnitFlyHeight(gameUnit, z, 0.0)
+        endmethod
+        method operator Z takes nothing returns real
+            set z = GetUnitFlyHeight(gameUnit)
+            return z
         endmethod
 
         method SetScale takes real inValue returns nothing
@@ -161,15 +212,12 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         endmethod
 
         //Extra Order
-        // ?´ ë©”ì†Œ?“œ?Š” ?•„?´?…œ?„ ?•´?‹¹ ?œ„ì¹˜ì— ë²„ë¦¬?Š”?° ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderInstant takes integer inId, real inX, real inY, widget inItem returns boolean
             return IssueInstantPointOrderById(gameUnit, inId, inX, inY, inItem)
         endmethod
-        // ?´ ë©”ì†Œ?“œ?Š” ?•„?´?…œ?„ ?‹¤ë¥? ?œ ?‹›?—ê²? ? „?‹¬?•˜?Š”?° ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderInstantTarget takes integer inId, widget inTarget, widget inItem returns boolean
             return IssueInstantTargetOrderById(gameUnit, inId, inTarget, inItem)
         endmethod
-        // ?´ ë©”ì†Œ?“œ?“¤??? ?˜?›…?„ êµ¬ë§¤?•œ?‹¤?Š”?° ?‚¬?š© ?•œ?‹¤ê³ ëŠ” ?•©?‹ˆ?‹¤...
         method OrderNeutral takes player inPlayer, unit inUnit, integer inUnitId returns boolean
             return IssueNeutralImmediateOrderById(inPlayer, inUnit, inUnitId)
         endmethod
@@ -179,7 +227,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor
         method OrderNeutralTarget takes player inPlayer, unit inUnit, integer inUnitId, widget inTarget returns boolean
             return IssueNeutralTargetOrderById(inPlayer, inUnit, inUnitId, inTarget)
         endmethod
-        // ?´ ë©”ì†Œ?“œ?Š” ê±´ë¬¼ ê±´ì„¤ ëª…ë ¹?„ ?‚´ë¦? ?•Œ ?‚¬?š© ?©?‹ˆ?‹¤.
         method OrderBuild takes integer inUnitId, real inX, real inY returns boolean
             return IssueBuildOrderById(gameUnit, inUnitId, inX, inY)
         endmethod

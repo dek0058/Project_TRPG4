@@ -73,7 +73,7 @@ library FVector uses Alloc
 
         method Div takes real inVal returns nothing
             if inVal == 0 then
-                debug call ThrowError(true, "FVector", "Div", "FVector", this, "ï¿½Ð¸ï¿½ '0' ï¿½Ô´Ï´ï¿½.")
+                debug call ThrowError(true, "FVector", "Div", "FVector", this, "ºÐ¸ð°¡ 0 ÀÔ´Ï´Ù.")
                 return
             endif
             set x = x / inVal

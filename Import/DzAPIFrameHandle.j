@@ -258,7 +258,16 @@ endfunction
 
 function JNFrameGetUpperButtonBarButton takes integer buttonId returns integer
 static if REFORGED_MODE then
-    return F2I(BlzGetOriginFrame(ORIGIN_FRAME_SYSTEM_BUTTON, buttonId))
+    if buttonId == 0 then
+        return F2I(BlzGetFrameByName("UpperButtonBarQuestsButton", 0))
+    elseif buttonId == 1 then
+        return F2I(BlzGetFrameByName("UpperButtonBarMenuButton", 0))
+    elseif buttonId == 2 then
+        return F2I(BlzGetFrameByName("UpperButtonBarAlliesButton", 0))
+    elseif buttonId == 3 then
+        return F2I(BlzGetFrameByName("UpperButtonBarChatButton", 0))
+    endif
+    return 0
 else
     return DzFrameGetUpperButtonBarButton(buttonId)
 endif
@@ -348,28 +357,6 @@ endfunction
 
 function JNDestroyFrame takes integer frame returns nothing
 static if REFORGED_MODE then
-    local integer eventId = 0
-    local integer trigKey
-    local integer condKey
-    local trigger t
-    local triggercondition c
-    loop
-        set eventId = eventId + 1
-        set trigKey = StringHash(I2S(eventId))
-        if HaveSavedHandle(Data, frame, trigKey) then
-            set t = LoadTriggerHandle(Data, frame, trigKey)
-            set condKey = StringHash(I2S(eventId)+"C")
-            if HaveSavedHandle(Data, frame, condKey) then
-                set c = LoadTriggerConditionHandle(Data, frame, condKey)
-                call TriggerRemoveCondition(t, c)
-                set c = null
-            endif
-            call DestroyTrigger(t)
-            set t = null
-        endif
-        exitwhen eventId == 16
-    endloop
-    call FlushChildHashtable(Data, frame)
     call BlzDestroyFrame(I2F(frame))
 else
     call DzDestroyFrame(frame)
