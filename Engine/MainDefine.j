@@ -4,6 +4,7 @@ library MainDefine initializer Start
         constant real DeltaTime = 0.04
 
         constant real MinHeight = 0.01
+        constant real MaxHeight = 3000.00
         constant real WaterHeight = 38.4
         
         real Gravity = -1087.9

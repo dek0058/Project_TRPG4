@@ -51,17 +51,18 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real x
         local real y
         local real z
+        local real unitX = inActor.X
+        local real unitY = inActor.Y
+        local real unitZ = inActor.Z
         local real frictionMag
-        local real size
+        local real size 
 
-
-        if IsPathable(inActor.X, inActor.Y, PATHING_TYPE_FLOATABILITY) then // 물
-            call BJDebugMsg(R2S(LocalLocationZ))
+        if PathableWater(unitX, unitY) then
+            set unitZ = unitZ - WaterHeight
         endif
         
-        
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
-        if inActor.velocityZ < 0 and inActor.Z <= LocalLocationZ then
+        if inActor.velocityZ < 0 and unitZ <= LocalLocationZ then
             set inActor.velocityZ = 0.0
         endif
 
@@ -129,20 +130,37 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endfunction
 
     private function Run takes Actor inActor returns nothing
+        local real x = inActor.X
+        local real y = inActor.Y
+        local real z = inActor.Z
+        local real result
+
         set inActor.forceX = 0.0
         set inActor.forceY = 0.0
         set inActor.forceZ = 0.0
 
         if LocalVelocityX != 0.0 then
-            set inActor.X = inActor.X + LocalVelocityX
+            set result = x + LocalVelocityX
+            if PathableNothing(result, y) then
+                set result = x
+            endif
+            set inActor.X = result
         endif
 
         if LocalVelocityY != 0.0 then
-            set inActor.Y = inActor.Y + LocalVelocityY
+            set result = y + LocalVelocityY
+            if PathableNothing(result, y) then
+                set result = y
+            endif
+            set inActor.Y = result
         endif
 
         if LocalVelocityZ != 0.0 then
-            set inActor.Z = inActor.Z + LocalVelocityZ
+            set result = z + LocalVelocityZ
+            if result > MaxHeight then
+                set result = z
+            endif
+            set inActor.Z = result
         endif
     endfunction
 
