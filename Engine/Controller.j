@@ -1,4 +1,4 @@
-library Controller initializer Start uses UnitGroup, ErrorMessage
+library Controller initializer Start uses UnitGroup, ChatEvent, ErrorMessage
     
     globals
         private Controller array controller

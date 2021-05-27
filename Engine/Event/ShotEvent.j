@@ -8,7 +8,6 @@ library ShotEvent requires Alloc
         private triggeraction trigAct
         private triggercondition trigCon
 
-
         static method create takes nothing returns thistype
             local thistype this = allocate()
             set trig = CreateTrigger()

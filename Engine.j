@@ -18,12 +18,15 @@
 //! import "Engine\Controller.j"
 //! import "Engine\MainDefine.j"
 //! import "Engine\MainThread.j"
-//! import "Engine\ShotEvent.j"
 //! import "Engine\UnitGroup.j"
 
-// Path
-//! import "Path\PAbility.j"
-//! import "Path\PModel.j"
+// Engine Event Jass
+//! import "Engine\Event\ChatEvent.j"
+//! import "Engine\Event\ShotEvent.j"
+
+// Engine Path Jass
+//! import "Engine\Path\PAbility.j"
+//! import "Engine\Path\PModel.j"
 
 
 // Test
