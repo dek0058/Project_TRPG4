@@ -39,6 +39,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private real y
         private real z
 
+        readonly real defaultZ
+
         private real scale
 
         // Physical
@@ -84,6 +86,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             endif
             
             set gameUnit = inUnit
+            set defaultZ = GetUnitDefaultFlyHeight(gameUnit)
             call UnitAddAbility(gameUnit, FLYING_ABILITY)
             call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
 
@@ -105,6 +108,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             endif
 
             set gameUnit = CreateUnit(inPlayer, inId, inX, inY, inFace)
+            set defaultZ = GetUnitDefaultFlyHeight(gameUnit)
             call UnitAddAbility(gameUnit, FLYING_ABILITY)
             call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
             call SetUnitFlyHeight(gameUnit, inZ, 0.00)
@@ -147,6 +151,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             call SetPointer(GetHandleId(gameUnit), this)
         endmethod
 
+        // 유닛 상태
         method IsValid takes nothing returns boolean
             if gameUnit != null and GetUnitTypeId(gameUnit) == 0 then
                 call destroy()
@@ -154,6 +159,17 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
             return not (gameUnit == null)
         endmethod
+
+        method IsFly takes nothing returns boolean
+            return IsUnitType(gameUnit, UNIT_TYPE_FLYING)
+        endmethod
+
+        method IsAirborne takes nothing returns boolean
+            local real locZ = GetFloor(X, Y)
+            set z = z - locZ
+            return z > 0
+        endmethod
+        //
 
         method operator X= takes real inValue returns nothing
             set x = inValue

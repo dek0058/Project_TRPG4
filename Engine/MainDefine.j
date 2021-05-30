@@ -22,7 +22,7 @@ library MainDefine initializer Start
 
     // Pathable Functions
     function PathableWalking takes real inX, real inY returns boolean
-        return IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)
+        return not IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)
     endfunction
 
     function PathableWater takes real inX, real inY returns boolean
@@ -30,7 +30,7 @@ library MainDefine initializer Start
     endfunction
 
     function PathableNothing takes real inX, real inY returns boolean
-        return (not IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)) and (not IsTerrainPathable(inX, inY, PATHING_TYPE_FLYABILITY)) 
+        return IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY) and IsTerrainPathable(inX, inY, PATHING_TYPE_FLYABILITY)
     endfunction
     
 

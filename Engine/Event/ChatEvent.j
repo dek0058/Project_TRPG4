@@ -27,7 +27,7 @@ library ChatEvent requires Alloc
 
         private static method Action takes nothing returns boolean
 
-            return false;
+            return false
         endmethod
 
     endstruct

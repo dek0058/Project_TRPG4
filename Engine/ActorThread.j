@@ -11,7 +11,6 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         private real LocalVelocityX = 0.0
         private real LocalVelocityY = 0.0
         private real LocalVelocityZ = 0.0
-        private real LocalLocationZ = 0.0
     endglobals
 
     //! textmacro IsNearZero takes Value
@@ -20,7 +19,19 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endif
     //! endtextmacro
 
-    
+    //! textmacro SetLocationZInWaterParmOne takes X, Y, Value1
+        if PathableWater($X$, $Y$) then
+            set $Value1$ = $Value1$ - WaterHeight
+        endif
+    //! endtextmacro
+
+    //! textmacro SetLocationZInWaterParmTwo takes X, Y, Value1, Value2
+        if PathableWater($X$, $Y$) then
+            set $Value1$ = $Value1$ - WaterHeight
+            set $Value2$ = $Value2$ - WaterHeight
+        endif
+    //! endtextmacro
+
 
     private function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
@@ -54,15 +65,15 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real unitX = inActor.X
         local real unitY = inActor.Y
         local real unitZ = inActor.Z
+        local real locZ = GetFloor(unitX, unitY)
         local real frictionMag
         local real size 
 
-        if PathableWater(unitX, unitY) then
-            set unitZ = unitZ - WaterHeight
-        endif
+
+        //! runtextmacro SetLocationZInWaterParmTwo("unitX", "unitY", "unitZ", "locZ")
         
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
-        if inActor.velocityZ < 0 and unitZ <= LocalLocationZ then
+        if inActor.velocityZ < 0 and unitZ <= GetFloor(unitX, unitY) then
             set inActor.velocityZ = 0.0
         endif
 
@@ -133,29 +144,38 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real x = inActor.X
         local real y = inActor.Y
         local real z = inActor.Z
+        local real locZ
         local real result
 
         set inActor.forceX = 0.0
         set inActor.forceY = 0.0
         set inActor.forceZ = 0.0
-
+        
         if LocalVelocityX != 0.0 then
             set result = x + LocalVelocityX
-            if PathableNothing(result, y) then
-                set result = x
+            if PathableWalking(result, y) then
+                set locZ = GetFloor(result, y)
+                //! runtextmacro SetLocationZInWaterParmOne("result", "y", "locZ")
+                if PathableNothing(result, y) or z < locZ then
+                    call BJDebugMsg("못감!" + R2S(GetFloor(result, y)) + " , " + R2S(z))
+                    set result = x
+                endif
             endif
             set inActor.X = result
         endif
 
         if LocalVelocityY != 0.0 then
             set result = y + LocalVelocityY
-            if PathableNothing(result, y) then
-                set result = y
+            if PathableWalking(result, y) then
+                if PathableNothing(x, result) or z < GetFloor(x, result) then
+                    set result = y
+                endif
             endif
             set inActor.Y = result
         endif
 
         if LocalVelocityZ != 0.0 then
+                 call BJDebugMsg("여긴 항상 들어오나보네?" + R2S(z))
             set result = z + LocalVelocityZ
             if result > MaxHeight then
                 set result = z
@@ -196,9 +216,6 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
                 
                 exitwhen iter >= count
                 if Actors[iter].IsValid() then
-                    call MoveLocation(DynamicLocation, Actors[iter].X, Actors[iter].Y)
-                    set LocalLocationZ = GetLocationZ(DynamicLocation) + MinHeight
-
                     call PhysForce(Actors[iter])
                     call PhysVelocity(Actors[iter])
                     call PhysForce(Actors[iter])
