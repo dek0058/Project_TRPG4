@@ -14,12 +14,6 @@ library MainDefine initializer Start
         location DynamicLocation
     endglobals
 
-    
-    function GetFloor takes real inX, real inY returns real
-        call MoveLocation(DynamicLocation, inX, inY)
-        return GetLocationZ(DynamicLocation) + MinHeight
-    endfunction
-
     // Pathable Functions
     function PathableWalking takes real inX, real inY returns boolean
         return not IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)
@@ -32,7 +26,21 @@ library MainDefine initializer Start
     function PathableNothing takes real inX, real inY returns boolean
         return IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY) and IsTerrainPathable(inX, inY, PATHING_TYPE_FLYABILITY)
     endfunction
-    
+    //
+
+    // Getter
+    function GetFloor takes real inX, real inY returns real
+        local real z = 0.00
+        call MoveLocation(DynamicLocation, inX, inY)
+        
+        set z = (GetLocationZ(DynamicLocation) + MinHeight)
+        if PathableWater(inX, inY) then
+            set z = z - WaterHeight
+        endif
+        
+        return z
+    endfunction
+    //
 
     private function Start takes nothing returns nothing
         

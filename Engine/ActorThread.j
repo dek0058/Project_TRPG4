@@ -19,20 +19,6 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endif
     //! endtextmacro
 
-    //! textmacro SetLocationZInWaterParmOne takes X, Y, Value1
-        if PathableWater($X$, $Y$) then
-            set $Value1$ = $Value1$ - WaterHeight
-        endif
-    //! endtextmacro
-
-    //! textmacro SetLocationZInWaterParmTwo takes X, Y, Value1, Value2
-        if PathableWater($X$, $Y$) then
-            set $Value1$ = $Value1$ - WaterHeight
-            set $Value2$ = $Value2$ - WaterHeight
-        endif
-    //! endtextmacro
-
-
     private function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
         local real y = 0.0
@@ -70,10 +56,8 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real size 
 
 
-        //! runtextmacro SetLocationZInWaterParmTwo("unitX", "unitY", "unitZ", "locZ")
-        
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
-        if inActor.velocityZ < 0 and unitZ <= GetFloor(unitX, unitY) then
+        if inActor.velocityZ < 0 and unitZ <= locZ then
             set inActor.velocityZ = 0.0
         endif
 
@@ -155,9 +139,8 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             set result = x + LocalVelocityX
             if PathableWalking(result, y) then
                 set locZ = GetFloor(result, y)
-                //! runtextmacro SetLocationZInWaterParmOne("result", "y", "locZ")
                 if PathableNothing(result, y) or z < locZ then
-                    call BJDebugMsg("못감!" + R2S(GetFloor(result, y)) + " , " + R2S(z))
+                    call BJDebugMsg("못감!" + R2S(locZ) + " , " + R2S(z))
                     set result = x
                 endif
             endif
@@ -175,13 +158,13 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         endif
 
         if LocalVelocityZ != 0.0 then
-                 call BJDebugMsg("여긴 항상 들어오나보네?" + R2S(z))
             set result = z + LocalVelocityZ
             if result > MaxHeight then
                 set result = z
             endif
-            set inActor.Z = result
+            //set inActor.Z = result
         endif
+        call BJDebugMsg(R2S(GetFloor(x, y)) + ", " + R2S(z))
     endfunction
 
     struct Room extends array

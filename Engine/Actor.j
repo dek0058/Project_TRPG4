@@ -191,13 +191,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
         method operator Z= takes real inValue returns nothing
             local real locZ = GetFloor(X, Y)
-
             if inValue < locZ then
                 set z = locZ
             else
                 set z = inValue
             endif
-            
             call SetUnitFlyHeight(gameUnit, z, 0.0)
         endmethod
         method operator Z takes nothing returns real
