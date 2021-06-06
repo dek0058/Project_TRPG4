@@ -40,7 +40,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private real z
 
         readonly real defaultZ
-
+        readonly real heightZ
         private real scale
 
         // Physical
@@ -190,9 +190,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method operator Z= takes real inValue returns nothing
-            local real locZ = GetFloor(X, Y)
-            if inValue < locZ then
-                set z = locZ
+            if inValue < MinHeight then
+                set z = MinHeight
             else
                 set z = inValue
             endif
@@ -200,6 +199,9 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
         method operator Z takes nothing returns real
             set z = GetUnitFlyHeight(gameUnit)
+            if z <= MinHeight then
+                set heightZ = GetFloor(X, Y)
+            endif
             return z
         endmethod
 
