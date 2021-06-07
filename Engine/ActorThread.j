@@ -53,11 +53,10 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real unitZ = inActor.Z
         local real locZ = GetFloor(unitX, unitY)
         local real frictionMag
-        local real size 
-
+        local real size
 
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
-        if inActor.velocityZ < 0 and unitZ <= locZ then
+        if inActor.velocityZ < 0 and unitZ <= MinHeight then
             set inActor.velocityZ = 0.0
         endif
 
@@ -137,34 +136,41 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         
         if LocalVelocityX != 0.0 then
             set result = x + LocalVelocityX
-            if PathableWalking(result, y) then
-                set locZ = GetFloor(result, y)
-                if PathableNothing(result, y) or z < locZ then
-                    call BJDebugMsg("못감!" + R2S(locZ) + " , " + R2S(z))
-                    set result = x
+            
+            if not PathableNothing(result, y) then
+                if not inActor.IsFly() then
+                    set locZ = GetFloor(result, y)
+                    
+
+
+                    if z < locZ then
+                        result = x
+                    endif
                 endif
+                set inActor.X = result
             endif
-            set inActor.X = result
         endif
 
         if LocalVelocityY != 0.0 then
             set result = y + LocalVelocityY
-            if PathableWalking(result, y) then
-                if PathableNothing(x, result) or z < GetFloor(x, result) then
-                    set result = y
+            
+            if not PathableNothing(x, result) then
+                if not inActor.IsFly() then
+                    set locZ = GetFloor(x, result)
+                    if z < locZ then
+                        result = y
+                    endif
                 endif
+                set inActor.Y = result
             endif
-            set inActor.Y = result
         endif
 
-        if LocalVelocityZ != 0.0 then
+        if LocalVelocityY != 0.0 then
             set result = z + LocalVelocityZ
             if result > MaxHeight then
                 set result = z
             endif
-            //set inActor.Z = result
         endif
-        call BJDebugMsg(R2S(GetFloor(x, y)) + ", " + R2S(z))
     endfunction
 
     struct Room extends array
