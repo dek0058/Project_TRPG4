@@ -55,6 +55,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real frictionMag
         local real size
 
+
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
         if inActor.velocityZ < 0 and unitZ <= MinHeight then
             set inActor.velocityZ = 0.0
@@ -129,22 +130,33 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real z = inActor.Z
         local real locZ
         local real result
+        local boolean isFalling = false
+        local real height = inActor.heightZ
 
         set inActor.forceX = 0.0
         set inActor.forceY = 0.0
         set inActor.forceZ = 0.0
-        
+
         if LocalVelocityX != 0.0 then
             set result = x + LocalVelocityX
             
             if not PathableNothing(result, y) then
                 if not inActor.IsFly() then
                     set locZ = GetFloor(result, y)
-                    
 
+                    if not PathableWalking(result, y) and height > locZ then
+                        
+                    else if not PathableWalking(result, y) and height < locZ then
 
-                    if z < locZ then
-                        result = x
+                    else if height > locZ then
+                        set isFalling = true
+
+                    else if height < locZ then
+
+                    endif
+
+                    if height < locZ then
+                        set result = x
                     endif
                 endif
                 set inActor.X = result
@@ -157,19 +169,21 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             if not PathableNothing(x, result) then
                 if not inActor.IsFly() then
                     set locZ = GetFloor(x, result)
-                    if z < locZ then
-                        result = y
+                    if inActor.heightZ < locZ then
+                        set result = y
                     endif
                 endif
                 set inActor.Y = result
             endif
         endif
 
-        if LocalVelocityY != 0.0 then
+        if LocalVelocityZ != 0.0 then
             set result = z + LocalVelocityZ
+
             if result > MaxHeight then
                 set result = z
             endif
+            set inActor.Z = result
         endif
     endfunction
 

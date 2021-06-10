@@ -190,12 +190,13 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method operator Z= takes real inValue returns nothing
-            if inValue < MinHeight then
+            local real temp = inValue
+            if inValue <= MinHeight then
                 set z = MinHeight
             else
-                set z = inValue
+                set z = temp
             endif
-            call SetUnitFlyHeight(gameUnit, z, 0.0)
+            call SetUnitFlyHeight(gameUnit, temp, 0.0)
         endmethod
         method operator Z takes nothing returns real
             set z = GetUnitFlyHeight(gameUnit)
