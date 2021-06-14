@@ -11,6 +11,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         private real LocalVelocityX = 0.0
         private real LocalVelocityY = 0.0
         private real LocalVelocityZ = 0.0
+        private boolean IsChanged = false
     endglobals
 
     //! textmacro IsNearZero takes Value
@@ -18,6 +19,13 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         set $Value$ = 0
     endif
     //! endtextmacro
+    
+    private function Collision takes Actor inActor returns nothing
+        set inActor.velocityX = 0
+        set inActor.velocityY = 0
+        // TODO 충돌 이벤트
+    endfunction
+
 
     private function PhysForce takes Actor inActor returns nothing
         local real x = 0.0
@@ -50,14 +58,14 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         local real z
         local real unitX = inActor.X
         local real unitY = inActor.Y
-        local real unitZ = inActor.Z
+        local real unitZ = inActor.DefaultZ
         local real locZ = GetFloor(unitX, unitY)
         local real frictionMag
         local real size
 
 
         // 땅에 착지된 상태라면 의미가 없음으로 속도를 0으로 맞춘다.
-        if inActor.velocityZ < 0 and unitZ <= MinHeight then
+        if inActor.velocityZ < 0 and unitZ <= (MinHeight + inActor.defaultFly) then
             set inActor.velocityZ = 0.0
         endif
 
@@ -127,64 +135,76 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     private function Run takes Actor inActor returns nothing
         local real x = inActor.X
         local real y = inActor.Y
-        local real z = inActor.Z
+        local real z = inActor.DefaultZ
         local real locZ
-        local real result
-        local boolean isFalling = false
-        local real height = inActor.heightZ
 
         set inActor.forceX = 0.0
         set inActor.forceY = 0.0
         set inActor.forceZ = 0.0
+        set IsChanged = false
 
-        if LocalVelocityX != 0.0 then
-            set result = x + LocalVelocityX
-            
-            if not PathableNothing(result, y) then
-                if not inActor.IsFly() then
-                    set locZ = GetFloor(result, y)
+        if LocalVelocityX != 0 then
+            set x = x + LocalVelocityX
+            set IsChanged = true
+        endif
 
-                    if not PathableWalking(result, y) and height > locZ then
-                        
-                    else if not PathableWalking(result, y) and height < locZ then
+        if LocalVelocityY != 0 then
+            set y = y + LocalVelocityY
+            set IsChanged = true
+        endif
 
-                    else if height > locZ then
-                        set isFalling = true
+        if LocalVelocityZ != 0 then
+            set z = z + LocalVelocityZ
+            set IsChanged = true
+        endif
 
-                    else if height < locZ then
-
+        if true == IsChanged and (not PathableNothing(x, y)) then
+            if not inActor.IsFly() then
+                set locZ = GetFloor(x, y)
+                
+                if not PathableWalking(x, y) then
+                    if inActor.Z < locZ then
+                        call Collision(inActor)
+                        set x = inActor.X
+                        set y = inActor.Y
+                    else
+                        call SetUnitPathing(inActor.Value(), false)
+                        set z = z + (GetFloor(inActor.X, inActor.Y) - locZ)
                     endif
-
-                    if height < locZ then
-                        set result = x
+                else
+                    if inActor.Z < locZ then
+                        set x = inActor.X + (LocalVelocityX * 0.866)
+                        set y = inActor.Y + (LocalVelocityY * 0.866)
+                    else
+                        set z = z + (GetFloor(inActor.X, inActor.Y) - locZ)
                     endif
                 endif
-                set inActor.X = result
+            endif
+
+            if z > MaxHeight then
+                set z = MaxHeight
+            endif
+
+            set inActor.X = x
+            set inActor.Y = y
+            set inActor.Z = z
+        endif
+
+        if not inActor.IsFly() then
+            if PathableWalking(x, y) then
+                call SetUnitPathing(inActor.Value(), true)
+            endif
+
+            if inActor.DefaultZ > (MinHeight + inActor.defaultFly) then
+                call SetUnitMoveSpeed(inActor.Value(), 0)
+            else
+                call SetUnitMoveSpeed(inActor.Value(), 522)
             endif
         endif
 
-        if LocalVelocityY != 0.0 then
-            set result = y + LocalVelocityY
-            
-            if not PathableNothing(x, result) then
-                if not inActor.IsFly() then
-                    set locZ = GetFloor(x, result)
-                    if inActor.heightZ < locZ then
-                        set result = y
-                    endif
-                endif
-                set inActor.Y = result
-            endif
-        endif
-
-        if LocalVelocityZ != 0.0 then
-            set result = z + LocalVelocityZ
-
-            if result > MaxHeight then
-                set result = z
-            endif
-            set inActor.Z = result
-        endif
+        set LocalVelocityX = 0
+        set LocalVelocityY = 0
+        set LocalVelocityZ = 0
     endfunction
 
     struct Room extends array
@@ -232,7 +252,6 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         endmethod
     endstruct
     
-
     globals
         private trigger OnceTrigger
         private triggeraction OnceAction

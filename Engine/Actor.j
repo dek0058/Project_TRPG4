@@ -38,9 +38,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private real x
         private real y
         private real z
-
-        readonly real defaultZ
-        readonly real heightZ
+    
         private real scale
 
         // Physical
@@ -56,6 +54,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         real imass
         real locFriction
 
+        readonly real defaultFly
 
         static method AllocCount takes nothing returns integer
             return Count
@@ -86,10 +85,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             endif
             
             set gameUnit = inUnit
-            set defaultZ = GetUnitDefaultFlyHeight(gameUnit)
-            call UnitAddAbility(gameUnit, FLYING_ABILITY)
-            call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
-
+            set defaultFly = GetUnitDefaultFlyHeight(gameUnit)
             call Register()
 
             return this
@@ -108,11 +104,9 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             endif
 
             set gameUnit = CreateUnit(inPlayer, inId, inX, inY, inFace)
-            set defaultZ = GetUnitDefaultFlyHeight(gameUnit)
-            call UnitAddAbility(gameUnit, FLYING_ABILITY)
-            call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
-            call SetUnitFlyHeight(gameUnit, inZ, 0.00)
+            set defaultFly = inZ
             call Register()
+            call SetUnitFlyHeight(gameUnit, defaultFly, 0.00)
 
             return this
         endmethod
@@ -147,8 +141,13 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set mass = 100.0
             set imass = 1.0 / mass
             set locFriction = 1
-
+            
             call SetPointer(GetHandleId(gameUnit), this)
+
+            if not IsFly() then
+                call UnitAddAbility(gameUnit, FLYING_ABILITY)
+                call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
+            endif
         endmethod
 
         // 유닛 상태
@@ -165,9 +164,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method IsAirborne takes nothing returns boolean
-            local real locZ = GetFloor(X, Y)
-            set z = z - locZ
-            return z > 0
+            return Z > MinHeight
         endmethod
         //
 
@@ -190,20 +187,27 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method operator Z= takes real inValue returns nothing
-            local real temp = inValue
-            if inValue <= MinHeight then
-                set z = MinHeight
+            local real minHeight = MinHeight + defaultFly
+            if inValue <= minHeight then
+                set z = minHeight
             else
-                set z = temp
+                set z = inValue
             endif
-            call SetUnitFlyHeight(gameUnit, temp, 0.0)
+            call SetUnitFlyHeight(gameUnit, z, 0.0)
         endmethod
         method operator Z takes nothing returns real
-            set z = GetUnitFlyHeight(gameUnit)
-            if z <= MinHeight then
-                set heightZ = GetFloor(X, Y)
-            endif
+            set z = GetFloor(X, Y) + DefaultZ
             return z
+        endmethod
+        method operator DefaultZ takes nothing returns real
+            return GetUnitFlyHeight(gameUnit) + defaultFly
+        endmethod
+
+        method operator Fly= takes real inValue returns nothing
+            set defaultFly = inValue
+            if defaultFly < 0.0 then
+                set defaultFly = 0.0
+            endif
         endmethod
 
         method SetScale takes real inValue returns nothing
