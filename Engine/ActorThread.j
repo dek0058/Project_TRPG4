@@ -1,10 +1,10 @@
 library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     globals
-        private constant integer Capacity = 96
+        private constant integer Capacity = 100
         private constant real ApproximatelyZero = 0.001
         private constant real HalfDeltaTime = (DeltaTime / 2.0)
-
+        
         private Room array Rooms
         private integer RoomCount = 0
 
@@ -196,9 +196,9 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             endif
 
             if inActor.DefaultZ > (MinHeight + inActor.defaultFly) then
-                call SetUnitMoveSpeed(inActor.Value(), 0)
+                call SetUnitMoveSpeed(inActor.Value(), -9999999)
             else
-                call SetUnitMoveSpeed(inActor.Value(), 522)
+                call SetUnitMoveSpeed(inActor.Value(), inActor.deafultSpeed)
             endif
         endif
 
@@ -210,65 +210,119 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     struct Room extends array
         implement Alloc
 
-        private integer start
         private FTick tick
+        private TArrayActor actors
 
-        static method Create takes integer inStart returns nothing
+        private bool isActive
+
+        static method create takes nothing returns thistype
             local thistype this = allocate()
-            
+
+            //! runtextmacro CreateLog("Room", "this")
             set Rooms[RoomCount] = this
             set RoomCount = RoomCount + 1
 
-            set start = inStart
-            
+            set isActive = true
+
+            set actors = TArrayActor.create()
             set tick = FTick.Start(this, DeltaTime, true, function thistype.Update)
+
+            return this
+        endmethod
+
+        method destroy takes nothing returns nothing
+            //! runtextmacro DestroyLog("Room", "this")
+
+            call tick.destroy()
+            set tick = 0
+
+            call actors.destroy()
+            set actors = 0
+
+            call deallocate()
         endmethod
 
         private static method Update takes nothing returns nothing
             local FTick expiredTick = FTick.GetTick()
             local thistype this = expiredTick.pointer
-            local integer count = Actor.AllocCount()
-            local integer totalCapacity = RoomCount * Capacity
             local integer i = 0
-            local integer iter
+
+            if Count == 0 then
+                call destroy()
+                return;
+            endif
 
             loop
-                exitwhen i == Capacity
-                set i = i + 1
-                set iter = start + (i - 1)
-                
-                exitwhen iter >= count
-                if Actors[iter].IsValid() then
-                    call PhysForce(Actors[iter])
-                    call PhysVelocity(Actors[iter])
-                    call PhysForce(Actors[iter])
-                    call Run(Actors[iter])
+                exitwhen i == Count
+                if actors[i].IsValid() then
+                    call PhysForce(actors[i])
+                    call PhysVelocity(actors[i])
+                    call PhysForce(actors[i])
+                    call Run(actors[i])
+                else
+                    Remove(actors[i])
                 endif
+                set i = i + 1
             endloop
+        endmethod
 
-            if count > totalCapacity then
-                call Create(totalCapacity)
-            endif
+        method operator Count takes nothing returns real
+            return actors.Size()
+        endmethod
+
+        method Add takes Actor inActor returns nothing
+            call actors.Push(inActor)
+            set inActor.isPhysical = true
+        endmethod
+
+        method Remove takes Actor inActor returns nothing
+            local integer i = 0
+            loop
+                exitwhen i == actors.Size()
+                if inActor == actors[i] then
+                    call actors.Erase(i, 1)
+                    set inActor.isPhysical = false
+                    exitwhen true
+                endif
+                set i = i + 1
+            endloop
         endmethod
     endstruct
-    
-    globals
-        private trigger OnceTrigger
-        private triggeraction OnceAction
-    endglobals
 
-    private function Once takes nothing returns nothing
-        call Room.Create(0)
 
-        call TriggerRemoveAction(OnceTrigger, OnceAction)
-        set OnceAction = null
-        call DestroyTrigger(OnceTrigger)
-        set OnceTrigger = null
+    private function Update takes nothing returns boolean
+        local Actor actor
+        local integer i = 0
+        boolean isFull = false
+
+        loop
+            exitwhen PhysicalQueue.IsEmpty()
+            set actor = PhysicalQueue.Back()
+            call PhysicalQueue.Pop()
+            if actor.isPhysical == false then
+                loop
+                    if i == RoomCount then
+                        set isFull = true
+                        exitwhen true
+                    endif
+                    if RoomCount[i].Size() < Capacity then
+                        call RoomCount[i].Add(inActor)
+                        exitwhen true
+                    endif
+                endloop
+
+                if isFull == true then
+                    call Room.create().Add(inActor)
+                endif
+            endif
+        endloop
+        return false
     endfunction
 
     private function Start takes nothing returns nothing
-        set OnceTrigger = CreateTrigger()
-        set OnceAction = TriggerAddAction(OnceTrigger, function Once)
-        call TriggerRegisterTimerEvent(OnceTrigger, 1.0, false)
+        local trigger trig = CreateTrigger()
+        call TriggerAddCondition(trig, function Update)
+        call TriggerRegisterTimerEvent(trig, DeltaTime, true)
+        set trig = null
     endfunction
 endlibrary

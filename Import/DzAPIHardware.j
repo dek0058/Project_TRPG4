@@ -160,7 +160,7 @@ globals
 	constant integer JN_OSKEY_LAUNCH_MEDIA_SELECT           = $B5
 	constant integer JN_OSKEY_LAUNCH_APP1                   = $B6
 	constant integer JN_OSKEY_LAUNCH_APP2                   = $B7
-	constant integer JN_OSKEY_OEM_1                         = $BA
+	constant integer JN_OSKEY_OEM_1                         = $BA // 세미콜론
 	constant integer JN_OSKEY_OEM_PLUS                      = $BB
 	constant integer JN_OSKEY_OEM_COMMA                     = $BC
 	constant integer JN_OSKEY_OEM_MINUS                     = $BD

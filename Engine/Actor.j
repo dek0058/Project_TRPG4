@@ -10,6 +10,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
         private integer Count = 0
         Actor array Actors
+        TArrayActor PhysicalQueue
     endglobals
 
     private function HasPointer takes integer inIndex returns boolean
@@ -34,14 +35,18 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private unit gameUnit
         private Controller controller
 
-        // Unit Status
+        // @Unit Status
         private real x
         private real y
         private real z
     
         private real scale
+        private real speed
 
-        // Physical
+        readonly real defaultFly
+        readonly real deafultSpeed
+
+        // @Physical
         real velocityX
         real velocityY
         real velocityZ
@@ -54,7 +59,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         real imass
         real locFriction
 
-        readonly real defaultFly
+        boolean isPhysical
 
         static method AllocCount takes nothing returns integer
             return Count
@@ -79,9 +84,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
                 set this = allocate()
                 set Actors[Count] = this
                 set Count = Count + 1
+                //! runtextmacro CreateLog("Register Actor", "this")
             else
                 set this = WaitingActorList.Back()
                 call WaitingActorList.Pop()
+                //! runtextmacro RecyleLog("Register Actor", "this")
             endif
             
             set gameUnit = inUnit
@@ -98,9 +105,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
                 set this = allocate()
                 set Actors[Count] = this
                 set Count = Count + 1
+                //! runtextmacro CreateLog("Actor", "this")
             else
                 set this = WaitingActorList.Back()
                 call WaitingActorList.Pop()
+                //! runtextmacro RecyleLog("Actor", "this")
             endif
 
             set gameUnit = CreateUnit(inPlayer, inId, inX, inY, inFace)
@@ -112,6 +121,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method destroy takes nothing returns nothing
+            //! runtextmacro DestroyLog("Actor", "this")
             call WaitingActorList.Push(this)
             set gameUnit = null
             set controller = 0
@@ -128,6 +138,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set x = GetUnitX(gameUnit)
             set y = GetUnitY(gameUnit)
             set z = GetUnitFlyHeight(gameUnit)
+            
+            set deafultSpeed = GetUnitMoveSpeed(gameUnit)
 
             set velocityX = 0
             set velocityY = 0
@@ -141,6 +153,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set mass = 100.0
             set imass = 1.0 / mass
             set locFriction = 1
+
+            set isPhysical = false
             
             call SetPointer(GetHandleId(gameUnit), this)
 
@@ -150,7 +164,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             endif
         endmethod
 
-        // 유닛 상태
+        // @유닛 상태
         method IsValid takes nothing returns boolean
             if gameUnit != null and GetUnitTypeId(gameUnit) == 0 then
                 call destroy()
@@ -164,7 +178,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         method IsAirborne takes nothing returns boolean
-            return Z > MinHeight
+            return DefaultZ > MinHeight
         endmethod
         //
 
@@ -222,6 +236,22 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             return scale
         endmethod
 
+        method SetVelocity takes real inX, real inY returns nothing
+            if isPhysical == false then
+                call PhysicalQueue.Push(this)
+            endif
+            set velocityX = inX
+            set velocityY = inY
+        endmethod
+
+        method SetAirborne takes real inValue returns nothing
+            if isPhysical == false then
+                call PhysicalQueue.Push(this)
+            endif
+            set velocityZ = inValue
+        endmethod
+
+        // @Order
         method OrderPoint takes integer inId, real inX, real inY returns boolean
             return IssuePointOrderById(gameUnit, inId, inX, inY)
         endmethod
@@ -232,7 +262,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             return IssueImmediateOrderById(gameUnit, inId)
         endmethod
 
-        //Extra Order
+        // @Extra Order
         method OrderInstant takes integer inId, real inX, real inY, widget inItem returns boolean
             return IssueInstantPointOrderById(gameUnit, inId, inX, inY, inItem)
         endmethod
@@ -260,6 +290,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
     private function Start takes nothing returns nothing
         set WaitingActorList = TArrayActor.create()
+        set PhysicalQueue = TArrayActor.create()
         set hs = InitHashtable()
     endfunction
 endlibrary

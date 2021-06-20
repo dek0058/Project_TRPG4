@@ -15,24 +15,27 @@ library FTick initializer Start uses Alloc, Table, TArray
         real deltaTime
 
         static method create takes integer inPointer, real inDeletaTime returns thistype
-            local thistype temp = 0
+            local thistype this = 0
 
             if WaitingTickList.Size() > 0 then
-                set temp = WaitingTickList.Back()
+                set this = WaitingTickList.Back()
                 call WaitingTickList.Pop()
+                //! runtextmacro RecyleLog("FTick", "this")
             else
-                set temp = allocate()
-                set temp.tick = CreateTimer()
-                set TickTable.integer[GetHandleId(temp.tick)] = temp
+                set this = allocate()
+                set tick = CreateTimer()
+                set TickTable.integer[GetHandleId(tick)] = this
+                //! runtextmacro CreateLog("FTick", "this")
             endif
 
-            set temp.pointer = inPointer
-            set temp.deltaTime = inDeletaTime
+            set pointer = inPointer
+            set deltaTime = inDeletaTime
 
-            return temp
+            return this
         endmethod
 
         method destroy takes nothing returns nothing
+            //! runtextmacro DestroyLog("FTick", "this")
             call TimerStart(tick, 0.0, false, null)
             set pointer = 0
             set deltaTime = 0.00
@@ -45,8 +48,7 @@ library FTick initializer Start uses Alloc, Table, TArray
 
         static method Start takes integer inPointer, real inDeltaTime, boolean inLoop, code inCallback returns thistype
             local thistype this = create(inPointer, inDeltaTime)
-
-            call TimerStart(tick, deltaTime, inLoop, inCallback)
+            call this.Run(inLoop, inCallback)
             return this
         endmethod
 

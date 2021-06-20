@@ -7,6 +7,8 @@ library MainDefine initializer Start
         constant real MaxHeight = 3000.00
         constant real WaterHeight = 38.4
         
+        constant real MaxMoveSpeed = 522.00
+
         real Gravity = -1087.9
 
         
@@ -14,7 +16,19 @@ library MainDefine initializer Start
         location DynamicLocation
     endglobals
 
-    // Pathable Functions
+    // @로그
+    //! textmacro CreateLog takes STRUCT, VALUE
+        debug call JNWriteLog("Create $STRUCT$ [" + I2S($VALUE$) + "]")
+    //! endtextmacro
+    //! textmacro RecyleLog takes STRUCT, VALUE
+        debug call JNWriteLog("Recyle $STRUCT$ [" + I2S($VALUE$) + "]")
+    //! endtextmacro
+    //! textmacro DestroyLog takes STRUCT, VALUE
+        debug call JNWriteLog("Destroy $STRUCT$ [" + I2S($VALUE$) + "]")
+    //! endtextmacro
+    //@
+
+    // @Pathable Functions
     function PathableWalking takes real inX, real inY returns boolean
         return not IsTerrainPathable(inX, inY, PATHING_TYPE_WALKABILITY)
     endfunction
@@ -28,7 +42,7 @@ library MainDefine initializer Start
     endfunction
     //
 
-    // Getter
+    // @Getter
     function GetFloor takes real inX, real inY returns real
         local real z = 0.00
         call MoveLocation(DynamicLocation, inX, inY)

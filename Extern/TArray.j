@@ -83,14 +83,14 @@ library TArray requires Table, ErrorMessage, Alloc
         endmethod
         
         method operator [] takes integer inPos returns $TYPE$
-            debug if AssertPosition(inPos, "operator []") then
+            debug if not AssertPosition(inPos, "operator []") then
                 debug return Get(-1)
             debug endif
             return Get(inPos)
         endmethod
         
         method operator []= takes integer inPos, $TYPE$ inVal returns nothing
-            debug if AssertPosition(inPos, "operator []") then
+            debug if not AssertPosition(inPos, "operator []") then
                 debug return
             debug endif
             call Set(inPos, inVal)
