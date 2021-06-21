@@ -1,7 +1,7 @@
 library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     globals
-        private constant integer Capacity = 100
+        private constant integer Capacity = 50
         private constant real ApproximatelyZero = 0.001
         private constant real HalfDeltaTime = (DeltaTime / 2.0)
         
@@ -47,9 +47,13 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             //! runtextmacro IsNearZero("y")
             set inActor.velocityY = inActor.velocityY + y
         endif
-
+        
         set z = ((inActor.forceZ * inActor.imass) + Gravity) * HalfDeltaTime
         set inActor.velocityZ = inActor.velocityZ + z
+
+        if inActor.velocityZ < 0 and inActor.DefaultZ <= (MinHeight + inActor.defaultFly) then
+            set inActor.velocityZ = 0.0
+        endif
     endfunction
 
     private function PhysVelocity takes Actor inActor returns nothing
@@ -132,7 +136,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         endif
     endfunction
 
-    private function Run takes Actor inActor returns nothing
+    private function Work takes Actor inActor returns nothing
         local real x = inActor.X
         local real y = inActor.Y
         local real z = inActor.DefaultZ
@@ -213,7 +217,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         private FTick tick
         private TArrayActor actors
 
-        private bool isActive
+        private boolean isActive
 
         static method create takes nothing returns thistype
             local thistype this = allocate()
@@ -222,52 +226,70 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             set Rooms[RoomCount] = this
             set RoomCount = RoomCount + 1
 
-            set isActive = true
-
             set actors = TArrayActor.create()
-            set tick = FTick.Start(this, DeltaTime, true, function thistype.Update)
+            set tick = FTick.create(this, DeltaTime)
+
+            call Active()
 
             return this
         endmethod
 
         method destroy takes nothing returns nothing
             //! runtextmacro DestroyLog("Room", "this")
-
             call tick.destroy()
             set tick = 0
-
             call actors.destroy()
             set actors = 0
-
             call deallocate()
         endmethod
 
         private static method Update takes nothing returns nothing
             local FTick expiredTick = FTick.GetTick()
             local thistype this = expiredTick.pointer
-            local integer i = 0
+            local integer i = Count()
 
-            if Count == 0 then
-                call destroy()
-                return;
+            if i == 0 then
+                call Inactive()
+                return
             endif
 
+            set i = i - 1
             loop
-                exitwhen i == Count
+                exitwhen i == 0
                 if actors[i].IsValid() then
                     call PhysForce(actors[i])
                     call PhysVelocity(actors[i])
                     call PhysForce(actors[i])
-                    call Run(actors[i])
+                    call Work(actors[i])
+
+                    if actors[i].velocityX == 0 and actors[i].velocityY == 0 and actors[i].velocityZ == 0 then
+                        call Remove(actors[i])
+                    endif
                 else
-                    Remove(actors[i])
+                    call Remove(actors[i])
                 endif
-                set i = i + 1
+                set i = i - 1
             endloop
         endmethod
 
-        method operator Count takes nothing returns real
+        method Count takes nothing returns integer
             return actors.Size()
+        endmethod
+
+        method Active takes nothing returns nothing
+            if isActive == true then
+                return
+            endif
+            set isActive = true
+            call tick.Run(true, function thistype.Update)
+        endmethod
+
+        method Inactive takes nothing returns nothing
+            if isActive == false then
+                return
+            endif
+            set isActive = false
+            call TimerStart(tick.Value(), 0.0, false, null)
         endmethod
 
         method Add takes Actor inActor returns nothing
@@ -292,30 +314,36 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     private function Update takes nothing returns boolean
         local Actor actor
+        local Room room
         local integer i = 0
-        boolean isFull = false
+        local boolean isFull = false
 
         loop
             exitwhen PhysicalQueue.IsEmpty()
             set actor = PhysicalQueue.Back()
             call PhysicalQueue.Pop()
             if actor.isPhysical == false then
+                set isFull = false
                 loop
                     if i == RoomCount then
                         set isFull = true
                         exitwhen true
                     endif
-                    if RoomCount[i].Size() < Capacity then
-                        call RoomCount[i].Add(inActor)
+                    if Rooms[i].Count() < Capacity then
+                        call Rooms[i].Add(actor)
+                        call Rooms[i].Active()
                         exitwhen true
                     endif
+                    set i = i + 1
                 endloop
 
                 if isFull == true then
-                    call Room.create().Add(inActor)
+                    set room = Room.create()
+                    call room.Add(actor)
                 endif
             endif
         endloop
+
         return false
     endfunction
 
