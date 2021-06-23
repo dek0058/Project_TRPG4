@@ -26,7 +26,7 @@ library MainDefine initializer Start
     //! textmacro DestroyLog takes STRUCT, VALUE
         debug call JNWriteLog("Destroy $STRUCT$ [" + I2S($VALUE$) + "]")
     //! endtextmacro
-    //@
+    //
 
     // @Pathable Functions
     function PathableWalking takes real inX, real inY returns boolean

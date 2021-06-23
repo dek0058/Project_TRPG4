@@ -21,7 +21,7 @@
 //! import "Engine\UnitGroup.j"
 
 // Engine Event Jass
-//! import "Engine\Event\ChatEvent.j"
+// import "Engine\Event\ChatEvent.j"
 //! import "Engine\Event\ShotEvent.j"
 
 // Engine Path Jass

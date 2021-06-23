@@ -212,7 +212,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endfunction
 
     struct Room extends array
-        implement Alloc
+        implement GlobalAlloc
 
         private FTick tick
         private TArrayActor actors

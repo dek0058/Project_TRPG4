@@ -1,34 +1,39 @@
 library ChatEvent requires Alloc
     
-    
-    struct ChatCommand extends array
-        implement Alloc
+    globals
+        private player CommandPlayer = null
+        private string CommandMsg = ""
+    endglobals
 
-        
+
+    struct ChatCommand extends array
+        implement GlobalAlloc
+
+        string command
+        private trigger trig
+
+        static method create takes string inCommand, code inCallback returns thistype
+            local thistype this = allocate()
+
+            set trig = CreateTrigger()
+            //call TriggerRegisterPlayerChatEvent()
+
+            return this
+        endmethod
     endstruct
 
 
     struct ChatEvent extends array
         implement GlobalAlloc
 
-        private player gamePlayer
-        private trigger trig
+        //private TArraystring 
 
-        static method create takes player inPlayer returns thistype
+        static method create takes nothing returns thistype
             local thistype this = allocate()
-
-            set gamePlayer = inPlayer
-
-            set trig = CreateTrigger()
-            call TriggerAddCondition(trig, Condition(function thistype.Action))
-
+    
             return this
         endmethod
-
-        private static method Action takes nothing returns boolean
-
-            return false
-        endmethod
-
     endstruct
+
+
 endlibrary
