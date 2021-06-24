@@ -45,7 +45,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         endmethod
 
         method UnregisterUnit takes unit inUnit returns nothing
-
+            call unitGroup.Remove(inUnit)
         endmethod
 
         method ExecuteUnitGroup takes code inCallback returns nothing

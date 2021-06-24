@@ -1,5 +1,6 @@
 library MainDefine initializer Start
 
+    // @ Static Variable
     globals
         constant real DeltaTime = 0.04
 
@@ -8,13 +9,26 @@ library MainDefine initializer Start
         constant real WaterHeight = 38.4
         
         constant real MaxMoveSpeed = 522.00
+    endglobals
+    //
+
+    // @ Setting Varaible
+    globals
+        constant integer MaxPlayerCount = 9
 
         real Gravity = -1087.9
-
-        
-        // Dynamic Variable
-        location DynamicLocation
     endglobals
+    //
+
+     // @ Dynamic Varaible
+    globals
+        
+        location DynamicLocation
+
+    endglobals
+    //
+
+
 
     // @로그
     //! textmacro CreateLog takes STRUCT, VALUE
