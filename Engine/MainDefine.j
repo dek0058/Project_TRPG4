@@ -22,9 +22,8 @@ library MainDefine initializer Start
 
      // @ Dynamic Varaible
     globals
-        
         location DynamicLocation
-
+        trigger DynamicTrigger
     endglobals
     //
 
@@ -56,6 +55,15 @@ library MainDefine initializer Start
     endfunction
     //
 
+    // @Callback Function
+    function OnCallback takes boolexpr inCallback returns nothing
+        local triggercondition temp = TriggerAddCondition(DynamicTrigger, inCallback)
+        call TriggerEvaluate(DynamicTrigger)
+        call TriggerRemoveCondition(DynamicTrigger, temp)
+        set temp = null
+    endfunction
+    //
+
     // @Getter
     function GetFloor takes real inX, real inY returns real
         local real z = 0.00
@@ -71,9 +79,7 @@ library MainDefine initializer Start
     //
 
     private function Start takes nothing returns nothing
-        
         set DynamicLocation = Location(0, 0)
-
+        set DynamicTrigger = CreateTrigger()
     endfunction
-
 endlibrary

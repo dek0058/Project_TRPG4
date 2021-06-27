@@ -1,72 +1,64 @@
 library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     
     globals
-        private trigger Trigger
-
         private player CommandPlayer = null
         private string CommandMsg = ""
 
-        private HashTable ChatHashTable
+        private HashTable Map
     endglobals
 
+    function GetCommand takes nothing returns string
 
-    struct ChatCommand extends array
-        implement GlobalAlloc
+    endfunction
 
-        string command
-        code callback
+    function GetArgs takes integer inPos returns string
 
-        /*static method create takes string inCommand, code inCallback returns thistype
-            local thistype this = allocate()
-            local integer hashKey = StringHash(inCommand)
-            local integer i = 0
+    endfunction
+    
+    function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
+        local integer hashKey = StringHash(inCommand)
 
-            if ChatHashTable.has(hashKey) then
-                debug call ThrowError(true, "ChatEvent", "create", "ChatCommand", this, inCommand + " Haved HashKey(" + I2S(hashKey) + ")")
-                call deallocate()
-                return 0;
-            endif
+        if hashKey == 0 then
 
-            set command = inCommand
-            set callback = inCallback
+            return
+        endif
+        
+        if Map[0].has(hashKey) then
 
-            loop
-                exitwhen i >= MaxPlayerCount
-                set i = i + 1
-                call TriggerRegisterPlayerChatEvent(Trigger, Player(i), inCommand, false)
-            endloop
+            return
+        endif
 
-            set ChatHashTable[hashKey]
-
-            return this
-        endmethod
-        */
-    endstruct
-
-
-    struct ChatEvent extends array
-        implement GlobalAlloc
-
-        //private TArraystring 
-
-        static method create takes nothing returns thistype
-            local thistype this = allocate()
-
-            return this
-        endmethod
-    endstruct
+        set Map[0].boolexpr[hashKey] = inCallback
+    endfunction
 
     private function Action takes nothing returns boolean
-        
-        //ExecuteFunc()
+        //@ TODO 커맨드 구하기
+        local integer hashKey = //StringHash(inCommand)
 
+        if hashKey == 0 then
+            return
+        endif
+
+        if Map[0].has(hashKey) == false then
+            return
+        endif
+        
+        call OnCallback(Map[0].boolexpr[hashKey]
         return false
     endfunction
 
     private function Start takes nothing returns nothing
-        set Trigger = CreateTrigger()
+        local trigger trig = CreateTrigger()
+
+        call TriggerAddCondition(trig, function Action)
+        loop
+            exitwhen i >= MaxPlayerCount
+            set i = i + 1
+            call TriggerRegisterPlayerChatEvent(trig, Player(i), "", false)
+        endloop
+
         set ChatHashTable = HashTable.create()
 
-        call TriggerAddCondition(Trigger, function Action)
+        set trig = null
     endfunction
 endlibrary
