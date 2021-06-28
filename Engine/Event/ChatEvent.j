@@ -2,7 +2,8 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     
     globals
         private player CommandPlayer = null
-        private string CommandMsg = ""
+        private string array CommandMsgArray
+        private integer ArgsCount
 
         private HashTable Map
     endglobals
@@ -12,11 +13,15 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     endfunction
 
     function GetCommand takes nothing returns string
-        return CommandMsg
+        return CommandMsgArray[0]
     endfunction
 
     function GetArgs takes integer inPos returns string
         return 
+    endfunction
+
+    function GetArgsCount takes nothing returns integer
+        return ArgsCount
     endfunction
     
     function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
@@ -35,9 +40,46 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         set Map[0].boolexpr[hashKey] = inCallback
     endfunction
 
+    private 
+
     private function Action takes nothing returns boolean
         //@ TODO 커맨드 구하기
-        local integer hashKey = //StringHash(inCommand)
+        local msg = GetEventPlayerChatString()
+        local length = StringLength(msg)
+        
+        local integer hashKey = 0 // = //StringHash(inCommand)
+        
+        /*
+                local boolean rsta = false
+                local integer ddx = 0
+                local integer sdx = 0
+                local string cstr = GetEventPlayerChatString(  )
+                local integer slen = StringLength(cstr)
+                set CDC = 0
+                loop
+                    if not rsta then
+                        if SubString(cstr, sdx, sdx+1) != " " then
+                            set ddx = sdx
+                            set rsta = true
+                        endif
+                    else
+                        if SubString(cstr, sdx, sdx+1) == " " then
+                            set CD[CDC] = SubString(cstr, ddx, sdx)
+                            set CDC = CDC + 1
+                            set rsta = false
+                        endif
+                    endif
+                    set sdx = sdx + 1
+                    exitwhen sdx >= slen
+                endloop
+                if rsta then
+                    set CD[CDC] = SubString(cstr, ddx, sdx)
+                    set CDC = CDC + 1
+                endif
+                call TriggerEvaluate(LoadTriggerHandle( H, 0, StringHash(CD[0]) ))
+        */
+        
+
 
         if hashKey == 0 then
             return
@@ -47,8 +89,10 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
         
+
+
         set CommandPlayer = GetTriggerPlayer()
-        set CommandMsg = 
+        //set CommandMsgArray = 
 
         call OnCallback(Map[0].boolexpr[hashKey])
         return false
