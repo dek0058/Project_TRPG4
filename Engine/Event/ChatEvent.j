@@ -7,24 +7,28 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         private HashTable Map
     endglobals
 
-    function GetCommand takes nothing returns string
+    function GetChatPlayer takes nothing returns player
+        return CommandPlayer
+    endfunction
 
+    function GetCommand takes nothing returns string
+        return CommandMsg
     endfunction
 
     function GetArgs takes integer inPos returns string
-
+        return 
     endfunction
     
     function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
         local integer hashKey = StringHash(inCommand)
 
         if hashKey == 0 then
-
+            debug 
             return
         endif
         
         if Map[0].has(hashKey) then
-
+            debug 
             return
         endif
 
@@ -43,7 +47,10 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
         
-        call OnCallback(Map[0].boolexpr[hashKey]
+        set CommandPlayer = GetTriggerPlayer()
+        set CommandMsg = 
+
+        call OnCallback(Map[0].boolexpr[hashKey])
         return false
     endfunction
 
