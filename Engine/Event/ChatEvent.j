@@ -4,8 +4,9 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         private player CommandPlayer = null
         private string array CommandMsgArray
         private integer ArgsCount
+        private integer MinLength = 0
 
-        private HashTable Map
+        private Table Map
     endglobals
 
     function GetChatPlayer takes nothing returns player
@@ -32,23 +33,40 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
         
-        if Map[0].has(hashKey) then
+        if Map.has(hashKey) then
             debug 
             return
         endif
 
-        set Map[0].boolexpr[hashKey] = inCallback
+        if 
+
+        set Map.boolexpr[hashKey] = inCallback
     endfunction
 
     private 
 
     private function Action takes nothing returns boolean
-        //@ TODO 커맨드 구하기
-        local msg = GetEventPlayerChatString()
-        local length = StringLength(msg)
-        
+        local string msg = GetEventPlayerChatString()
+        local integer length = StringLength(msg)
+        local integer eof = 0
+        local integer start = 0
+        local integer end
+        local string tmp
+
         local integer hashKey = 0 // = //StringHash(inCommand)
         
+
+        loop
+            exitwhen eof == length
+
+            set tmp = SubString(msg, eof, eof + 1)
+            if tmp == " " then
+            
+            endif
+
+            set eof = eof + 1
+        endloop
+
         /*
                 local boolean rsta = false
                 local integer ddx = 0
@@ -85,7 +103,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
 
-        if Map[0].has(hashKey) == false then
+        if Map.has(hashKey) == false then
             return
         endif
         
@@ -94,7 +112,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         set CommandPlayer = GetTriggerPlayer()
         //set CommandMsgArray = 
 
-        call OnCallback(Map[0].boolexpr[hashKey])
+        call OnCallback(Map.boolexpr[hashKey])
         return false
     endfunction
 
@@ -108,7 +126,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             call TriggerRegisterPlayerChatEvent(trig, Player(i), "", false)
         endloop
 
-        set ChatHashTable = HashTable.create()
+        set Map = Table.create()
 
         set trig = null
     endfunction
