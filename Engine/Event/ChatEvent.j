@@ -4,7 +4,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         private player CommandPlayer = null
         private string array CommandMsgArray
         private integer ArgsCount
-        private integer MinLength = 0
+        private integer MinLength = 2147483647;
 
         private Table Map
     endglobals
@@ -27,8 +27,9 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     
     function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
         local integer hashKey = StringHash(inCommand)
+        local integer length = StringLength(inCommand)
 
-        if hashKey == 0 then
+        if length == 0 then
             debug 
             return
         endif
@@ -38,7 +39,9 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
 
-        if 
+        if MinLength > length then
+            set MinLength = length
+        endif 
 
         set Map.boolexpr[hashKey] = inCallback
     endfunction
