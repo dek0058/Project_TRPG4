@@ -3,6 +3,8 @@ library MainThread initializer Start uses MainDefine, ShotEvent
     globals
         private real GameTime = 0.00
         private integer State = 0
+
+        private boolean IsIntiailize = false
     endglobals
 
     
@@ -44,20 +46,16 @@ library MainThread initializer Start uses MainDefine, ShotEvent
     // [ToolTip] 게임 초기화
     private function OnInitialize takes nothing returns nothing
         set ShotEventList = TArrayShotEvent.create()
-        
-        
-        // 임시 우선 초기화에 사용되는 리소스가 없으므로...
+        call Main.evaluate()
         call SetGameState(GAMESTATE_PLAYING)
     endfunction
-
-
 
     private function Update takes nothing returns nothing
         local ShotEvent tmpShotEvent
         
         if State == GAMESTATE_INITIALIZE then
-            // 기본 초기화
             call OnInitialize()
+            call SetGameState(GAMESTATE_PLAYING)
         elseif State == GAMESTATE_PLAYING then
             set GameTime = GameTime + DeltaTime
 

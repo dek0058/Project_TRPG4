@@ -21,7 +21,7 @@
 //! import "Engine\UnitGroup.j"
 
 // Engine Event Jass
-// import "Engine\Event\ChatEvent.j"
+//! import "Engine\Event\ChatEvent.j"
 //! import "Engine\Event\ShotEvent.j"
 
 // Engine Path Jass
@@ -31,3 +31,7 @@
 
 // Test
 // import "Test\HandleProfiler.j"
+
+
+// TRPG4
+//! import "TRPG4\TRPG4.j"
