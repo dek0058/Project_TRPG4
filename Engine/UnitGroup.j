@@ -13,6 +13,13 @@ library UnitGroup uses Alloc
         return false
     endfunction
 
+    private function OnSelectedUnit takes nothing returns boolean
+        local unit u = GetFilterUnit()
+        
+        set u = null
+        return true
+    endfunction
+
     struct UnitGroup extends array
         implement Alloc
 
@@ -54,6 +61,10 @@ library UnitGroup uses Alloc
             set count = 0
             call ForGroup(unitGroup, function CalcCount)
             return count
+        endmethod
+
+        method UpdateSelectedUnit takes player inPlayer returns nothing
+            call GroupEnumUnitsSelected(unitGroup, inPlayer, Filter(function OnSelectedUnit))
         endmethod
 
         method GetGroup takes nothing returns thistype

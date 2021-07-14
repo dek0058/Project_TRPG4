@@ -44,6 +44,10 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             return unitGroup
         endmethod
 
+        method GetSelectedUnitGroup takes nothing returns UnitGroup
+            return selectGroup
+        endmethod
+
         method RegisterUnit takes unit inUnit returns nothing
             call unitGroup.Add(inUnit)
         endmethod
@@ -56,10 +60,15 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             call unitGroup.Execute(inCallback)
         endmethod
         
+        method UpdateSelectedUnitGroup takes nothing returns nothing
+            call selectGroup.UpdateSelectedUnit(gamePlayer)
+        endmethod
+
     endstruct
     
     private function OnSelected takes nothing returns nothing
-        local player localPlayer = GetTriggerPlayer()
+        local Controller gameController = Controller[GetTriggerPlayer()]
+        call gameController.UpdateSelectedUnitGroup()
     endfunction
 
     private function Start takes nothing returns nothing

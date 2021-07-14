@@ -14,6 +14,5 @@ library Main initializer Start
 
 
     private function Start takes nothing returns nothing
-        set Map = Table.create()
     endfunction
 endlibrary

@@ -25,12 +25,12 @@ library CommandManager uses ChatEvent
 
     private function OnCommand takes nothing returns boolean
         local integer hashKey
-
+        
         if GetArgsCount() < 2 then
             return false
         endif
 
-        set hashKey = StringHash(GetArgs[1])
+        set hashKey = StringHash(GetArgs(1))
         if not Map.boolexpr.has(hashKey) then
             return false
         endif
