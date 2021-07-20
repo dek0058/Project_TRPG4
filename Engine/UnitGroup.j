@@ -15,7 +15,6 @@ library UnitGroup uses Alloc
 
     private function OnSelectedUnit takes nothing returns boolean
         local unit u = GetFilterUnit()
-        
         set u = null
         return true
     endfunction
@@ -61,6 +60,12 @@ library UnitGroup uses Alloc
             set count = 0
             call ForGroup(unitGroup, function CalcCount)
             return count
+        endmethod
+
+        method Pop takes nothing returns unit
+            local unit u = FirstOfGroup(unitGroup)
+            call GroupRemoveUnit(unitGroup, u)
+            return u
         endmethod
 
         method UpdateSelectedUnit takes player inPlayer returns nothing

@@ -22,7 +22,8 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     endfunction
     
     function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
-        local integer hashKey = StringHash(inCommand)
+        local string cmd = StringCase(inCommand, false)
+        local integer hashKey = StringHash(cmd)
         local integer length = StringLength(inCommand)
 
         if length == 0 then
@@ -37,8 +38,9 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
 
         if MinLength > length then
             set MinLength = length
-        endif 
+        endif
 
+        debug call WriteLog("Engine", "ChatEvent", "AddChatEvent", inCommand)
         set Map.boolexpr[hashKey] = inCallback
     endfunction
 
@@ -82,7 +84,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return false
         endif
 
-        set hashKey = StringHash(CommandMsgArray[0])
+        set hashKey = StringHash(StringCase(CommandMsgArray[0], false))
 
         if hashKey == 0 then
             return false

@@ -229,7 +229,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             set actors = TArrayActor.create()
             set tick = FTick.create(this, DeltaTime)
 
-            call Active()
+            set isActive = false
 
             return this
         endmethod
@@ -255,7 +255,6 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
             set i = i - 1
             loop
-                exitwhen i == 0
                 if actors[i].IsValid() then
                     call PhysForce(actors[i])
                     call PhysVelocity(actors[i])
@@ -269,6 +268,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
                     call Remove(actors[i])
                 endif
                 set i = i - 1
+                exitwhen i < 0
             endloop
         endmethod
 
@@ -293,8 +293,12 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         endmethod
 
         method Add takes Actor inActor returns nothing
+            local boolean Reactive = Count() == 0
             call actors.Push(inActor)
             set inActor.isPhysical = true
+            if Reactive == true then
+                call Active()
+            endif
         endmethod
 
         method Remove takes Actor inActor returns nothing
@@ -322,24 +326,26 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             exitwhen PhysicalQueue.IsEmpty()
             set actor = PhysicalQueue.Back()
             call PhysicalQueue.Pop()
-            if actor.isPhysical == false then
-                set isFull = false
-                loop
-                    if i == RoomCount then
-                        set isFull = true
-                        exitwhen true
-                    endif
-                    if Rooms[i].Count() < Capacity then
-                        call Rooms[i].Add(actor)
-                        call Rooms[i].Active()
-                        exitwhen true
-                    endif
-                    set i = i + 1
-                endloop
 
-                if isFull == true then
-                    set room = Room.create()
-                    call room.Add(actor)
+            if actor.IsValid() == true then
+                if actor.isPhysical == false then
+                    set isFull = false
+                    loop
+                        if i == RoomCount then
+                            set isFull = true
+                            exitwhen true
+                        endif
+                        if Rooms[i].Count() < Capacity then
+                            call Rooms[i].Add(actor)
+                            exitwhen true
+                        endif
+                        set i = i + 1
+                    endloop
+
+                    if isFull == true then
+                        set room = Room.create()
+                        call room.Add(actor)
+                    endif
                 endif
             endif
         endloop

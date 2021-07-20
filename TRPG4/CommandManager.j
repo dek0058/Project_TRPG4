@@ -1,14 +1,14 @@
 library CommandManager uses ChatEvent
 
     globals
-
         private Table Map
     endglobals
 
 
     function AddCommand takes string inCommand, boolexpr inCallback returns nothing
-        local integer hashKey = StringHash(inCommand)
-        local integer length = StringLength(inCommand)
+        local string cmd = StringCase(inCommand, false)
+        local integer hashKey = StringHash(cmd)
+        local integer length = StringLength(cmd)
 
         if length == 0 then
             debug call ThrowWarning(true, "Main", "AddCommand", "", 0, "명령어가 없습니다. [" + inCommand + "]")
@@ -20,6 +20,7 @@ library CommandManager uses ChatEvent
             return
         endif
 
+        debug call WriteLog("TRPG4", "CommandManager", "AddCommand", inCommand)
         set Map.boolexpr[hashKey] = inCallback
     endfunction
 
@@ -30,7 +31,8 @@ library CommandManager uses ChatEvent
             return false
         endif
 
-        set hashKey = StringHash(GetArgs(1))
+        set hashKey = StringHash(StringCase(GetArgs(1), false))
+
         if not Map.boolexpr.has(hashKey) then
             return false
         endif
@@ -40,6 +42,10 @@ library CommandManager uses ChatEvent
     endfunction
 
     function InitCommandManager takes nothing returns nothing
+        set Map = Table.create()
+
         call AddChatEvent("cmd", Filter(function OnCommand))
+
+        call InitUnitCommonCmd.evaluate()
     endfunction
 endlibrary

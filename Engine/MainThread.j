@@ -17,6 +17,7 @@ library MainThread initializer Start uses MainDefine, ShotEvent
     endglobals
 
     function SetGameState takes integer inState returns nothing
+        debug call WriteLog("Engine", "MainThread", "SetGameState", I2S(inState))
         set State = inState
     endfunction
 
@@ -45,6 +46,7 @@ library MainThread initializer Start uses MainDefine, ShotEvent
 
     // [ToolTip] 게임 초기화
     private function OnInitialize takes nothing returns nothing
+        debug call WriteLog("Engine", "MainThread", "OnInitialize", "Calling")
         set ShotEventList = TArrayShotEvent.create()
         call Main.evaluate()
         call SetGameState(GAMESTATE_PLAYING)

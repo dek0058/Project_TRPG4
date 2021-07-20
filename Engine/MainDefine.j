@@ -9,6 +9,8 @@ library MainDefine initializer Start
         constant real WaterHeight = 38.4
         
         constant real MaxMoveSpeed = 522.00
+
+        constant integer DefaultPlayerIndex = 16
     endglobals
     //
 
@@ -24,12 +26,17 @@ library MainDefine initializer Start
     globals
         location DynamicLocation
         trigger DynamicTrigger
+
+        private triggercondition PreviousAction = null
     endglobals
     //
 
 
 
     // @로그
+    function WriteLog takes string inType, string inParent, string inChild, string inValue returns nothing
+        call JNWriteLog("[" + inType + "][" + inParent + "][" + inChild +"]" + inValue)
+    endfunction
     //! textmacro CreateLog takes STRUCT, VALUE
         debug call JNWriteLog("Create $STRUCT$ [" + I2S($VALUE$) + "]")
     //! endtextmacro
@@ -57,10 +64,19 @@ library MainDefine initializer Start
 
     // @Callback Function
     function OnCallback takes boolexpr inCallback returns nothing
-        local triggercondition temp = TriggerAddCondition(DynamicTrigger, inCallback)
+        if PreviousAction == null then
+            set PreviousAction = TriggerAddCondition(DynamicTrigger, inCallback)
+        else
+            call TriggerRemoveCondition(DynamicTrigger, PreviousAction)
+            set PreviousAction = TriggerAddCondition(DynamicTrigger, inCallback)
+        endif
+
         call TriggerEvaluate(DynamicTrigger)
-        call TriggerRemoveCondition(DynamicTrigger, temp)
-        set temp = null
+
+        if PreviousAction != null then
+            call TriggerRemoveCondition(DynamicTrigger, PreviousAction)
+            set PreviousAction = null
+        endif
     endfunction
     //
 

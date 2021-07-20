@@ -63,27 +63,14 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         method UpdateSelectedUnitGroup takes nothing returns nothing
             call selectGroup.UpdateSelectedUnit(gamePlayer)
         endmethod
-
     endstruct
-    
-    private function OnSelected takes nothing returns nothing
-        local Controller gameController = Controller[GetTriggerPlayer()]
-        call gameController.UpdateSelectedUnitGroup()
-    endfunction
 
     private function Start takes nothing returns nothing
-        local trigger trig = CreateTrigger()
         local integer i = 0
-
-        call TriggerAddAction(trig, function OnSelected)
-
         loop
             exitwhen i > bj_MAX_PLAYER_SLOTS
             set controller[i] = Controller.create(i)
-            call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, null)
             set i = i + 1
         endloop
-
-        set trig = null
     endfunction
 endlibrary

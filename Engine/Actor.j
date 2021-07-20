@@ -251,6 +251,24 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set velocityZ = inValue
         endmethod
 
+        // @Common
+        method Name takes nothing returns string
+            if gameUnit == null then
+                return "None"
+            endif
+            return GetUnitName(gameUnit)
+        endmethod
+
+        method Kill takes nothing returns nothing
+            call KillUnit(gameUnit)
+        endmethod
+
+        method Remove takes nothing returns nothing
+            call KillUnit(gameUnit)
+            call ShowUnit(gameUnit, false)
+            call SetUnitOwner(gameUnit, Player(DefaultPlayerIndex), false)
+        endmethod
+
         // @Order
         method OrderPoint takes integer inId, real inX, real inY returns boolean
             return IssuePointOrderById(gameUnit, inId, inX, inY)
