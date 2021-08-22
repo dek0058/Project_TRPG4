@@ -316,7 +316,7 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
     endstruct
 
 
-    private function Update takes nothing returns boolean
+    private function UpdateAction takes nothing returns boolean
         local Actor actor
         local Room room
         local integer i = 0
@@ -350,13 +350,70 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
             endif
         endloop
 
+        if RemoveActorList.Size() > 0 then
+            set actor = RemoveActorList.Back()
+            call RemoveActorList.Pop()
+            if actor.IsValid() == true then
+                call RemoveActorList.Push(actor)
+            endif
+        endif
         return false
     endfunction
 
-    private function Start takes nothing returns nothing
+    private function OnEnterUnitAction takes nothing returns nothing
+        local unit actor = GetTriggerUnit()
+        local integer i = 0
+        call Actor.RegisterUnit(GetTriggerUnit())
+        set CreateUnitId = GetUnitTypeId(actor)
+        loop
+            exitwhen i >= CreateUnitEventList.Size()
+            call CreateUnitEventList[i].Execute()
+            set i = i + 1
+        endloop
+        set actor = null
+    endfunction
+
+    private function OnAllocateUnitCondition takes nothing returns boolean
+        local unit actor = GetFilterUnit()
+        local integer i = 0
+        call Actor.RegisterUnit(GetFilterUnit())
+        set CreateUnitId = GetUnitTypeId(actor)
+        loop
+            exitwhen i >= CreateUnitEventList.Size()
+            call CreateUnitEventList[i].Execute()
+            set i = i + 1
+        endloop
+        set actor = null
+        return false
+    endfunction
+
+     private function OnPostAllocateTrigger takes nothing returns nothing
         local trigger trig = CreateTrigger()
-        call TriggerAddCondition(trig, function Update)
+        local region rectRegion = CreateRegion()
+        call RegionAddRect(rectRegion, GetWorldBounds())
+        call TriggerAddAction(trig, function OnEnterUnitAction)
+        call TriggerRegisterEnterRegion(trig, rectRegion, null)
+        set trig = null
+        set rectRegion = null
+    endfunction
+
+    private function OnPreAllocateTrigger takes nothing returns nothing
+        local group allocateGroup = CreateGroup()
+        call GroupEnumUnitsInRect(allocateGroup, GetWorldBounds(), Filter(function OnAllocateUnitCondition))
+        call DestroyGroup(allocateGroup)
+        set allocateGroup = null
+    endfunction
+
+    private function OnUpdateActorTrigger takes nothing returns nothing
+        local trigger trig = CreateTrigger()
+        call TriggerAddCondition(trig, function UpdateAction)
         call TriggerRegisterTimerEvent(trig, DeltaTime, true)
         set trig = null
+    endfunction
+
+    private function Start takes nothing returns nothing
+        call OnUpdateActorTrigger()
+        call OnPreAllocateTrigger()
+        call OnPostAllocateTrigger()
     endfunction
 endlibrary

@@ -86,48 +86,6 @@ globals
     constant integer JN_WEAPON_SOUND_ROCK_HEAVY_BASH    = 23
 endglobals
 
-static if REFORGED_MODE then
-    native BlzGetUnitMaxHP takes unit whichUnit returns integer
-    native BlzSetUnitMaxHP takes unit whichUnit, integer hp returns nothing
-
-    native BlzGetUnitMaxMana takes unit whichUnit returns integer
-    native BlzSetUnitMaxMana takes unit whichUnit, integer mana returns nothing
-
-    native BlzGetUnitArmor takes unit whichUnit returns real
-    native BlzSetUnitArmor takes unit whichUnit, real armorAmount returns nothing
-
-    native BlzPauseUnitEx takes unit whichUnit, boolean flag returns nothing
-    native BlzSetUnitFacingEx takes unit whichUnit, real facingAngle returns nothing
-
-    native BlzGetUnitDiceNumber takes unit whichUnit, integer weaponIndex returns integer
-    native BlzSetUnitDiceNumber takes unit whichUnit, integer diceNumber, integer weaponIndex returns nothing
-    native BlzGetUnitDiceSides takes unit whichUnit, integer weaponIndex returns integer
-    native BlzSetUnitDiceSides takes unit whichUnit, integer diceSides, integer weaponIndex returns nothing
-    native BlzGetUnitBaseDamage takes unit whichUnit, integer weaponIndex returns integer
-    native BlzSetUnitBaseDamage takes unit whichUnit, integer baseDamage, integer weaponIndex returns nothing
-    native BlzGetUnitAttackCooldown takes unit whichUnit, integer weaponIndex returns real
-    native BlzSetUnitAttackCooldown takes unit whichUnit, real cooldown, integer weaponIndex returns nothing
-
-    native BlzGetUnitBooleanField takes unit whichUnit, unitbooleanfield whichField returns boolean
-    native BlzGetUnitIntegerField takes unit whichUnit, unitintegerfield whichField returns integer
-    native BlzGetUnitRealField takes unit whichUnit, unitrealfield whichField returns real
-    native BlzGetUnitStringField takes unit whichUnit, unitstringfield whichField returns string
-
-    native BlzSetUnitBooleanField takes unit whichUnit, unitbooleanfield whichField, boolean value returns boolean
-    native BlzSetUnitIntegerField takes unit whichUnit, unitintegerfield whichField, integer value returns boolean
-    native BlzSetUnitRealField takes unit whichUnit, unitrealfield whichField, real value returns boolean
-    native BlzSetUnitStringField takes unit whichUnit, unitstringfield whichField, string value returns boolean
-
-    native BlzGetUnitWeaponBooleanField takes unit whichUnit, unitweaponbooleanfield whichField, integer index returns boolean
-    native BlzGetUnitWeaponIntegerField takes unit whichUnit, unitweaponintegerfield whichField, integer index returns integer
-    native BlzGetUnitWeaponRealField takes unit whichUnit, unitweaponrealfield whichField, integer index returns real
-    native BlzGetUnitWeaponStringField takes unit whichUnit, unitweaponstringfield whichField, integer index returns string
-
-    native BlzSetUnitWeaponBooleanField takes unit whichUnit, unitweaponbooleanfield whichField, integer index, boolean value returns boolean
-    native BlzSetUnitWeaponIntegerField takes unit whichUnit, unitweaponintegerfield whichField, integer index, integer value returns boolean
-    native BlzSetUnitWeaponRealField takes unit whichUnit, unitweaponrealfield whichField, integer index, real value returns boolean
-    native BlzSetUnitWeaponStringField takes unit whichUnit, unitweaponstringfield whichField, integer index, string value returns boolean
-else
     //Overrided: constant native GetUnitState takes unit whichUnit, unitstate whichUnitState returns real
     //Overrided: native SetUnitState takes unit whichUnit, unitstate whichUnitState, real newVal returns nothing
 
@@ -144,573 +102,370 @@ else
     native EXSetUnitCollisionType takes boolean enable, unit u, integer t returns nothing
     native EXSetUnitMoveType takes unit u, integer t returns nothing
     native EXSetUnitFacing takes unit u, real angle returns nothing
-endif
 
-function JNGetUnitHP takes unit whichUnit returns real
-    return GetUnitState(whichUnit, UNIT_STATE_LIFE)
-endfunction
+    function JNGetUnitHP takes unit whichUnit returns real
+        return GetUnitState(whichUnit, UNIT_STATE_LIFE)
+    endfunction
 
-function JNSetUnitHP takes unit whichUnit, real hp returns nothing
-    call SetUnitState(whichUnit, UNIT_STATE_LIFE, hp)
-endfunction
+    function JNSetUnitHP takes unit whichUnit, real hp returns nothing
+        call SetUnitState(whichUnit, UNIT_STATE_LIFE, hp)
+    endfunction
 
-function JNGetUnitMana takes unit whichUnit returns real
-    return GetUnitState(whichUnit, UNIT_STATE_MANA)
-endfunction
+    function JNGetUnitMana takes unit whichUnit returns real
+        return GetUnitState(whichUnit, UNIT_STATE_MANA)
+    endfunction
 
-function JNSetUnitMana takes unit whichUnit, real mana returns nothing
-    call SetUnitState(whichUnit, UNIT_STATE_MANA, mana)
-endfunction
+    function JNSetUnitMana takes unit whichUnit, real mana returns nothing
+        call SetUnitState(whichUnit, UNIT_STATE_MANA, mana)
+    endfunction
 
-function JNGetUnitMaxHP takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return I2R(BlzGetUnitMaxHP(whichUnit))
-else
-    return GetUnitState(whichUnit, UNIT_STATE_MAX_LIFE)
-endif
-endfunction
+    function JNGetUnitMaxHP takes unit whichUnit returns real
+        return GetUnitState(whichUnit, UNIT_STATE_MAX_LIFE)
+    endfunction
 
-function JNSetUnitMaxHP takes unit whichUnit, real hp returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitMaxHP(whichUnit, S2I(R2S(hp)))
-else
-    call SetUnitState(whichUnit, UNIT_STATE_MAX_LIFE, hp)
-endif
-endfunction
+    function JNSetUnitMaxHP takes unit whichUnit, real hp returns nothing
+        call SetUnitState(whichUnit, UNIT_STATE_MAX_LIFE, hp)
+    endfunction
 
-function JNGetUnitMaxMana takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return I2R(BlzGetUnitMaxMana(whichUnit))
-else
-    return GetUnitState(whichUnit, UNIT_STATE_MAX_MANA)
-endif
-endfunction
+    function JNGetUnitMaxMana takes unit whichUnit returns real
+        return GetUnitState(whichUnit, UNIT_STATE_MAX_MANA)
+    endfunction
 
-function JNSetUnitMaxMana takes unit whichUnit, real mana returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitMaxMana(whichUnit, S2I(R2S(mana)))
-else
-    call SetUnitState(whichUnit, UNIT_STATE_MAX_MANA, mana)
-endif
-endfunction
+    function JNSetUnitMaxMana takes unit whichUnit, real mana returns nothing
+        call SetUnitState(whichUnit, UNIT_STATE_MAX_MANA, mana)
+    endfunction
 
-function JNGetUnitArmor takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return BlzGetUnitArmor(whichUnit)
-else
-    return GetUnitState(whichUnit, ConvertUnitState($20))
-endif
-endfunction
+    function JNGetUnitArmor takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($20))
+    endfunction
 
-function JNSetUnitArmor takes unit whichUnit, real armorAmount returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitArmor(whichUnit, armorAmount)
-else
-    call SetUnitState(whichUnit, ConvertUnitState($20), armorAmount)
-endif
-endfunction
+    function JNSetUnitArmor takes unit whichUnit, real armorAmount returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($20), armorAmount)
+    endfunction
 
-function JNPauseUnit takes unit whichUnit, boolean flag returns nothing
-static if REFORGED_MODE then
-    call BlzPauseUnitEx(whichUnit, flag)
-else
-    call EXPauseUnit(whichUnit, flag)
-endif
-endfunction
+    function JNPauseUnit takes unit whichUnit, boolean flag returns nothing
+        call EXPauseUnit(whichUnit, flag)
+    endfunction
 
-function JNSetUnitFacing takes unit whichUnit, real facingAngle returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitFacingEx(whichUnit, facingAngle)
-else
-    call EXSetUnitFacing(whichUnit, facingAngle)
-endif
-endfunction
-
-function JNGetUnitDefenseType takes unit whichUnit returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitIntegerField(whichUnit, UNIT_IF_DEFENSE_TYPE)
-else
-    return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($50))))
-endif
-endfunction
-
-function JNSetUnitDefenseType takes unit whichUnit, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitIntegerField(whichUnit, UNIT_IF_DEFENSE_TYPE, value)
-else
-    call SetUnitState(whichUnit, ConvertUnitState($50), value)
-endif
-endfunction
-
-function JNGetUnitRateOfFire takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return 0.
-else
-    return GetUnitState(whichUnit, ConvertUnitState($51))
-endif
-endfunction
-
-function JNSetUnitRateOfFire takes unit whichUnit, real value returns nothing
-static if REFORGED_MODE then
-    // TODO
-else
-    call SetUnitState(whichUnit, ConvertUnitState($51), value)
-endif
-endfunction
-
-function JNGetUnitAcquistionRange takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return BlzGetUnitRealField(whichUnit, UNIT_RF_ACQUISITION_RANGE)
-else
-    return GetUnitState(whichUnit, ConvertUnitState($52))
-endif
-endfunction
-
-function JNSetUnitAcquistionRange takes unit whichUnit, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitRealField(whichUnit, UNIT_RF_ACQUISITION_RANGE, value)
-else
-    call SetUnitState(whichUnit, ConvertUnitState($52), value)
-endif
-endfunction
-
-function JNGetUnitHPRegen takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return BlzGetUnitRealField(whichUnit, UNIT_RF_HIT_POINTS_REGENERATION_RATE)
-else
-    return GetUnitState(whichUnit, ConvertUnitState($53))
-endif
-endfunction
-
-function JNSetUnitHPRegen takes unit whichUnit, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitRealField(whichUnit, UNIT_RF_HIT_POINTS_REGENERATION_RATE, value)
-else
-    // Revive required
-    call SetUnitState(whichUnit, ConvertUnitState($53), value)
-endif
-endfunction
-
-function JNGetUnitManaRegen takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return BlzGetUnitRealField(whichUnit, UNIT_RF_MANA_REGENERATION)
-else
-    return GetUnitState(whichUnit, ConvertUnitState($54))
-endif
-endfunction
-
-function JNSetUnitManaRegen takes unit whichUnit, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitRealField(whichUnit, UNIT_RF_MANA_REGENERATION, value)
-else
-    // Revive required
-    call SetUnitState(whichUnit, ConvertUnitState($54), value)
-endif
-endfunction
-
-function JNGetUnitMinRange takes unit whichUnit returns real
-static if REFORGED_MODE then
-    return BlzGetUnitRealField(whichUnit, UNIT_RF_MINIMUM_ATTACK_RANGE)
-else
-    return GetUnitState(whichUnit, ConvertUnitState($55))
-endif
-endfunction
-
-function JNSetUnitMinRange takes unit whichUnit, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitRealField(whichUnit, UNIT_RF_MINIMUM_ATTACK_RANGE, value)
-else
-    call SetUnitState(whichUnit, ConvertUnitState($55), value)
-endif
-endfunction
-
-function JNGetUnitTargetType takes unit whichUnit returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitIntegerField(whichUnit, UNIT_IF_TARGETED_AS)
-else
-    return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($60))))
-endif
-endfunction
-
-function JNSetUnitTargetType takes unit whichUnit, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitIntegerField(whichUnit, UNIT_IF_TARGETED_AS, value)
-else
-    call SetUnitState(whichUnit, ConvertUnitState($60), value)
-endif
-endfunction
-
-function JNGetUnitDiceNumber takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitDiceNumber(whichUnit, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($10))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($30))))
-    endif
-    return 0
-endif
-endfunction
-
-function JNSetUnitDiceNumber takes unit whichUnit, integer diceNumber, integer weaponIndex returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitDiceNumber(whichUnit, diceNumber, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($10), diceNumber)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($30), diceNumber)
-    endif
-endif
-endfunction
-
-function JNGetUnitDiceSides takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitDiceSides(whichUnit, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($11))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($31))))
-    endif
-    return 0
-endif
-endfunction
-
-function JNSetUnitDiceSides takes unit whichUnit, integer diceSides, integer weaponIndex returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitDiceSides(whichUnit, diceSides, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($11), diceSides)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($31), diceSides)
-    endif
-endif
-endfunction
-
-function JNGetUnitBaseDamage takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitBaseDamage(whichUnit, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($12))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($32))))
-    endif
-    return 0
-endif
-endfunction
-
-function JNSetUnitBaseDamage takes unit whichUnit, integer baseDamage, integer weaponIndex returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitBaseDamage(whichUnit, baseDamage, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($12), baseDamage)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($32), baseDamage)
-    endif
-endif
-endfunction
-
-function JNGetUnitAttackCooldown takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitAttackCooldown(whichUnit, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($25))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($38))
-    endif
-    return 0.
-endif
-endfunction
-
-function JNSetUnitAttackCooldown takes unit whichUnit, real cooldown, integer weaponIndex returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitAttackCooldown(whichUnit, cooldown, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($25), cooldown)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($38), cooldown)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackSound takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_WEAPON_SOUND, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($22))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($35))))
-    endif
-    return 0
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackSound takes unit whichUnit, integer weaponIndex, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_WEAPON_SOUND, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($22), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($35), value)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackType takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($23))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($36))))
-    endif
-    return 0
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackType takes unit whichUnit, integer weaponIndex, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_ATTACK_TYPE, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($23), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($36), value)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackMaxTarget takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_MAXIMUM_NUMBER_OF_TARGETS, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($24))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($37))))
-    endif
-    return 0
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackMaxTarget takes unit whichUnit, integer weaponIndex, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_MAXIMUM_NUMBER_OF_TARGETS, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($24), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($37), value)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackTargetType takes unit whichUnit, integer weaponIndex returns integer
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_TARGETS_ALLOWED, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($29))))
-    elseif weaponIndex == 2 then
-        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($45))))
-    endif
-    return 0
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackTargetType takes unit whichUnit, integer weaponIndex, integer value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponIntegerField(whichUnit, UNIT_WEAPON_IF_ATTACK_TARGETS_ALLOWED, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($29), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($45), value)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackLossDamage takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_LOSS_FACTOR, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($21))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($34))
-    endif
-    return 0.
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackLossDamage takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_LOSS_FACTOR, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($21), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($34), value)
-    endif
-endif
-endfunction
-
-//Unsafe
-function JNGetUnitAttackRange takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_RANGE, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($16))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($40))
-    endif
-    return 0.
-endif
-endfunction
-
-//Unsafe
-function JNSetUnitAttackRange takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    if weaponIndex == 1 then
-        call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_RANGE, 1, BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_RANGE, 1) - BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_RANGE, 0) + value)
+    function JNSetUnitFacing takes unit whichUnit, real facingAngle returns nothing
+    static if REFORGED_MODE then
+        call BlzSetUnitFacingEx(whichUnit, facingAngle)
     else
-        call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_RANGE, weaponIndex, value)
+        call EXSetUnitFacing(whichUnit, facingAngle)
     endif
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($16), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($40), value)
-    endif
-endif
-endfunction
+    endfunction
 
-//Unsafe
-function JNGetUnitAttackSpillDistance takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_SPILL_DISTANCE, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($56))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($46))
-    endif
-    return 0.
-endif
-endfunction
+    function JNGetUnitDefenseType takes unit whichUnit returns integer
+        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($50))))
+    endfunction
 
-//Unsafe
-function JNSetUnitAttackSpillDistance takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_SPILL_DISTANCE, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($56), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($46), value)
-    endif
-endif
-endfunction
+    function JNSetUnitDefenseType takes unit whichUnit, integer value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($50), value)
+    endfunction
 
-//Unsafe
-function JNGetUnitAttackSpillRadius takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_SPILL_RADIUS, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($57))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($47))
-    endif
-    return 0.
-endif
-endfunction
+    function JNGetUnitRateOfFire takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($51))
+    endfunction
 
-//Unsafe
-function JNSetUnitAttackSpillRadius takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_SPILL_RADIUS, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($57), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($47), value)
-    endif
-endif
-endfunction
+    function JNSetUnitRateOfFire takes unit whichUnit, real value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($51), value)
+    endfunction
 
-//Unsafe
-function JNGetUnitAttackBackswing takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_BACKSWING_POINT, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($28))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($44))
-    endif
-    return 0.
-endif
-endfunction
+    function JNGetUnitAcquistionRange takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($52))
+    endfunction
 
-//Unsafe
-function JNSetUnitAttackBackswing takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_BACKSWING_POINT, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($28), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($44), value)
-    endif
-endif
-endfunction
+    function JNSetUnitAcquistionRange takes unit whichUnit, real value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($52), value)
+    endfunction
 
-//Unsafe
-function JNGetUnitAttackDamagePoint takes unit whichUnit, integer weaponIndex returns real
-static if REFORGED_MODE then
-    return BlzGetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_POINT, weaponIndex - 1)
-else
-    if weaponIndex == 1 then
-        return GetUnitState(whichUnit, ConvertUnitState($26))
-    elseif weaponIndex == 2 then
-        return GetUnitState(whichUnit, ConvertUnitState($39))
-    endif
-    return 0.
-endif
-endfunction
+    function JNGetUnitHPRegen takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($53))
+    endfunction
 
-//Unsafe
-function JNSetUnitAttackDamagePoint takes unit whichUnit, integer weaponIndex, real value returns nothing
-static if REFORGED_MODE then
-    call BlzSetUnitWeaponRealField(whichUnit, UNIT_WEAPON_RF_ATTACK_DAMAGE_POINT, weaponIndex - 1, value)
-else
-    if weaponIndex == 1 then
-        call SetUnitState(whichUnit, ConvertUnitState($26), value)
-    elseif weaponIndex == 2 then
-        call SetUnitState(whichUnit, ConvertUnitState($39), value)
-    endif
-endif
-endfunction
+    function JNSetUnitHPRegen takes unit whichUnit, real value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($53), value)
+    endfunction
+
+    function JNGetUnitManaRegen takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($54))
+    endfunction
+
+    function JNSetUnitManaRegen takes unit whichUnit, real value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($54), value)
+    endfunction
+
+    function JNGetUnitMinRange takes unit whichUnit returns real
+        return GetUnitState(whichUnit, ConvertUnitState($55))
+    endfunction
+
+    function JNSetUnitMinRange takes unit whichUnit, real value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($55), value)
+    endfunction
+
+    function JNGetUnitTargetType takes unit whichUnit returns integer
+        return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($60))))
+    endfunction
+
+    function JNSetUnitTargetType takes unit whichUnit, integer value returns nothing
+        call SetUnitState(whichUnit, ConvertUnitState($60), value)
+    endfunction
+
+    function JNGetUnitDiceNumber takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($10))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($30))))
+        endif
+        return 0
+    endfunction
+
+    function JNSetUnitDiceNumber takes unit whichUnit, integer diceNumber, integer weaponIndex returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($10), diceNumber)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($30), diceNumber)
+        endif
+    endfunction
+
+    function JNGetUnitDiceSides takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($11))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($31))))
+        endif
+        return 0
+    endfunction
+
+    function JNSetUnitDiceSides takes unit whichUnit, integer diceSides, integer weaponIndex returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($11), diceSides)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($31), diceSides)
+        endif
+    endfunction
+
+    function JNGetUnitBaseDamage takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($12))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($32))))
+        endif
+        return 0
+    endfunction
+
+    function JNSetUnitBaseDamage takes unit whichUnit, integer baseDamage, integer weaponIndex returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($12), baseDamage)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($32), baseDamage)
+        endif
+    endfunction
+
+    function JNGetUnitAttackCooldown takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($25))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($38))
+        endif
+        return 0.
+    endfunction
+
+    function JNSetUnitAttackCooldown takes unit whichUnit, real cooldown, integer weaponIndex returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($25), cooldown)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($38), cooldown)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackSound takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($22))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($35))))
+        endif
+        return 0
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackSound takes unit whichUnit, integer weaponIndex, integer value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($22), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($35), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackType takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($23))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($36))))
+        endif
+        return 0
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackType takes unit whichUnit, integer weaponIndex, integer value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($23), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($36), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackMaxTarget takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($24))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($37))))
+        endif
+        return 0
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackMaxTarget takes unit whichUnit, integer weaponIndex, integer value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($24), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($37), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackTargetType takes unit whichUnit, integer weaponIndex returns integer
+        if weaponIndex == 1 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($29))))
+        elseif weaponIndex == 2 then
+            return S2I(R2S(GetUnitState(whichUnit, ConvertUnitState($45))))
+        endif
+        return 0
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackTargetType takes unit whichUnit, integer weaponIndex, integer value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($29), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($45), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackLossDamage takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($21))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($34))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackLossDamage takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($21), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($34), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackRange takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($16))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($40))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackRange takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($16), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($40), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackSpillDistance takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($56))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($46))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackSpillDistance takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($56), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($46), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackSpillRadius takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($57))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($47))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackSpillRadius takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($57), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($47), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackBackswing takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($28))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($44))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackBackswing takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($28), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($44), value)
+        endif
+    endfunction
+
+    //Unsafe
+    function JNGetUnitAttackDamagePoint takes unit whichUnit, integer weaponIndex returns real
+        if weaponIndex == 1 then
+            return GetUnitState(whichUnit, ConvertUnitState($26))
+        elseif weaponIndex == 2 then
+            return GetUnitState(whichUnit, ConvertUnitState($39))
+        endif
+        return 0.
+    endfunction
+
+    //Unsafe
+    function JNSetUnitAttackDamagePoint takes unit whichUnit, integer weaponIndex, real value returns nothing
+        if weaponIndex == 1 then
+            call SetUnitState(whichUnit, ConvertUnitState($26), value)
+        elseif weaponIndex == 2 then
+            call SetUnitState(whichUnit, ConvertUnitState($39), value)
+        endif
+    endfunction
 endlibrary

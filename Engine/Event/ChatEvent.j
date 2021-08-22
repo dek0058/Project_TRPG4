@@ -4,7 +4,6 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         private player CommandPlayer = null
         private string array CommandMsgArray
         private integer ArgsCount = 0
-        private integer MinLength = 2147483647
 
         private Table Map
     endglobals
@@ -24,7 +23,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
     function AddChatEvent takes string inCommand, boolexpr inCallback returns nothing
         local string cmd = StringCase(inCommand, false)
         local integer hashKey = StringHash(cmd)
-        local integer length = StringLength(inCommand)
+        local integer length = JNStringLength(inCommand)
 
         if length == 0 then
             debug call ThrowWarning(true, "ChatEvent", "AddChatEvent", "", 0, "명령어가 없습니다. [" + inCommand + "]")
@@ -36,17 +35,13 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
             return
         endif
 
-        if MinLength > length then
-            set MinLength = length
-        endif
-
         debug call WriteLog("Engine", "ChatEvent", "AddChatEvent", inCommand)
         set Map.boolexpr[hashKey] = inCallback
     endfunction
 
     private function Action takes nothing returns boolean
         local string msg = GetEventPlayerChatString()
-        local integer length = StringLength(msg)
+        local integer length = JNStringLength(msg)
         local integer iter = 0
         local integer index = 0
 
@@ -58,22 +53,18 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
         loop
             if iter == length then
                 if iter > index then
-                    set str = SubString(msg, index, iter)
-                    if StringLength(str) >= MinLength then
-                        set CommandMsgArray[ArgsCount] = str
-                        set ArgsCount = ArgsCount + 1
-                    endif
-                endif
-                exitwhen true
-            endif
-
-            set str = SubString(msg, iter, iter + 1)
-            if str == " " then
-                set str = SubString(msg, index, iter)
-                if StringLength(str) >= MinLength then
+                    set str = JNStringSub(msg, index, length - index)
                     set CommandMsgArray[ArgsCount] = str
                     set ArgsCount = ArgsCount + 1
                 endif
+                exitwhen true
+            endif
+            
+            set str = JNStringSub(msg, iter, 1)
+            if JNStringContains(str, " ") == true then
+                set str = JNStringSub(msg, index, iter - index)
+                set CommandMsgArray[ArgsCount] = str
+                set ArgsCount = ArgsCount + 1
                 set index = iter + 1
             endif
 

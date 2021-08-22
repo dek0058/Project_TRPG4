@@ -9,6 +9,7 @@
 //! import "Extern\FVector.j"
 //! import "Extern\MathParser.j"
 //! import "Extern\Order.j"
+//! import "Extern\Regex.j"
 //! import "Extern\Table.j"
 //! import "Extern\TArray.j"
 
@@ -19,6 +20,7 @@
 //! import "Engine\MainDefine.j"
 //! import "Engine\MainThread.j"
 //! import "Engine\UnitGroup.j"
+//! import "Engine\UserWidget.j"
 
 // Engine Event Jass
 //! import "Engine\Event\ChatEvent.j"

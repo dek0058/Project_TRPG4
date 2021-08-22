@@ -11,6 +11,10 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private integer Count = 0
         Actor array Actors
         TArrayActor PhysicalQueue
+        TArrayActor RemoveActorList
+
+        private trigger array RemoveTriggerArray
+        private triggeraction array RemoveTriggerActionArray
     endglobals
 
     private function HasPointer takes integer inIndex returns boolean
@@ -45,6 +49,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
         readonly real defaultFly
         readonly real deafultSpeed
+        //
 
         // @Physical
         real velocityX
@@ -60,6 +65,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         real locFriction
 
         boolean isPhysical
+        //
+
+        // @etc
+        readonly integer RecKey
+        //
 
         static method AllocCount takes nothing returns integer
             return Count
@@ -69,20 +79,32 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             return GetPointer(GetHandleId(inUnit))
         endmethod
 
-        static method operator Register= takes unit inUnit returns thistype
+        static method IsRegisterUnit takes unit inUnit returns boolean
+            return HasPointer(GetHandleId(inUnit))
+        endmethod
+
+        private static method OnDeathAction takes nothing returns nothing
+            local thistype actor = Actor[GetTriggerUnit()]
+            if actor.IsValid() == true then
+                call RemoveActorList.Push(actor)
+            endif
+        endmethod
+
+        static method RegisterUnit takes unit inUnit returns thistype
             local thistype this = 0
 
             if GetHandleId(inUnit) == 0 then
                 return 0
             endif
 
-            if HasPointer(GetHandleId(inUnit)) then
+            if IsRegisterUnit(inUnit) then
                 return Actor[inUnit]
             endif
 
             if WaitingActorList.Size() == 0 then
                 set this = allocate()
-                set Actors[Count] = this
+                set RecKey = Count
+                set Actors[RecKey] = this
                 set Count = Count + 1
                 //! runtextmacro CreateLog("Register Actor", "this")
             else
@@ -94,7 +116,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set gameUnit = inUnit
             set defaultFly = GetUnitDefaultFlyHeight(gameUnit)
             call Register()
-
             return this
         endmethod
 
@@ -103,7 +124,8 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
             if WaitingActorList.Size() == 0 then
                 set this = allocate()
-                set Actors[Count] = this
+                set RecKey = Count
+                set Actors[RecKey] = this
                 set Count = Count + 1
                 //! runtextmacro CreateLog("Actor", "this")
             else
@@ -116,7 +138,6 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             set defaultFly = inZ
             call Register()
             call SetUnitFlyHeight(gameUnit, defaultFly, 0.00)
-
             return this
         endmethod
 
@@ -125,6 +146,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             call WaitingActorList.Push(this)
             set gameUnit = null
             set controller = 0
+
+            call TriggerRemoveAction(RemoveTriggerArray[RecKey], RemoveTriggerActionArray[RecKey])
+            set RemoveTriggerActionArray[RecKey] = null
+            call DestroyTrigger(RemoveTriggerArray[RecKey])
+            set RemoveTriggerArray[RecKey] = null
         endmethod
 
         method Value takes nothing returns unit
@@ -132,6 +158,10 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         private method Register takes nothing returns nothing
+            if IsRegisterUnit(gameUnit) then
+                return
+            endif
+
             set controller = Controller[GetOwningPlayer(gameUnit)]
             call controller.RegisterUnit(gameUnit)
 
@@ -162,11 +192,15 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
                 call UnitAddAbility(gameUnit, FLYING_ABILITY)
                 call UnitRemoveAbility(gameUnit, FLYING_ABILITY)
             endif
+
+            set RemoveTriggerArray[RecKey] = CreateTrigger()
+            set RemoveTriggerActionArray[RecKey] = TriggerAddAction(RemoveTriggerArray[RecKey], function thistype.OnDeathAction)
+            call TriggerRegisterUnitEvent(RemoveTriggerArray[RecKey], gameUnit, EVENT_UNIT_DEATH)
         endmethod
 
         // @유닛 상태
         method IsValid takes nothing returns boolean
-            if gameUnit != null and GetUnitTypeId(gameUnit) == 0 then
+            if gameUnit == null or GetUnitTypeId(gameUnit) == 0 then
                 call destroy()
             endif
 
@@ -309,6 +343,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
     private function Start takes nothing returns nothing
         set WaitingActorList = TArrayActor.create()
         set PhysicalQueue = TArrayActor.create()
+        set RemoveActorList = TArrayActor.create()
         set hs = InitHashtable()
     endfunction
 endlibrary

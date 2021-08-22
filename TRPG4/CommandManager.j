@@ -8,7 +8,7 @@ library CommandManager uses ChatEvent
     function AddCommand takes string inCommand, boolexpr inCallback returns nothing
         local string cmd = StringCase(inCommand, false)
         local integer hashKey = StringHash(cmd)
-        local integer length = StringLength(cmd)
+        local integer length = JNStringLength(cmd)
 
         if length == 0 then
             debug call ThrowWarning(true, "Main", "AddCommand", "", 0, "명령어가 없습니다. [" + inCommand + "]")
@@ -42,10 +42,13 @@ library CommandManager uses ChatEvent
     endfunction
 
     function InitCommandManager takes nothing returns nothing
+        debug call WriteLog("TRPG4", "CommandManager", "InitCommandManager", "Calling")
+        
         set Map = Table.create()
 
         call AddChatEvent("cmd", Filter(function OnCommand))
 
+        call InitMasterCmd.evaluate()
         call InitUnitCommonCmd.evaluate()
     endfunction
 endlibrary

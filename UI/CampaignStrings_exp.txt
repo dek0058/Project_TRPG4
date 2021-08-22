@@ -1,0 +1,136 @@
+﻿[Index]
+// The "CampaignList" key defines the campaigns which will
+// appear on the campaign selection screen.  The values listed
+// here are the section names of the specific campaign mission data
+// below.  The order of these values is significant, as that is the
+// order in which they will appear on the campaign selection screen.
+
+CampaignList="","","","","NightElf","Human","Undead","","Orc"
+
+// The sections below make up the campaign data for each specific
+// campaign.  Each mission entry is made up of 3 comma-separated
+// strings.  In order they are: Header, Mission Name, Map Filename.
+// You can have up to 128 missions in a given campaign, but putting 
+// more than 15 will make a scrollbar appear to see the rest.
+//
+// Each campaign section can also have three cinematics associated
+// with them: Intro Cinematic, Open Cinematic, and End Cintematic.
+// The cinematic entries follow a similar pattern as the mission
+// entries: Header, Cinematic Name, Cinematic Filename.
+//
+// Using the "DefaultOpen" key, you can specify that this campaign
+// should be initially open and selectable by a new user.
+//
+// You can specify which model to use for the background, using the
+// "Background" key.  The value specified must be an entry in the
+// war3skins.txt file. Realize that this value is processed using the
+// expansion naming convention (i.e. V0, V1, etc).  You should also set 
+// the fog parameters using the "BackgroundFogXXX" keys.
+//
+// The racial cursor for the campaign can be set using the "Cursor"
+// key.  The values are as follows: Human = 0, Orc = 1, Undead = 2, 
+// Night Elf = 3.
+//      
+// Finally, you can set which ambient sound to play on this screen using
+// the "AmbientSound" key.  The value specified must be an entry in
+// the AmbienceSounds.slk file.
+
+[NightElf]
+Header="센티널 캠페인"
+Name="공포의 바다"
+DefaultOpen=1
+Background="NightElfBackdrop"
+BackgroundFogStyle=0
+BackgroundFogColor=255,102,77,77
+BackgroundFogDensity=0.5
+BackgroundFogStart=0
+BackgroundFogEnd=1700
+Cursor=3
+AmbientSound="ExpansionNightElfGlueScreenLoop"
+IntroCinematic=""
+OpenCinematic="동영상","여명","IntroX"
+EndCinematic=""
+Mission0="제 1장","나가의 출현","Maps\FrozenThrone\Campaign\NightElfX01.w3x"
+Mission1="제 2장","부서진 군도","Maps\FrozenThrone\Campaign\NightElfX02.w3x"
+Mission2="제 3장","살게라스의 무덤","Maps\FrozenThrone\Campaign\NightElfX03.w3x"
+Mission3="제 4장","반역자의 처벌","Maps\FrozenThrone\Campaign\NightElfX04.w3x"
+Mission4="막간","끝나지 않은 임무","Maps\FrozenThrone\Campaign\NightElfX04Interlude.w3x"
+Mission5="제 5장","세력의 균형","Maps\FrozenThrone\Campaign\NightElfX05.w3x"
+Mission6="제 6장","얼라이언스의 파편","Maps\FrozenThrone\Campaign\NightElfX06.w3x"
+Mission7="막간","퓨리언의 비전","Maps\FrozenThrone\Campaign\NightElfX06Interlude.w3x"
+Mission8="제 7장","달라란의 폐허","Maps\FrozenThrone\Campaign\NightElfX07.w3x"
+Mission9="제 8장","스톰레이지 형제","Maps\FrozenThrone\Campaign\NightElfX08.w3x"
+Mission10="대단원","갈림길","Maps\FrozenThrone\Campaign\NightElfX08Finale.w3x"
+
+[Human]
+Header="얼라이언스 캠페인"
+Name="블러드 엘프의 저주"
+Background="HumanBackdrop"
+BackgroundFogStyle=0
+BackgroundFogColor=255,127,51,51
+BackgroundFogDensity=0.5
+BackgroundFogStart=0
+BackgroundFogEnd=16000
+Cursor=0
+AmbientSound="ExpansionHumanGlueScreenLoop"
+IntroCinematic=""
+OpenCinematic=""
+EndCinematic=""
+Mission0="제 1장","오해","Maps\FrozenThrone\Campaign\HumanX01.w3x"
+Mission1="제 2장","어둠의 계약","Maps\FrozenThrone\Campaign\HumanX02.w3x"
+Mission2="제 3장","달라란의 던전","Maps\FrozenThrone\Campaign\HumanX03.w3x"
+Mission3="비밀 레벨","횡단","Maps\FrozenThrone\Campaign\HumanX03Secret.w3x"
+Mission4="막간","아웃랜드의 먼지","Maps\FrozenThrone\Campaign\HumanX03Interlude.w3x"
+Mission5="제 4장","일리단 수색","Maps\FrozenThrone\Campaign\HumanX04.w3x"
+Mission6="막간","일리단의 임무","Maps\FrozenThrone\Campaign\HumanX04Interlude.w3x"
+Mission7="제 5장","심연의 문","Maps\FrozenThrone\Campaign\HumanX05.w3x"
+Mission8="제 6장","아웃랜드의 황제","Maps\FrozenThrone\Campaign\HumanX06.w3x"
+Mission9="대단원","킬제덴의 명령","Maps\FrozenThrone\Campaign\HumanX06Finale.w3x"
+
+[Undead]
+Header="스콜지 캠페인"
+Name="저주의 유산"
+Background="UndeadBackdrop"
+BackgroundFogStyle=0
+BackgroundFogColor=255,178,178,204
+BackgroundFogDensity=0.5
+BackgroundFogStart=0
+BackgroundFogEnd=8000
+Cursor=2
+AmbientSound="ExpansionUndeadGlueScreenLoop"
+IntroCinematic=""
+OpenCinematic=""
+EndCinematic="동영상","승천","OutroX"
+Mission0="제 1장","아서스 왕","Maps\FrozenThrone\Campaign\UndeadX01.w3x"
+Mission1="막간","갈라진 왕국","Maps\FrozenThrone\Campaign\UndeadX01Interlude.w3x"
+Mission2="제 2장","로데론 탈출","Maps\FrozenThrone\Campaign\UndeadX02.w3x"
+Mission3="막간","실바나스의 작별","Maps\FrozenThrone\Campaign\UndeadX02Interlude.w3x"
+Mission4="제 3장","다크 레이디","Maps\FrozenThrone\Campaign\UndeadX03.w3x"
+Mission5="제 4장","노스렌드로의 회귀","Maps\FrozenThrone\Campaign\UndeadX04.w3x"
+Mission6="제 5장","드레드 로드의 추락","Maps\FrozenThrone\Campaign\UndeadX05.w3x"
+Mission7="제 6장","로데론의 새로운 힘","Maps\FrozenThrone\Campaign\UndeadX06.w3x"
+Mission8="제 7장, 1부","쉐도우 웹 동굴 속으로","Maps\FrozenThrone\Campaign\UndeadX07a.w3x"
+Mission9="제 7장, 2부","망각의 괴물","Maps\FrozenThrone\Campaign\UndeadX07b.w3x"
+Mission10="제 7장, 3부","천상의 왕국으로","Maps\FrozenThrone\Campaign\UndeadX07c.w3x"
+Mission11="막간","결단의 순간","Maps\FrozenThrone\Campaign\UndeadX07Interlude.w3x"
+Mission12="제 8장","눈과 불꽃의 향연","Maps\FrozenThrone\Campaign\UndeadX08.w3x"
+Mission13="대단원","오랜 기다림","Doodads\Cinematic\ArthasIllidanFight\ArthasIllidanFight.mdl"
+
+[Orc]
+Header="보너스 캠페인"
+Name="듀로타 건설"
+DefaultOpen=1
+Background="OrcBackdrop"
+BackgroundFogStyle=0
+BackgroundFogColor=255,76,76,102
+BackgroundFogDensity=0.5
+BackgroundFogStart=0
+BackgroundFogEnd=4500
+Cursor=1
+AmbientSound="ExpansionOrcGlueScreenLoop"
+IntroCinematic=""
+OpenCinematic=""
+EndCinematic=""
+Mission0="제 1장","영토 길들이기","Maps\FrozenThrone\Campaign\OrcX01.w3x"
+Mission1="제 2장","오랜 원한","Maps\FrozenThrone\Campaign\OrcX02.w3x",1
+Mission2="제 3장","영광의 불꽃","Maps\FrozenThrone\Campaign\OrcX03a.w3x"

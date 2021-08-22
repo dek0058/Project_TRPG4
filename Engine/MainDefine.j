@@ -9,8 +9,11 @@ library MainDefine initializer Start
         constant real WaterHeight = 38.4
         
         constant real MaxMoveSpeed = 522.00
-
+    
         constant integer DefaultPlayerIndex = 16
+
+        // @Memory
+        private integer GameDll = 0
     endglobals
     //
 
@@ -22,29 +25,42 @@ library MainDefine initializer Start
     endglobals
     //
 
+    // @ Global Array
+    globals
+        TArrayShotEvent ShotEventList
+        TArrayShotEvent CreateUnitEventList
+    endglobals
+
      // @ Dynamic Varaible
     globals
+        integer CreateUnitId
+        
         location DynamicLocation
         trigger DynamicTrigger
 
         private triggercondition PreviousAction = null
+
+        // 로컬 플레이어 전용
+        integer LocalPlayerIndex = 0
+        integer SelectUnitRecKey = 0
     endglobals
     //
 
-
-
     // @로그
     function WriteLog takes string inType, string inParent, string inChild, string inValue returns nothing
-        call JNWriteLog("[" + inType + "][" + inParent + "][" + inChild +"]" + inValue)
+        call JNWriteLog("[Shipping][" + inType + "][" + inParent + "][" + inChild +"]" + inValue)
     endfunction
     //! textmacro CreateLog takes STRUCT, VALUE
-        debug call JNWriteLog("Create $STRUCT$ [" + I2S($VALUE$) + "]")
+        debug call JNWriteLog("[Shipping]Create $STRUCT$ [" + I2S($VALUE$) + "]")
     //! endtextmacro
     //! textmacro RecyleLog takes STRUCT, VALUE
-        debug call JNWriteLog("Recyle $STRUCT$ [" + I2S($VALUE$) + "]")
+        debug call JNWriteLog("[Shipping]Recyle $STRUCT$ [" + I2S($VALUE$) + "]")
     //! endtextmacro
     //! textmacro DestroyLog takes STRUCT, VALUE
-        debug call JNWriteLog("Destroy $STRUCT$ [" + I2S($VALUE$) + "]")
+        debug call JNWriteLog("[Shipping]Destroy $STRUCT$ [" + I2S($VALUE$) + "]")
+    //! endtextmacro
+    //! textmacro MissingLog takes FUNCTION, TYPE
+        debug call JNWriteLog("[Warning][$FUNCTION$]%TYPE% is missing value")
     //! endtextmacro
     //
 
@@ -92,10 +108,32 @@ library MainDefine initializer Start
         
         return z
     endfunction
+
+    function GetGameDll takes nothing returns integer
+        if GameDll == 0 then
+            set GameDll = JNGetModuleHandle("Game.dll")
+        endif
+        return GameDll
+    endfunction
+
+    function GetLocalController takes nothing returns Controller
+        return Controller.Get(LocalPlayerIndex)
+    endfunction
+
+    function IsSingleMode takes nothing returns boolean
+        return ReloadGameCachesFromDisk() == true
+    endfunction
+
+    function IsBattleNetMode takes nothing returns boolean
+        return JNUse()
+    endfunction
     //
 
     private function Start takes nothing returns nothing
         set DynamicLocation = Location(0, 0)
         set DynamicTrigger = CreateTrigger()
+
+        set ShotEventList = TArrayShotEvent.create()
+        set CreateUnitEventList = TArrayShotEvent.create()
     endfunction
 endlibrary

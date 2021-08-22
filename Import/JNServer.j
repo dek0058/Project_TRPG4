@@ -1,5 +1,4 @@
 library JNServer
-static if not REFORGED_MODE then
     native JNUse takes nothing returns boolean
     native JNPVPUse takes string MapId, string SecretKey returns nothing
     native JNObjectCharacterInit takes string MapId, string UserId, string SecretKey, string Character returns integer
@@ -14,6 +13,7 @@ static if not REFORGED_MODE then
     native JNObjectCharacterSetReal takes string UserId, string Field, real value returns nothing
     native JNObjectCharacterGetReal takes string UserId, string Field returns real
     native JNObjectCharacterSetScore takes string UserId, integer value returns nothing
+    native JNObjectCharacterAddScore takes string UserId, integer value returns nothing
     native JNObjectCharacterResetScore takes string UserId returns nothing
     native JNObjectCharacterRemoveField takes string UserId, string Field returns nothing
     native JNObjectCharacterClearField takes string UserId returns nothing
@@ -51,10 +51,8 @@ static if not REFORGED_MODE then
     native JNSetSaveCode takes string MapId, string UserId, string SecretKey, string Character, string Code returns string
     native JNGetLoadCode takes string MapId, string UserId, string SecretKey, string Character returns string
     native JNSetLog takes string MapId, string UserId, string SecretKey, string Character, string Version, string Loging returns string
-    native JNUseUserRoleItem takes string MapId, string SecretKey, string UserId, string Character, string ItemName returns boolean
     native JNOpenBrowser takes string uri returns nothing
     native JNServerTime takes string Format returns string
     native JNServerUnixTime takes nothing returns integer
     native JNServerPluginVersion takes nothing returns integer
-endif
 endlibrary

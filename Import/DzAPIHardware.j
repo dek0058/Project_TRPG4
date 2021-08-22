@@ -160,7 +160,7 @@ globals
 	constant integer JN_OSKEY_LAUNCH_MEDIA_SELECT           = $B5
 	constant integer JN_OSKEY_LAUNCH_APP1                   = $B6
 	constant integer JN_OSKEY_LAUNCH_APP2                   = $B7
-	constant integer JN_OSKEY_OEM_1                         = $BA // 세미콜론
+	constant integer JN_OSKEY_OEM_1                         = $BA
 	constant integer JN_OSKEY_OEM_PLUS                      = $BB
 	constant integer JN_OSKEY_OEM_COMMA                     = $BC
 	constant integer JN_OSKEY_OEM_MINUS                     = $BD
@@ -203,21 +203,6 @@ globals
 	constant integer JN_OSKEY_OEM_CLEAR                     = $FE
 endglobals
 
-static if REFORGED_MODE then
-	native BlzGetTriggerPlayerMouseX takes nothing returns real
-	native BlzGetTriggerPlayerMouseY takes nothing returns real
-	native BlzGetTriggerPlayerMousePosition takes nothing returns location
-	native BlzGetTriggerPlayerMouseButton takes nothing returns mousebuttontype
-	native BlzTriggerRegisterPlayerKeyEvent takes trigger whichTrigger, player whichPlayer, oskeytype key, integer metaKey, boolean keyDown returns event
-	native BlzGetTriggerPlayerKey takes nothing returns oskeytype
-	native BlzGetTriggerPlayerMetaKey takes nothing returns integer
-	native BlzGetTriggerPlayerIsKeyDown takes nothing returns boolean
-	native BlzEnableCursor takes boolean enable returns nothing
-	native BlzSetMousePos takes integer x, integer y returns nothing
-	native BlzGetLocalClientWidth takes nothing returns integer
-	native BlzGetLocalClientHeight takes nothing returns integer
-	native BlzIsLocalClientActive takes nothing returns boolean
-else
 	native DzGetMouseTerrainX takes nothing returns real
 	native DzGetMouseTerrainY takes nothing returns real
 	native DzGetMouseTerrainZ takes nothing returns real
@@ -246,108 +231,54 @@ else
 	native DzTriggerRegisterWindowResizeEvent takes trigger trig, boolean sync, string func returns nothing
 	native DzTriggerRegisterWindowResizeEventByCode takes trigger trig, boolean sync, code funcHandle returns nothing
 	native DzIsWindowActive takes nothing returns boolean
-endif
 
-function JNGetTriggerPlayerMouseX takes nothing returns real
-static if REFORGED_MODE then
-	return BlzGetTriggerPlayerMouseX()
-else
-	return DzGetMouseTerrainX()
-endif
-endfunction
+	function JNGetTriggerPlayerMouseX takes nothing returns real
+		return DzGetMouseTerrainX()
+	endfunction
 
-function JNGetTriggerPlayerMouseY takes nothing returns real
-static if REFORGED_MODE then
-	return BlzGetTriggerPlayerMouseY()
-else
-	return DzGetMouseTerrainY()
-endif
-endfunction
+	function JNGetTriggerPlayerMouseY takes nothing returns real
+		return DzGetMouseTerrainY()
+	endfunction
 
-function JNGetTriggerPlayerMousePosition takes nothing returns location
-static if REFORGED_MODE then
-	return BlzGetTriggerPlayerMousePosition()
-else
-	return Location(DzGetMouseTerrainX(), DzGetMouseTerrainY())
-endif
-endfunction
+	function JNGetTriggerPlayerMousePosition takes nothing returns location
+		return Location(DzGetMouseTerrainX(), DzGetMouseTerrainY())
+	endfunction
 
-function JNTriggerRegisterPlayerKeyEvent takes trigger whichTrigger, player whichPlayer, integer key, integer metaKey, boolean keyDown, boolean sync returns nothing
-static if REFORGED_MODE then
-	local integer loopA = 0
-	if whichPlayer == null then
-		loop
-			call BlzTriggerRegisterPlayerKeyEvent(whichTrigger, Player(loopA), ConvertOsKeyType(key), metaKey, keyDown)
-			set loopA = loopA + 1
-			exitwhen loopA == bj_MAX_PLAYERS
-		endloop
-	else
-		call BlzTriggerRegisterPlayerKeyEvent(whichTrigger, whichPlayer, ConvertOsKeyType(key), metaKey, keyDown)
-	endif
-else
-	local integer status = 0
-	if keyDown then
-		set status = 1
-	endif
-	if whichPlayer == null or whichPlayer == GetLocalPlayer() then
-		call DzTriggerRegisterKeyEvent(whichTrigger, key, status, sync, null)
-	endif
-endif
-endfunction
+	function JNTriggerRegisterPlayerKeyEvent takes trigger whichTrigger, player whichPlayer, integer key, integer metaKey, boolean keyDown, boolean sync returns nothing
+		local integer status = 0
+		if keyDown then
+			set status = 1
+		endif
+		if whichPlayer == null or whichPlayer == GetLocalPlayer() then
+			call DzTriggerRegisterKeyEvent(whichTrigger, key, status, sync, null)
+		endif
+	endfunction
 
-function JNGetTriggerKey takes nothing returns integer
-static if REFORGED_MODE then
-	return GetHandleId(BlzGetTriggerPlayerKey())
-else
-	return DzGetTriggerKey()
-endif
-endfunction
+	function JNGetTriggerKey takes nothing returns integer
+		return DzGetTriggerKey()
+	endfunction
 
-function JNGetTriggerIsKeyDown takes nothing returns boolean
-static if REFORGED_MODE then
-	return BlzGetTriggerPlayerIsKeyDown()
-else
-	return DzIsKeyDown(DzGetTriggerKey())
-endif
-endfunction
+	function JNGetTriggerIsKeyDown takes nothing returns boolean
+		return DzIsKeyDown(DzGetTriggerKey())
+	endfunction
 
-function JNGetTriggerKeyPlayer takes nothing returns player
-static if REFORGED_MODE then
-	return GetTriggerPlayer()
-else
-	return DzGetTriggerKeyPlayer()
-endif
-endfunction
+	function JNGetTriggerKeyPlayer takes nothing returns player
+		return DzGetTriggerKeyPlayer()
+	endfunction
 
-function JNSetMousePos takes integer x, integer y returns nothing
-static if REFORGED_MODE then
-	call BlzSetMousePos(x, y)
-else
-	call DzSetMousePos(x, y)
-endif
-endfunction
+	function JNSetMousePos takes integer x, integer y returns nothing
+		call DzSetMousePos(x, y)
+	endfunction
 
-function JNGetLocalClientWidth takes nothing returns integer
-static if REFORGED_MODE then
-	return BlzGetLocalClientWidth()
-else
-	return DzGetWindowWidth()
-endif
-endfunction
+	function JNGetLocalClientWidth takes nothing returns integer
+		return DzGetWindowWidth()
+	endfunction
 
-function JNGetLocalClientHeight takes nothing returns integer
-static if REFORGED_MODE then
-	return BlzGetLocalClientHeight()
-else
-	return DzGetWindowHeight()
-endif
-endfunction
+	function JNGetLocalClientHeight takes nothing returns integer
+		return DzGetWindowHeight()
+	endfunction
 
-function JNIsLocalClientActive takes nothing returns boolean
-static if REFORGED_MODE then
-	return BlzIsLocalClientActive()
-else
-	return DzIsWindowActive()
-endif
-endfunction
+	function JNIsLocalClientActive takes nothing returns boolean
+		return DzIsWindowActive()
+	endfunction
 endlibrary
