@@ -5,10 +5,8 @@ library Regex
     endglobals
 
     //! textmacro RegexFunctionForInt takes VALUE
-        static method Set$VALUE$ takes string OutMsg, integer inValue returns string
-            local string msg = JNStringReplace(Format, "0", "$VALUE$-"+I2S(inValue))
-            set OutMsg = OutMsg + msg
-            return msg
+        static method Set$VALUE$ takes integer inValue returns string
+            return JNStringReplace(Format, "0", "$VALUE$-"+I2S(inValue))
         endmethod
 
         static method Get$VALUE$ takes string OutMsg returns integer
@@ -22,10 +20,8 @@ library Regex
     //! endtextmacro
 
     //! textmacro RegexFunctionForReal takes VALUE
-        static method Set$VALUE$ takes string OutMsg, real inValue returns string
-            local string msg = JNStringReplace(Format, "0", "$VALUE$-"+R2S(inValue))
-            set OutMsg = OutMsg + msg
-            return msg
+        static method Set$VALUE$ takes real inValue returns string
+            return JNStringReplace(Format, "0", "$VALUE$-"+R2S(inValue))
         endmethod
 
         static method Get$VALUE$ takes string OutMsg returns real
@@ -39,10 +35,8 @@ library Regex
     //! endtextmacro
 
     //! textmacro RegexFunctionForString takes VALUE
-        static method Set$VALUE$ takes string OutMsg, string inValue returns string
-            local string msg = JNStringReplace(Format, "0", "$VALUE$-"+inValue)
-            set OutMsg = OutMsg + msg
-            return msg
+        static method Set$VALUE$ takes string inValue returns string
+            return JNStringReplace(Format, "0", "$VALUE$-"+inValue)
         endmethod
 
         static method Get$VALUE$ takes string OutMsg returns string

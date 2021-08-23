@@ -165,7 +165,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
     endstruct
 
-    private function OnSelected takes nothing returns boolean
+    private function SelectedAction takes nothing returns boolean
         if Controller.Get(LocalPlayerIndex).IsLocalPlayer() == true then
             set SelectUnitRecKey = Actor[GetFilterUnit()].RecKey
             call ClearSelection()
@@ -173,15 +173,16 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         return false
     endfunction
 
-    private function OnLeftClick takes nothing returns boolean
+    private function LeftClickAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
         if gameController.IsLocalPlayer() == true then
+            call OnLeftClick.evaluate()
             call gameController.SetClickState(false, true)
         endif
         return false
     endfunction
 
-    private function OnLeftClickRelease takes nothing returns boolean
+    private function LeftClickReleaseAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
         if gameController.IsLocalPlayer() == true then
             call gameController.SetClickState(false, false)
@@ -189,15 +190,16 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         return false
     endfunction
 
-    private function OnRightClick takes nothing returns boolean
+    private function RightClickAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
         if gameController.IsLocalPlayer() == true then
+            call OnRightClick.evaluate()
             call gameController.SetClickState(true, true)
         endif
         return false
     endfunction
 
-    private function OnRightClickRelease takes nothing returns boolean
+    private function RightClickReleaseAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
         if gameController.IsLocalPlayer() == true then
             call gameController.SetClickState(true, false)
@@ -214,24 +216,24 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         loop
             exitwhen i > bj_MAX_PLAYER_SLOTS
             set controller[i] = Controller.create(i)
-            call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, Filter(function OnSelected))
+            call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, Filter(function SelectedAction))
             set i = i + 1
         endloop
 
         set trig = CreateTrigger()
-        call TriggerAddCondition(trig, function OnLeftClick)
+        call TriggerAddCondition(trig, function LeftClickAction)
         call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_LEFT, 1, true, null)
 
         set trig = CreateTrigger()
-        call TriggerAddCondition(trig, function OnLeftClickRelease)
+        call TriggerAddCondition(trig, function LeftClickReleaseAction)
         call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_LEFT, 0, true, null)
         
         set trig = CreateTrigger()
-        call TriggerAddCondition(trig, function OnRightClick)
+        call TriggerAddCondition(trig, function RightClickAction)
         call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_MIDDLE, 1, true, null)
 
         set trig = CreateTrigger()
-        call TriggerAddCondition(trig, function OnRightClickRelease)
+        call TriggerAddCondition(trig, function RightClickReleaseAction)
         call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_MIDDLE, 0, true, null)
 
         set trig = null

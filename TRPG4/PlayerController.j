@@ -1,4 +1,29 @@
-library PlayerController initializer Start
+library PlayerController initializer Start uses Controller
+
+    globals
+
+
+    endglobals
+    
+    struct PlayerController extends array
+        implement GlobalAlloc
+
+        readonly Actor Chatacter
+
+        readonly AbilityInfo rightSlotAbilityInfo
+        readonly AbilityInfo leftSlotAbilityInfo
+        
+        readonly TArrayAbilityInfo AbilityInfoList
+
+        static method create takes Controller inController returns thistype
+            local thistype this = allocate()
+            
+            // TODO 초기화
+
+            return this
+        endmethod
+    endstruct
+
 
     private function OnClickAction takes nothing returns boolean
         local string syncData = JNGetTriggerSyncData()

@@ -21,9 +21,9 @@ library Main initializer Start uses MainDefine
         local real y = JNGetTriggerPlayerMouseY()
         local string packet = ""
 
-        set packet = packet + Regex.SetX(packet, x)
-        set packet = packet + Regex.SetY(packet, y)
-        set packet = packet+ Regex.SetClickData(packet, SyncRightClickData)
+        set packet = packet + Regex.SetX(x)
+        set packet = packet + Regex.SetY(y)
+        set packet = packet+ Regex.SetClickData(SyncRightClickData)
 
         call JNSendSyncData(SyncClickEvent, packet)
     endfunction
@@ -33,9 +33,9 @@ library Main initializer Start uses MainDefine
         local real y = JNGetTriggerPlayerMouseY()
         local string packet = ""
 
-        set packet = packet + Regex.SetX(packet, x)
-        set packet = packet + Regex.SetY(packet, y)
-        set packet = packet + Regex.SetClickData(packet, SyncLeftClickData)
+        set packet = packet + Regex.SetX(x)
+        set packet = packet + Regex.SetY(y)
+        set packet = packet + Regex.SetClickData(SyncLeftClickData)
 
         call JNSendSyncData(SyncClickEvent, packet)
     endfunction
