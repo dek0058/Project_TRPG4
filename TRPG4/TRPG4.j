@@ -7,6 +7,7 @@
 //! import "TRPG4\UIManager.j"
 //! import "TRPG4\GameCamera.j"
 //! import "TRPG4\PlayerController.j"
+//! import "TRPG4\AbilitySystem.j"
 
 // @Command
 //! import "TRPG4\Command\MasterCmd.j"

@@ -13,6 +13,7 @@ library AbilitySystem initializer Start uses Table
 
         readonly integer id
         readonly integer type
+        readonly real coolTime
 
         static method create takes integer inId, integer inType returns thistype
             local thistype this = allocate()

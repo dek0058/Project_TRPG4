@@ -1,4 +1,4 @@
-library PlayerController initializer Start uses Controller
+library PlayerController initializer Start uses Controller, AbilityInfo
 
     globals
 
@@ -17,9 +17,16 @@ library PlayerController initializer Start uses Controller
 
         static method create takes Controller inController returns thistype
             local thistype this = allocate()
-            
-            // TODO 초기화
+            local integer i = 0            
 
+            // set rightSlotAbilityInfo = AbilityInfo.create()
+            // set leftSlotAbilityInfo = AbilityInfo.create()
+            set AbilityInfoList = TArrayAbilityInfo.create()
+            loop
+                exitwhen i >= MaxSlot
+                //call AbilityInfoList.Push(AbilityInfo.create())
+                set i = i + 1
+            endloop
             return this
         endmethod
     endstruct
