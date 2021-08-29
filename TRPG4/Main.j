@@ -1,14 +1,21 @@
 library Main initializer Start uses MainDefine
 
+    globals
+        private boolean initialize = false
+    endglobals
 
     // @게임 초기화 함수
     function Main takes nothing returns nothing
         debug call WriteLog("TRPG4", "Main", "Main", "Calling")
         call InitCommandManager.evaluate()
         call InitUIManager.evaluate()
+        set initialize = true
     endfunction
     
     function OnLoop takes nothing returns nothing
+        if initialize == false then
+            return
+        endif
 
         if FixedCamera == true then
             call SetCameraPosition(MainPlayerActors[GetLocalController()].X, MainPlayerActors[GetLocalController()].Y)
@@ -17,27 +24,19 @@ library Main initializer Start uses MainDefine
     endfunction
 
     function OnRightClick takes nothing returns nothing
-        local real x = JNGetTriggerPlayerMouseX()
-        local real y = JNGetTriggerPlayerMouseY()
-        local string packet = ""
-
-        set packet = packet + Regex.SetX(x)
-        set packet = packet + Regex.SetY(y)
-        set packet = packet+ Regex.SetClickData(SyncRightClickData)
-
-        call JNSendSyncData(SyncClickEvent, packet)
+        if initialize == false then
+            return
+        endif
+        
+        call PlayerController.Get(LocalPlayerIndex).RightClickInfo.Evaluate()
     endfunction
 
     function OnLeftClick takes nothing returns nothing
-        local real x = JNGetTriggerPlayerMouseX()
-        local real y = JNGetTriggerPlayerMouseY()
-        local string packet = ""
+        if initialize == false then
+            return
+        endif
 
-        set packet = packet + Regex.SetX(x)
-        set packet = packet + Regex.SetY(y)
-        set packet = packet + Regex.SetClickData(SyncLeftClickData)
-
-        call JNSendSyncData(SyncClickEvent, packet)
+        call PlayerController.Get(LocalPlayerIndex).LeftClickInfo.Evaluate()
     endfunction
 
     private function Start takes nothing returns nothing

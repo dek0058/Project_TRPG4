@@ -1,36 +1,67 @@
-library PlayerController initializer Start uses Controller, AbilityInfo
+library PlayerController initializer Start uses Controller, AbilitySystem
 
     globals
-
-
+        private PlayerController array playerController
     endglobals
-    
     struct PlayerController extends array
         implement GlobalAlloc
 
-        readonly Actor Chatacter
+        private Controller controller
+        private Actor character
 
-        readonly AbilityInfo rightSlotAbilityInfo
-        readonly AbilityInfo leftSlotAbilityInfo
+        private AbilityInfo rightSlotAbilityInfo
+        private AbilityInfo leftSlotAbilityInfo
         
-        readonly TArrayAbilityInfo AbilityInfoList
+        private TArrayAbilityInfo AbilityInfoList
 
-        static method create takes Controller inController returns thistype
+        static method operator [] takes player inPlayer returns thistype
+            local integer id = GetPlayerId(inPlayer)
+            if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
+                return playerController[id]
+            endif
+            debug call ThrowError(true, "PlayerController", "[]", "PlayerController", playerController[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
+            return -1
+        endmethod
+
+        static method Get takes integer inIndex returns thistype
+            if inIndex >= 0 and inIndex <= bj_MAX_PLAYER_SLOTS then
+                return playerController[inIndex]
+            endif
+            debug call ThrowError(true, "PlayerController", "Get", "PlayerController", playerController[inIndex], "Player Id(" + I2S(inIndex) + ")가 잘못되었습니다.")
+            return -1
+        endmethod
+
+        static method create takes nothing returns thistype
             local thistype this = allocate()
             local integer i = 0            
 
-            // set rightSlotAbilityInfo = AbilityInfo.create()
-            // set leftSlotAbilityInfo = AbilityInfo.create()
+            //! runtextmacro CreateLog("PlayerController", "this")
+            set rightSlotAbilityInfo = GetAbilityInfo(ABILITY_EMPTY)
+            set rightSlotAbilityInfo = GetAbilityInfo(ABILITY_EMPTY)
+           
             set AbilityInfoList = TArrayAbilityInfo.create()
             loop
                 exitwhen i >= MaxSlot
-                //call AbilityInfoList.Push(AbilityInfo.create())
+                call AbilityInfoList.Push(GetAbilityInfo(ABILITY_EMPTY))
                 set i = i + 1
             endloop
             return this
         endmethod
-    endstruct
 
+        method operator RightClickInfo takes nothing returns AbilityInfo
+            return rightSlotAbilityInfo
+        endmethod
+
+        method operator LeftClickInfo takes nothing returns AbilityInfo
+            return leftSlotAbilityInfo
+        endmethod
+
+        method GetSlot takes integer inIndex returns AbilityInfo
+            return AbilityInfoList[inIndex]
+        endmethod
+
+    endstruct
+    
 
     private function OnClickAction takes nothing returns boolean
         local string syncData = JNGetTriggerSyncData()
@@ -48,9 +79,15 @@ library PlayerController initializer Start uses Controller, AbilityInfo
         return false
     endfunction
 
-
     private function Start takes nothing returns nothing
         local trigger trig
+        local integer i = 0
+
+        loop
+            exitwhen i > bj_MAX_PLAYER_SLOTS
+            set playerController[i] = PlayerController.create()
+            set i = i + 1
+        endloop
 
         set trig = CreateTrigger()
         call TriggerAddCondition(trig, function OnClickAction)

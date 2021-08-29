@@ -1,6 +1,7 @@
 // @TRPG4
 //! import "TRPG4\Main.j"
 //! import "TRPG4\GameDefine.j"
+//! import "TRPG4\AbilityDefine.j"
 
 // @Manager
 //! import "TRPG4\CommandManager.j"

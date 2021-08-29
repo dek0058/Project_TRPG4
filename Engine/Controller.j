@@ -31,7 +31,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
                 return controller[id]
             endif
-            debug call ThrowError(true, "Controller", "Get", "Controller", controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
+            debug call ThrowError(true, "Controller", "[]", "Controller", controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
             return -1
         endmethod
 
