@@ -31,6 +31,9 @@ library AbilitySystem initializer Start uses Table, Alloc
         private integer level
         private real cooltime
 
+        // Dynamic
+        real currentCoolTime
+
         // Interface
         readonly string name
         readonly string icon
@@ -49,6 +52,9 @@ library AbilitySystem initializer Start uses Table, Alloc
             // Status
             set cooltime = inCooltime
             
+            // Dynamic
+            set currentCoolTime = 0.0
+
             //Interface
             set name = inName
             set icon = inIcon
@@ -99,7 +105,17 @@ library AbilitySystem initializer Start uses Table, Alloc
             if callback == null then
                 return result
             endif
+            
+            if currentCoolTime > 0 then
+                return result
+            endif
+
             set result = TriggerEvaluate(trig)
+
+            if CoolTime > 0.0 then
+                // TODO 쿨타임 Tick 돌리기
+            endif
+
             return result
         endmethod
 

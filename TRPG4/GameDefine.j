@@ -2,7 +2,8 @@ library GameDefine
     
     globals
         
-        constant integer MaxSlot = 6
+        constant integer PlayerMaxSlot = 12
+        constant integer AbilityMaxSlot = 6
 
     endglobals
 

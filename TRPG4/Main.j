@@ -9,9 +9,14 @@ library Main initializer Start uses MainDefine
         debug call WriteLog("TRPG4", "Main", "Main", "Calling")
         call InitCommandManager.evaluate()
         call InitUIManager.evaluate()
+        call InitPlayerController.evaluate()
         set initialize = true
     endfunction
     
+    function Tick takes nothing returns nothing
+        
+    endfunction
+
     function OnLoop takes nothing returns nothing
         if initialize == false then
             return

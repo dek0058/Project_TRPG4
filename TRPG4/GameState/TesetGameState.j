@@ -11,7 +11,7 @@ library TestGameState initializer Start uses MainDefine
         local integer i = 0
 
         loop
-            exitwhen i == bj_MAX_PLAYER_SLOTS
+            exitwhen i == DefaultPlayerIndex
             set controller = Controller.Get(i)
             if controller.IsPlayerPlaying() == true then
                 set actor = Actor.create(0.0, 0.0, 0.0, 0.0, DebugMachine_ID, controller.Value())

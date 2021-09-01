@@ -10,7 +10,7 @@ library MainDefine initializer Start
         
         constant real MaxMoveSpeed = 522.00
     
-        constant integer DefaultPlayerIndex = 16
+        constant integer DefaultPlayerIndex = bj_MAX_PLAYER_SLOTS
 
         // @Memory
         private integer GameDll = 0

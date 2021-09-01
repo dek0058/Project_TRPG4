@@ -65,7 +65,7 @@ library MainThread initializer Start uses MainDefine, ShotEvent
             call SetGameState(GAMESTATE_PLAYING)
         elseif State == GAMESTATE_PLAYING then
             set GameTime = GameTime + DeltaTime
-
+            call Tick.evaluate()
         elseif State == GAMESTATE_PAUSE then
 
         endif

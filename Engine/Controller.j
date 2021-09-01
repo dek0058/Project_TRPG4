@@ -28,7 +28,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
         static method operator [] takes player inPlayer returns thistype
             local integer id = GetPlayerId(inPlayer)
-            if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
+            if id >= 0 and id <= DefaultPlayerIndex then
                 return controller[id]
             endif
             debug call ThrowError(true, "Controller", "[]", "Controller", controller[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
@@ -36,7 +36,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         endmethod
 
         static method Get takes integer inIndex returns thistype
-            if inIndex >= 0 and inIndex <= bj_MAX_PLAYER_SLOTS then
+            if inIndex >= 0 and inIndex <= DefaultPlayerIndex then
                 return controller[inIndex]
             endif
             debug call ThrowError(true, "Controller", "Get", "Controller", controller[inIndex], "Player Id(" + I2S(inIndex) + ")가 잘못되었습니다.")
@@ -214,7 +214,7 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
         set trig = CreateTrigger()
         loop
-            exitwhen i > bj_MAX_PLAYER_SLOTS
+            exitwhen i > DefaultPlayerIndex
             set controller[i] = Controller.create(i)
             call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, Filter(function SelectedAction))
             set i = i + 1

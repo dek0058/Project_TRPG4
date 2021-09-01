@@ -16,7 +16,7 @@ library PlayerController initializer Start uses Controller, AbilitySystem
 
         static method operator [] takes player inPlayer returns thistype
             local integer id = GetPlayerId(inPlayer)
-            if id >= 0 and id <= bj_MAX_PLAYER_SLOTS then
+            if id >= 0 and id <= PlayerMaxSlot then
                 return playerController[id]
             endif
             debug call ThrowError(true, "PlayerController", "[]", "PlayerController", playerController[id], "Player Id(" + I2S(id) + ")가 잘못되었습니다.")
@@ -24,7 +24,7 @@ library PlayerController initializer Start uses Controller, AbilitySystem
         endmethod
 
         static method Get takes integer inIndex returns thistype
-            if inIndex >= 0 and inIndex <= bj_MAX_PLAYER_SLOTS then
+            if inIndex >= 0 and inIndex <= PlayerMaxSlot then
                 return playerController[inIndex]
             endif
             debug call ThrowError(true, "PlayerController", "Get", "PlayerController", playerController[inIndex], "Player Id(" + I2S(inIndex) + ")가 잘못되었습니다.")
@@ -37,15 +37,23 @@ library PlayerController initializer Start uses Controller, AbilitySystem
 
             //! runtextmacro CreateLog("PlayerController", "this")
             set rightSlotAbilityInfo = GetAbilityInfo(ABILITY_EMPTY)
-            set rightSlotAbilityInfo = GetAbilityInfo(ABILITY_EMPTY)
+            set leftSlotAbilityInfo = GetAbilityInfo(ABILITY_EMPTY)
            
             set AbilityInfoList = TArrayAbilityInfo.create()
             loop
-                exitwhen i >= MaxSlot
+                exitwhen i >= AbilityMaxSlot
                 call AbilityInfoList.Push(GetAbilityInfo(ABILITY_EMPTY))
                 set i = i + 1
             endloop
             return this
+        endmethod
+
+        method OnInitialize takes Controller inController returns nothing
+            if inController == -1 then
+                debug call ThrowError(true, "PlayerController", "OnInitialize", "PlayerController", this, "Controller가 없습니다.")
+                return
+            endif
+            set controller= inController
         endmethod
 
         method operator RightClickInfo takes nothing returns AbilityInfo
@@ -62,6 +70,14 @@ library PlayerController initializer Start uses Controller, AbilitySystem
 
     endstruct
     
+    function InitPlayerController takes nothing returns nothing
+        local integer i = 0
+        loop
+            exitwhen i >= PlayerMaxSlot
+            call PlayerController.Get(i).OnInitialize(Controller.Get(i))
+            set i = i + 1
+        endloop
+    endfunction
 
     private function OnClickAction takes nothing returns boolean
         local string syncData = JNGetTriggerSyncData()
@@ -84,7 +100,7 @@ library PlayerController initializer Start uses Controller, AbilitySystem
         local integer i = 0
 
         loop
-            exitwhen i > bj_MAX_PLAYER_SLOTS
+            exitwhen i > PlayerMaxSlot
             set playerController[i] = PlayerController.create()
             set i = i + 1
         endloop
