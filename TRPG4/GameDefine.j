@@ -1,5 +1,6 @@
 library GameDefine
     
+    // @Setting
     globals
         
         constant integer PlayerMaxSlot = 12
@@ -15,10 +16,10 @@ library GameDefine
         constant integer SyncLeftClickData = 1
     endglobals
 
+    // @Local
     globals
         boolean FixedCamera = false
         
-
     endglobals
 
     

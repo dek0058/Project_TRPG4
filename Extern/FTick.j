@@ -59,6 +59,10 @@ library FTick initializer Start uses Alloc, Table, TArray
         static method GetTick takes nothing returns thistype
             return TickTable.integer[GetHandleId(GetExpiredTimer())]
         endmethod
+
+        method IsRun takes nothing returns boolean
+            return TimerGetRemaining(tick) > 0.0
+        endmethod
     endstruct
 
     private function Start takes nothing returns nothing

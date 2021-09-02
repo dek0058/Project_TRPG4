@@ -1,4 +1,4 @@
-library AbilitySystem initializer Start uses Table, Alloc
+library AbilitySystem initializer Start uses Table, Alloc, FTick
 
     globals
         private boolean AbilityMapInitialize = false
@@ -32,7 +32,8 @@ library AbilitySystem initializer Start uses Table, Alloc
         private real cooltime
 
         // Dynamic
-        real currentCoolTime
+        readonly real currentCoolTime
+        private FTick tick
 
         // Interface
         readonly string name
@@ -42,6 +43,12 @@ library AbilitySystem initializer Start uses Table, Alloc
         private trigger trig
         private triggercondition trigCondition
         private boolexpr callback
+
+        private static method OnTimer takes nothing returns nothing
+            local FTick expiredTick = FTick.GetTick()
+            local thistype this = expiredTick.pointer
+            call SetCoolTime(0.0)
+        endmethod
 
         static method create takes integer inId, integer inType, integer inLevel, real inCooltime, string inName, string inIcon returns thistype
             local thistype this = allocate()
@@ -54,6 +61,7 @@ library AbilitySystem initializer Start uses Table, Alloc
             
             // Dynamic
             set currentCoolTime = 0.0
+            set tick = FTick.create(this, cooltime)
 
             //Interface
             set name = inName
@@ -86,12 +94,30 @@ library AbilitySystem initializer Start uses Table, Alloc
             return type
         endmethod
 
+        method operator Level= takes integer inValue returns nothing
+            set level = inValue
+        endmethod
+
         method operator Level takes nothing returns integer
             return level
         endmethod
 
+        method operator CoolTime= takes real inValue returns nothing
+            set tick.deltaTime = inValue
+            set cooltime = inValue
+        endmethod
+
         method operator CoolTime takes nothing returns real
             return cooltime
+        endmethod
+        
+        method operator SetCoolTime takes real inValue returns nothing
+            // 쿨감 적용 필요함
+            set currentCoolTime = inValue
+        endmethod
+
+        method GetCoolTime takes nothing returns real
+            return currentCoolTime
         endmethod
 
         method RegisterEvent takes boolexpr inCallback returns nothing
@@ -113,7 +139,7 @@ library AbilitySystem initializer Start uses Table, Alloc
             set result = TriggerEvaluate(trig)
 
             if CoolTime > 0.0 then
-                // TODO 쿨타임 Tick 돌리기
+                call tick.Run(false, function thistype.OnTimer)
             endif
 
             return result
@@ -136,6 +162,9 @@ library AbilitySystem initializer Start uses Table, Alloc
                 set trig = null
                 set callback = null
             endif
+
+            call currentCoolTime = 0.0
+            call tick.destroy
 
             call deallocate()
         endmethod
