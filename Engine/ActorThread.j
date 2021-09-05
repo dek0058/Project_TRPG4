@@ -237,9 +237,9 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
         method destroy takes nothing returns nothing
             //! runtextmacro DestroyLog("Room", "this")
             call tick.destroy()
-            set tick = 0
+            set tick = NULL
             call actors.destroy()
-            set actors = 0
+            set actors = NULL
             call deallocate()
         endmethod
 

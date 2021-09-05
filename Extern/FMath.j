@@ -598,6 +598,12 @@ library FMath/* v 1.2.0.0
                 set r = r + 1.0
                 return SquareRoot((2.0*Pi)/(r))*Pow(((1.0/E)*(r + 1.0/(12.0*r - 1.0/(10.0*r)))), r)
             endmethod
+
+            static method distance takes real x1, real y1, real x2, real y2 returns real
+                local real dx = x2 - x1
+                local real dy = y2 - y1
+                return SquareRoot((dx * dx) + (dy * dy))
+            endmethod
         endstruct
        
         private module Init

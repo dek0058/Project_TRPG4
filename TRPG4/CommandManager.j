@@ -11,12 +11,12 @@ library CommandManager uses ChatEvent
         local integer length = JNStringLength(cmd)
 
         if length == 0 then
-            debug call ThrowWarning(true, "Main", "AddCommand", "", 0, "명령어가 없습니다. [" + inCommand + "]")
+            debug call ThrowWarning(true, "Main", "AddCommand", "", NULL, "명령어가 없습니다. [" + inCommand + "]")
             return
         endif
 
         if Map.boolexpr.has(hashKey) then
-            debug call ThrowWarning(true, "Main", "AddCommand", "", 0, "이미 존재하는 Key Value입니다. [" + inCommand + "]")
+            debug call ThrowWarning(true, "Main", "AddCommand", "", NULL, "이미 존재하는 Key Value입니다. [" + inCommand + "]")
             return
         endif
 

@@ -13,8 +13,8 @@ library MasterCmd uses Controller
         call BJDebugMsg("테스트 1 명령어 입니다.")
 
         //call JNHideOriginFrames()
-        set handler = JNGetFrameByName("TestDebugBTN", 0)
-        if handler != 0 then
+        set handler = JNGetFrameByName("TestDebugBTN", NULL)
+        if handler != NULL then
             call JNDestroyFrame(handler)
         endif
         
@@ -37,11 +37,11 @@ library MasterCmd uses Controller
         // set x = S2I(GetArgs(2))
         // set y = S2I(GetArgs(3))
 
-        set handler = JNGetFrameByName("LogDialog", 0)
+        set handler = JNGetFrameByName("LogDialog", NULL)
         call JNFrameSetLevel(handler, value)
         call DisplayTextToPlayer(controller.Value(), 0.0, 0.0, "테스트 2 명령어 입니다." + I2S(value))
         
-        set handler = JNCreateFrameByType("GLUETEXTBUTTON", "TestDebugBTN", JNGetGameUI(), "DebugButton", 0)
+        set handler = JNCreateFrameByType("GLUETEXTBUTTON", "TestDebugBTN", JNGetGameUI(), "DebugButton", NULL)
         call JNFrameSetPoint(handler, JN_FRAMEPOINT_CENTER, JNGetGameUI(), JN_FRAMEPOINT_CENTER, 0.0, 0.0)
         call DzFrameSetText(handler, "게임 시작")
         call DzFrameSetSize(handler, 0.1, 0.03)

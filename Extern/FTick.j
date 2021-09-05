@@ -36,7 +36,7 @@ library FTick initializer Start uses Alloc, Table, TArray
 
         method destroy takes nothing returns nothing
             //! runtextmacro DestroyLog("FTick", "this")
-            call TimerStart(tick, 0.0, false, null)
+            call Stop()
             set pointer = 0
             set deltaTime = 0.00
             call WaitingTickList.Push(this)
@@ -56,12 +56,28 @@ library FTick initializer Start uses Alloc, Table, TArray
             call TimerStart(tick, deltaTime, inLoop, inCallback)
         endmethod
 
+        method RunUniqueTime takes real inDeltaTime, boolean inLoop, code inCallback returns nothing
+            call TimerStart(tick, inDeltaTime, inLoop, inCallback)
+        endmethod
+
+        method Stop takes nothing returns nothing
+            call TimerStart(tick, 0.0, false, null)
+        endmethod
+
         static method GetTick takes nothing returns thistype
             return TickTable.integer[GetHandleId(GetExpiredTimer())]
         endmethod
 
-        method IsRun takes nothing returns boolean
-            return TimerGetRemaining(tick) > 0.0
+        method GetRemaining takes nothing returns real
+            return TimerGetRemaining(tick)
+        endmethod
+
+        method GetElapsed takes nothing returns real
+            return TimerGetElapsed(tick)
+        endmethod
+
+        method GetTimeout takes nothing returns real
+            return TimerGetTimeout(tick)
         endmethod
     endstruct
 

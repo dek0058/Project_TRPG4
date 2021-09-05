@@ -33,10 +33,10 @@ library MainThread initializer Start uses MainDefine, ShotEvent
     endfunction
     
     private function MainThread takes nothing returns nothing
-        local integer handler = JNGetFrameByName("ScoreScreenFrame", 0)
+        local integer handler = JNGetFrameByName("ScoreScreenFrame", NULL)
 
-        if handler != 0 and JNFrameGetAlpha(handler) != 0 then
-            call DzFrameSetUpdateCallbackByCode(null)
+        if handler != NULL and JNFrameGetAlpha(handler) != NULL then
+            call DzFrameSetUpdateCallback("")
             return
         endif
         
@@ -54,18 +54,18 @@ library MainThread initializer Start uses MainDefine, ShotEvent
         debug call WriteLog("Engine", "MainThread", "OnInitialize", "Calling")
         call Main.evaluate()
         call SetGameState(GAMESTATE_PLAYING)
+        call JNSetSyncDelay(45)
         call DzFrameSetUpdateCallbackByCode(function MainThread)
     endfunction
-
+    
     private function Update takes nothing returns nothing
         local ShotEvent tmpShotEvent
         
         if State == GAMESTATE_INITIALIZE then
             call OnInitialize()
-            call SetGameState(GAMESTATE_PLAYING)
         elseif State == GAMESTATE_PLAYING then
             set GameTime = GameTime + DeltaTime
-            call Tick.evaluate()
+            call OnTick.evaluate()
         elseif State == GAMESTATE_PAUSE then
 
         endif
@@ -74,7 +74,7 @@ library MainThread initializer Start uses MainDefine, ShotEvent
             set tmpShotEvent = ShotEventList.Back()
             call tmpShotEvent.Execute()
             call tmpShotEvent.destroy()
-            set tmpShotEvent = 0
+            set tmpShotEvent = NULL
             call ShotEventList.Pop()
         endif
     endfunction

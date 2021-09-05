@@ -17,6 +17,11 @@
 // @GameState
 //! import "TRPG4\GameState\TesetGameState.j"
 
+// @Ability
+// @Defalut
+//! import "TRPG4\Ability\Default\MoveAbility.j"
+//! import "TRPG4\Ability\Default\AttackAbility.j"
+
 
 // @Unit
 //! import "TRPG4\Unit\DebugMachine.j"

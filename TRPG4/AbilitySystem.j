@@ -1,25 +1,84 @@
 library AbilitySystem initializer Start uses Table, Alloc, FTick
 
     globals
-        private boolean AbilityMapInitialize = false
         private Table AbilityMap
-
-        private boolean ActorAbilityMapInitialize = false
         private HashTable ActorAbilityMap
 
-        private constant string EmptyAbilityName = "빈 슬롯"
-        private constant string EmptyAbilityIcon = "빈 슬롯"
-    endglobals
-
-    globals
-        // ABILITY TYPE
-        constant integer ABILITY_TYPE_EMPTY = 0
-        constant integer ABILITY_TYPE_ACTIVE = 1
-        constant integer ABILITY_TYPE_PASSIVE = 2
-
+        private AbilityInfo LastAbilityInfo = NULL
+        private FVector LastAbilityPosition
     endglobals
 
     //! runtextmacro DEFINE_STRUCT_TARRAY("AbilityInfo", "AbilityInfo")
+
+    function GetLastAbilityInfo takes nothing returns AbilityInfo
+        return LastAbilityInfo
+    endfunction
+
+    function GetAbilityPosition takes nothing returns FVector
+        return LastAbilityPosition
+    endfunction
+
+    function AddAbilityInfo takes AbilityInfo inAbilityInfo returns nothing
+        set AbilityMap.integer[inAbilityInfo.ID] = inAbilityInfo
+    endfunction
+
+    function GetAbilityInfo takes integer inId returns AbilityInfo
+        local AbilityInfo abilityInfo = NULL
+        if AbilityMap.integer.has(inId) == false then
+            debug call WriteLog("TRPG4", "AbilitySystem", "GetAbilityInfo",  "저장된 스킬 정보가 없습니다.(" + I2S(inId) + ")")
+            return abilityInfo
+        else
+            set abilityInfo = AbilityMap.integer[inId]
+            return abilityInfo
+        endif
+    endfunction
+
+    function ActorAddAbility takes integer inId, Actor inActor returns nothing
+        local AbilityInfo abilityInfo
+        
+        if ActorAbilityMap[inActor.RecKey].integer.has(inId) == true then
+            debug call WriteLog("TRPG4", "AbilitySystem", "ActorAddAbility",  "스킬 정보가 이미 있습니다.(" + I2S(inId) + ")")
+        else
+            set abilityInfo = AbilityInfo[inId]
+            if abilityInfo != NULL and abilityInfo.Type != ABILITY_TYPE_DEFAULT then
+                set ActorAbilityMap[inActor.RecKey].integer[inId] = abilityInfo
+            endif
+        endif
+    endfunction
+
+    function GetActorAbility takes integer inId, Actor inActor returns AbilityInfo
+        local AbilityInfo abilityInfo = GetAbilityInfo(inId)
+        if abilityInfo != NULL and abilityInfo.Type == ABILITY_TYPE_DEFAULT then
+            return abilityInfo
+        else
+            set abilityInfo = NULL
+        endif
+
+        if ActorAbilityMap[inActor.RecKey].integer.has(inId) == true then
+            set abilityInfo = ActorAbilityMap[inActor.RecKey].integer[inId]
+        endif
+        return abilityInfo
+    endfunction
+
+    function RemoveActorAbility takes integer inId, Actor inActor returns nothing
+        if ActorAbilityMap[inActor.RecKey].integer.has(inId) == true then
+            call ActorAbilityMap[inActor.RecKey].remove(inId)
+        endif
+    endfunction
+
+    function ClearActorAbility takes Actor inActor returns nothing
+        call ActorAbilityMap[inActor.RecKey].flush()
+    endfunction
+    
+    function HasActorAbility takes integer inId, Actor inActor returns boolean
+        local AbilityInfo abilityInfo = GetAbilityInfo(inId)
+        if abilityInfo != NULL and abilityInfo.Type == ABILITY_TYPE_DEFAULT then
+            return true
+        endif
+        return ActorAbilityMap[inActor.RecKey].integer.has(inId)
+    endfunction
+
+    // TODO 유닛이 삭제될 경우 맵에서 어빌리티 삭제 필요함
 
     struct AbilityInfo extends array
         implement Alloc
@@ -30,9 +89,6 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
         // Status
         private integer level
         private real cooltime
-
-        // Dynamic
-        readonly real currentCoolTime
         private FTick tick
 
         // Interface
@@ -54,13 +110,10 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
             local thistype this = allocate()
             set id = inId
             set type = inType
-            set level = inLevel
             
             // Status
+            set level = inLevel
             set cooltime = inCooltime
-            
-            // Dynamic
-            set currentCoolTime = 0.0
             set tick = FTick.create(this, cooltime)
 
             //Interface
@@ -75,15 +128,17 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
         endmethod
 
         static method operator [] takes integer inId returns thistype
-            local thistype this = 0
-            local thistype copyObject
-            if AbilityMap.integer.has(inId) == false then
-                debug call WriteLog("TRPG4", "AbilitySystem", "[]",  "저장된 스킬 정보가 없습니다.(" + I2S(inId) + ")")
-                return 0
+            local thistype this = NULL
+            local thistype copyObject = GetAbilityInfo(inId)
+            if copyObject == NULL then
+                // 없음..
+            elseif copyObject.type == ABILITY_TYPE_DEFAULT then
+                set this = copyObject
             else
-                set copyObject = AbilityMap.integer[inId]
-                return create(copyObject.ID, copyObject.Type, copyObject.Level, copyObject.CoolTime, copyObject.name, copyObject.icon)
+                set this = create(copyObject.ID, copyObject.Type, copyObject.Level, copyObject.CoolTime, copyObject.name, copyObject.icon)
+                call RegisterEvent(copyObject.callback)
             endif
+            return this
         endmethod
 
         method operator ID takes nothing returns integer
@@ -103,6 +158,9 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
         endmethod
 
         method operator CoolTime= takes real inValue returns nothing
+            if inValue < 0.0 then
+                set inValue = 0.0
+            endif
             set tick.deltaTime = inValue
             set cooltime = inValue
         endmethod
@@ -111,13 +169,24 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
             return cooltime
         endmethod
         
-        method operator SetCoolTime takes real inValue returns nothing
-            // 쿨감 적용 필요함
-            set currentCoolTime = inValue
+        method SetCoolTime takes real inValue returns nothing
+            if inValue < 0.0 then
+                set inValue = 0.0
+            endif
+            call tick.RunUniqueTime(inValue, false, function thistype.OnTimer)
         endmethod
 
         method GetCoolTime takes nothing returns real
-            return currentCoolTime
+            return tick.GetRemaining()
+        endmethod
+
+        method ReduceCoolTime takes real inPercent returns nothing
+            local real value = CoolTime * inPercent
+            set value = GetCoolTime() - value
+            if value <= 0.0 then
+                set value = 0.0
+            endif
+            call SetCoolTime(value)
         endmethod
 
         method RegisterEvent takes boolexpr inCallback returns nothing
@@ -126,16 +195,18 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
             set trigCondition = TriggerAddCondition(trig, callback)
         endmethod
 
-        method Evaluate takes nothing returns boolean
+        method Evaluate takes real inX, real inY, real inZ returns boolean
             local boolean result = false
             if callback == null then
                 return result
             endif
             
-            if currentCoolTime > 0 then
+            if GetCoolTime() > 0 then
                 return result
             endif
 
+            set LastAbilityInfo = this
+            call LastAbilityPosition.Set(inX, inY, inZ)
             set result = TriggerEvaluate(trig)
 
             if CoolTime > 0.0 then
@@ -149,8 +220,10 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
             //! runtextmacro DestroyLog("AbilityInfo", "this")
             set id = 0
             set type = 0
+
             set level = 0
             set cooltime = 0.0
+            call tick.destroy()
 
             set name = null
             set icon = null
@@ -163,62 +236,22 @@ library AbilitySystem initializer Start uses Table, Alloc, FTick
                 set callback = null
             endif
 
-            call currentCoolTime = 0.0
-            call tick.destroy
-
             call deallocate()
         endmethod
     endstruct
-    
-    function AddAbilityInfo takes AbilityInfo inAbilityInfo returns nothing
-        if AbilityMapInitialize == false then
-            set AbilityMapInitialize = true
-            set AbilityMap = Table.create()
-        endif
-        set AbilityMap.integer[inAbilityInfo.ID] = inAbilityInfo
-    endfunction
-
-    function GetAbilityInfo takes integer inId returns AbilityInfo
-        local AbilityInfo abilityInfo = 0
-        if AbilityMap.integer.has(inId) == false then
-            debug call WriteLog("TRPG4", "AbilitySystem", "GetAbilityInfo",  "저장된 스킬 정보가 없습니다.(" + I2S(inId) + ")")
-            return abilityInfo
-        else
-            set abilityInfo = AbilityMap.integer[inId]
-            return abilityInfo
-        endif
-    endfunction
-
-    function ActorAddAbility takes integer inId, Actor inActor returns nothing
-        local AbilityInfo abilityInfo
-        if ActorAbilityMapInitialize == false then
-            set ActorAbilityMapInitialize = true
-            set ActorAbilityMap = HashTable.create()
-        endif
-        if ActorAbilityMap[inActor].integer.has(inId) == true then
-            debug call WriteLog("TRPG4", "AbilitySystem", "ActorAddAbility",  "스킬 정보가 이미 있습니다.(" + I2S(inId) + ")")
-        else
-            set abilityInfo = AbilityInfo[inId]
-            if abilityInfo != 0 then
-                set ActorAbilityMap[inActor].integer[inId] = abilityInfo
-            endif
-        endif
-    endfunction
-
-    function GetActorAbility takes integer inId, Actor inActor returns AbilityInfo
-        local AbilityInfo abilityInfo = 0
-        if ActorAbilityMap[inActor].integer.has(inId) == true then
-            set abilityInfo = ActorAbilityMap[inActor].integer[inId]
-        endif
-        return abilityInfo
-    endfunction
-
-    function HasActorAbility takes integer inId, Actor inActor returns boolean
-        return ActorAbilityMap[inActor].integer.has(inId)
-    endfunction
 
     private function Start takes nothing returns nothing
-        local AbilityInfo emptyAbility = AbilityInfo.create(ABILITY_EMPTY, ABILITY_TYPE_EMPTY, 0, 0.0, EmptyAbilityName, EmptyAbilityIcon)
+        local integer id = ABILITY_EMPTY
+        local integer abilityType = ABILITY_TYPE_DEFAULT
+        local real cooltime = 0.0
+        local string name = "빈 슬롯"
+        local string icon = ABILITY_ICON_NONE
+        local AbilityInfo emptyAbility = AbilityInfo.create(ABILITY_EMPTY, abilityType, 0, cooltime, name, icon)
+
+        set AbilityMap = Table.create()
+        set ActorAbilityMap = HashTable.create()
+        set LastAbilityPosition = FVector.create(0.0, 0.0, 0.0)
+
         call AddAbilityInfo(emptyAbility)
     endfunction
 endlibrary

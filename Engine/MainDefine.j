@@ -2,6 +2,7 @@ library MainDefine initializer Start
 
     // @ Static Variable
     globals
+        constant integer NULL = 0
         constant real DeltaTime = 0.04
 
         constant real MinHeight = 0.01
@@ -13,7 +14,7 @@ library MainDefine initializer Start
         constant integer DefaultPlayerIndex = bj_MAX_PLAYER_SLOTS
 
         // @Memory
-        private integer GameDll = 0
+        private integer GameDll = NULL
     endglobals
     //
 
@@ -37,6 +38,7 @@ library MainDefine initializer Start
         
         location DynamicLocation
         trigger DynamicTrigger
+        group DynamicGroup
 
         private triggercondition PreviousAction = null
 
@@ -78,7 +80,7 @@ library MainDefine initializer Start
     endfunction
     //
 
-    // @Callback Function
+    // @Common Functions
     function OnCallback takes boolexpr inCallback returns nothing
         if PreviousAction == null then
             set PreviousAction = TriggerAddCondition(DynamicTrigger, inCallback)
@@ -110,7 +112,7 @@ library MainDefine initializer Start
     endfunction
 
     function GetGameDll takes nothing returns integer
-        if GameDll == 0 then
+        if GameDll == NULL then
             set GameDll = JNGetModuleHandle("Game.dll")
         endif
         return GameDll
@@ -132,6 +134,7 @@ library MainDefine initializer Start
     private function Start takes nothing returns nothing
         set DynamicLocation = Location(0, 0)
         set DynamicTrigger = CreateTrigger()
+        set DynamicGroup = CreateGroup()
 
         set ShotEventList = TArrayShotEvent.create()
         set CreateUnitEventList = TArrayShotEvent.create()

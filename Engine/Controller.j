@@ -175,35 +175,31 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
     private function LeftClickAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
-        if gameController.IsLocalPlayer() == true then
-            call OnLeftClick.evaluate()
-            call gameController.SetClickState(false, true)
-        endif
+        // if gameController.IsLocalPlayer() == true then
+        //     call OnLeftClick.evaluate()
+        // endif
+        call gameController.SetClickState(false, true)
         return false
     endfunction
 
     private function LeftClickReleaseAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
-        if gameController.IsLocalPlayer() == true then
-            call gameController.SetClickState(false, false)
-        endif
+        call gameController.SetClickState(false, false)
         return false
     endfunction
 
     private function RightClickAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
-        if gameController.IsLocalPlayer() == true then
-            call OnRightClick.evaluate()
-            call gameController.SetClickState(true, true)
-        endif
+        call gameController.SetClickState(true, true)
+        // if gameController.IsLocalPlayer() == true then
+        //     call OnRightClick.evaluate()
+        // endif
         return false
     endfunction
 
     private function RightClickReleaseAction takes nothing returns boolean
         local Controller gameController = Controller[DzGetTriggerKeyPlayer()]
-        if gameController.IsLocalPlayer() == true then
-            call gameController.SetClickState(true, false)
-        endif
+        call gameController.SetClickState(true, false)
         return false
     endfunction
 
@@ -222,19 +218,19 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
 
         set trig = CreateTrigger()
         call TriggerAddCondition(trig, function LeftClickAction)
-        call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_LEFT, 1, true, null)
+        call DzTriggerRegisterMouseEventByCode(trig, JN_OSKEY_LBUTTON, 1, true, null)
 
         set trig = CreateTrigger()
         call TriggerAddCondition(trig, function LeftClickReleaseAction)
-        call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_LEFT, 0, true, null)
+        call DzTriggerRegisterMouseEventByCode(trig, JN_OSKEY_LBUTTON, 0, true, null)
         
         set trig = CreateTrigger()
         call TriggerAddCondition(trig, function RightClickAction)
-        call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_MIDDLE, 1, true, null)
+        call DzTriggerRegisterMouseEventByCode(trig, JN_OSKEY_RBUTTON, 1, true, null)
 
         set trig = CreateTrigger()
         call TriggerAddCondition(trig, function RightClickReleaseAction)
-        call DzTriggerRegisterMouseEventByCode(trig, JN_MOUSE_BUTTON_TYPE_MIDDLE, 0, true, null)
+        call DzTriggerRegisterMouseEventByCode(trig, JN_OSKEY_RBUTTON, 0, true, null)
 
         set trig = null
     endfunction

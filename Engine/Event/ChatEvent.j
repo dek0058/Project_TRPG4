@@ -77,7 +77,7 @@ library ChatEvent initializer Start requires Alloc, Table, ErrorMessage
 
         set hashKey = StringHash(StringCase(CommandMsgArray[0], false))
 
-        if hashKey == 0 then
+        if hashKey == NULL then
             return false
         endif
 

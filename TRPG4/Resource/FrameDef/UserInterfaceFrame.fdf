@@ -1,0 +1,14 @@
+
+Frame "SPRITE" "TestBar" {
+    UseActiveContext,
+    LayerStyle "IGNORETRACKEVENTS",
+    SetPoint LEFT, "ProfileLadderButton", RIGHT, 0.06, 0.0,
+    BackgroundArt "UI\Glues\BattleNet\BattleNetTeamLevelBar\BattleNetTeamLevelBar.mdl",
+
+    Frame "TEXT" "LadderLevelLabel" INHERITS "TeamValueTextTemplate" {
+        UseActiveContext,
+        LayerStyle "IGNORETRACKEVENTS",
+        FontJustificationH JUSTIFYCENTER,
+        SetPoint CENTER, "TestBar", CENTER, -0.024625, 0.0,
+    }
+}

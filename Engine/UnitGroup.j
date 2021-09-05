@@ -37,14 +37,14 @@ library UnitGroup uses Alloc
         endmethod
 
         method Add takes unit inUnit returns nothing
-            if GetHandleId(inUnit) == 0 or IsUnitInGroup(inUnit, unitGroup) then
+            if GetHandleId(inUnit) == NULL or IsUnitInGroup(inUnit, unitGroup) then
                 return
             endif
             call GroupAddUnit(unitGroup, inUnit)
         endmethod
 
         method Remove takes unit inUnit returns nothing
-            if GetHandleId(inUnit) == 0 or not IsUnitInGroup(inUnit, unitGroup) then
+            if GetHandleId(inUnit) == NULL or not IsUnitInGroup(inUnit, unitGroup) then
                 return
             endif
             call GroupRemoveUnit(unitGroup, inUnit)
@@ -53,7 +53,7 @@ library UnitGroup uses Alloc
         method Execute takes code inCallback returns nothing
             set TmpUnitGroup = this
             call ForGroup(unitGroup, inCallback)
-            set TmpUnitGroup = 0
+            set TmpUnitGroup = NULL
         endmethod
 
         method Count takes nothing returns integer

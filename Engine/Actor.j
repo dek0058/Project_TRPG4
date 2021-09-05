@@ -17,6 +17,44 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         private triggeraction array RemoveTriggerActionArray
     endglobals
 
+    function GetActor takes integer inRecKey returns Actor
+        if inRecKey < 0 and inRecKey >= Count then
+            return NULL
+        endif
+        return Actors[inRecKey]
+    endfunction
+
+    function GetActorByPosition takes real inX, real inY, real inRange, boolexpr filter returns Actor
+        local unit u = null
+        local Actor targetActor = NULL
+        local Actor actor = NULL
+        local real targetDist = 0.0
+        local real dist
+        
+        call GroupEnumUnitsInRange(DynamicGroup, inX, inY, inRange, filter)
+        
+        loop
+            set u = FirstOfGroup(DynamicGroup)
+            exitwhen u == null
+            call GroupRemoveUnit(DynamicGroup, u)
+            set actor = Actor[u]
+            if targetActor == NULL then
+                set targetActor = actor
+                set targetDist = FMath.distance(inX, inY, targetActor.X, targetActor.Y)
+            else
+                set dist = FMath.distance(inX, inY, actor.X, actor.Y)
+                if dist < targetDist then
+                    set targetActor = actor
+                    set targetDist = dist
+                endif
+            endif
+        endloop
+
+        call GroupClear(DynamicGroup)
+        set u = null
+        return targetActor
+    endfunction
+
     private function HasPointer takes integer inIndex returns boolean
         return HaveSavedInteger(hs, 0, inIndex)
     endfunction
@@ -37,7 +75,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         implement Alloc
         
         private unit gameUnit
-        private Controller controller
+        readonly Controller controller
 
         // @Unit Status
         private real x
@@ -76,7 +114,11 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         static method operator [] takes unit inUnit returns thistype
-            return GetPointer(GetHandleId(inUnit))
+            if inUnit == null or GetHandleId(inUnit) == NULL then
+                return NULL
+            else
+                return GetPointer(GetHandleId(inUnit))
+            endif
         endmethod
 
         static method IsRegisterUnit takes unit inUnit returns boolean
@@ -91,10 +133,10 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         static method RegisterUnit takes unit inUnit returns thistype
-            local thistype this = 0
+            local thistype this = NULL
 
-            if GetHandleId(inUnit) == 0 then
-                return 0
+            if GetHandleId(inUnit) == NULL then
+                return NULL
             endif
 
             if IsRegisterUnit(inUnit) then
@@ -120,7 +162,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
         endmethod
 
         static method create takes real inX, real inY, real inZ, real inFace, integer inId, player inPlayer returns thistype
-            local thistype this = 0
+            local thistype this = NULL
 
             if WaitingActorList.Size() == 0 then
                 set this = allocate()
@@ -145,12 +187,14 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
             //! runtextmacro DestroyLog("Actor", "this")
             call WaitingActorList.Push(this)
             set gameUnit = null
-            set controller = 0
+            set controller = NULL
 
             call TriggerRemoveAction(RemoveTriggerArray[RecKey], RemoveTriggerActionArray[RecKey])
             set RemoveTriggerActionArray[RecKey] = null
             call DestroyTrigger(RemoveTriggerArray[RecKey])
             set RemoveTriggerArray[RecKey] = null
+
+            call OnRemoveUnit.evaluate(this)
         endmethod
 
         method Value takes nothing returns unit
@@ -200,7 +244,7 @@ library Actor initializer Start uses Alloc, Controller, FVector, FColor, MainDef
 
         // @유닛 상태
         method IsValid takes nothing returns boolean
-            if gameUnit == null or GetUnitTypeId(gameUnit) == 0 then
+            if gameUnit == null or GetUnitTypeId(gameUnit) == NULL then
                 call destroy()
             endif
 

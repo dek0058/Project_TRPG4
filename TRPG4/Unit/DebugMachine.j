@@ -21,6 +21,6 @@ library DebugMachine initializer Start uses MainDefine
         set createUnitEvent = ShotEvent.create(Filter(function OnSpawn))
         call CreateUnitEventList.Push(createUnitEvent)
         
-        set createUnitEvent = 0
+        set createUnitEvent = NULL
     endfunction
 endlibrary
