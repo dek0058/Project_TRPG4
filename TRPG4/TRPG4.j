@@ -2,6 +2,7 @@
 //! import "TRPG4\Main.j"
 //! import "TRPG4\GameDefine.j"
 //! import "TRPG4\AbilityDefine.j"
+//! import "TRPG4\UIDefine.j"
 
 // @Manager
 //! import "TRPG4\CommandManager.j"
@@ -13,6 +14,7 @@
 // @Command
 //! import "TRPG4\Command\MasterCmd.j"
 //! import "TRPG4\Command\UnitCommonCmd.j"
+//! import "TRPG4\Command\UnitStateCmd.j"
 
 // @GameState
 //! import "TRPG4\GameState\TesetGameState.j"

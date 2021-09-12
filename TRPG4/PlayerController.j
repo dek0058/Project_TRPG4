@@ -3,16 +3,18 @@ library PlayerController initializer Start uses AbilitySystem
     globals
         private PlayerController array playerController
     endglobals
+
     struct PlayerController extends array
         implement GlobalAlloc
 
         readonly Controller controller
         private Actor character
 
+        // Ability
         private AbilityInfo rightSlotAbilityInfo
         private AbilityInfo leftSlotAbilityInfo
-        
         private TArrayAbilityInfo AbilityInfoList
+
 
         static method operator [] takes player inPlayer returns thistype
             local integer id = GetPlayerId(inPlayer)
@@ -136,6 +138,43 @@ library PlayerController initializer Start uses AbilitySystem
             return (character != NULL) and (character.IsValid() == true)
         endmethod
 
+        static method OnLoop takes nothing returns nothing
+            local thistype this = Get(LocalPlayerIndex)
+            local integer handler
+            local real value
+
+            if ExistCharacter() == true then
+                
+                if FixedCamera == true then
+                    call SetCameraPosition(GetCharacter().X, GetCharacter().Y)
+                    call SetCameraField(CAMERA_FIELD_FIELD_OF_VIEW, 90, 0.00)
+                endif
+
+                if IsUserInterface() == true then
+                    set handler = LifeBarHandler
+                    set value = FMath.max(0.0, JNGetUnitHP(GetCharacter().Value()) / JNGetUnitMaxHP(GetCharacter().Value()))
+                    call DzFrameSetAnimateOffset(handler, value * 60.0)
+
+                    set handler = LifeBarTextHandler
+                    call DzFrameSetText(handler, I2S(R2I(value * 100.0)) + "%")
+
+                    set handler = ManaBarHandler
+                    set value = FMath.max(0.0, JNGetUnitMana(GetCharacter().Value()) / JNGetUnitMaxMana(GetCharacter().Value()))
+                    call FMath.max(0.0, value)
+                    call DzFrameSetAnimateOffset(handler, value * 60.0)
+
+                    set handler = ManaBarTextHandler
+                    call DzFrameSetText(handler, I2S(R2I(value * 100.0)) + "%")
+                else
+                    call EnableUserInterface(true)
+                endif
+            else
+                if IsUserInterface() == true then
+                    call EnableUserInterface(false)
+                endif
+            endif
+
+        endmethod
     endstruct
     
     function InitPlayerController takes nothing returns nothing
@@ -154,10 +193,12 @@ library PlayerController initializer Start uses AbilitySystem
         local integer clickData = Regex.GetClickData(syncData)
         local PlayerController pController = PlayerController[JNGetTriggerSyncPlayer()]
 
-        if clickData == SyncRightClickData then
-            call pController.RightClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
-        elseif clickData == SyncLeftClickData then
-            call pController.LeftClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
+        if pController.ExistCharacter() == true then
+            if clickData == SyncRightClickData then
+                call pController.RightClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
+            elseif clickData == SyncLeftClickData then
+                call pController.LeftClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
+            endif
         endif
 
         return false

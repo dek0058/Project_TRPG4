@@ -35,16 +35,8 @@ library Main uses MainDefine
         if initialize == false then
             return
         endif
-        set pController = PlayerController.Get(LocalPlayerIndex)
         
-        if pController.ExistCharacter() == true then
-
-            if FixedCamera == true then
-                call SetCameraPosition(pController.GetCharacter().X, pController.GetCharacter().Y)
-                call SetCameraField(CAMERA_FIELD_FIELD_OF_VIEW, 90, 0.00)
-            endif
-
-        endif
+        call PlayerController.OnLoop()
         
 
         //SetCameraPosition()
@@ -57,6 +49,10 @@ library Main uses MainDefine
             return
         endif
         
+        if DzGetMouseFocus() > 0 then
+            return
+        endif
+
         if ClickLimitedCount < MaxClickLimited then
             set ClickLimitedCount = ClickLimitedCount + 1
             set packet = packet + Regex.SetX(JNGetTriggerPlayerMouseX())
@@ -70,6 +66,10 @@ library Main uses MainDefine
         local string packet = ""
         
         if initialize == false then
+            return
+        endif
+
+        if DzGetMouseFocus() > 0 then
             return
         endif
         

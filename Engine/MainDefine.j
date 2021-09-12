@@ -122,6 +122,10 @@ library MainDefine initializer Start
         return Controller.Get(LocalPlayerIndex)
     endfunction
 
+    function IsLocalPlayer takes nothing returns boolean
+        return GetPlayerId(GetLocalPlayer()) == LocalPlayerIndex
+    endfunction
+
     function IsSingleMode takes nothing returns boolean
         return ReloadGameCachesFromDisk() == true
     endfunction

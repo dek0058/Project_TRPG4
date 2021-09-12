@@ -1,0 +1,151 @@
+//Modified with MdlVis.
+Version {
+	FormatVersion 800,
+}
+Model "Campaign-Fade" {
+	NumGeosets 2,
+	NumBones 1,
+	BlendTime 150,
+	MinimumExtent { -0.013, -0.008, 499.915 },
+	MaximumExtent { 0.81098, 0.60899, 499.948 },
+}
+Sequences 3 {
+	Anim "Birth" {
+		Interval { 0, 1000 },
+		NonLooping,
+		MinimumExtent { -0.013, -0.008, 499.915 },
+		MaximumExtent { 0.81098, 0.60899, 499.948 },
+		BoundsRadius 0.514959,
+	}
+	Anim "Stand" {
+		Interval { 1333, 1667 },
+		NonLooping,
+		MinimumExtent { -0.013, -0.008, 499.915 },
+		MaximumExtent { 0.81098, 0.60899, 499.948 },
+		BoundsRadius 0.514959,
+	}
+	Anim "Death" {
+		Interval { 2000, 3000 },
+		NonLooping,
+		MinimumExtent { -0.013, -0.008, 499.915 },
+		MaximumExtent { 0.81098, 0.60899, 499.948 },
+		BoundsRadius 0.514959,
+	}
+}
+Textures 1 {
+	Bitmap {
+		Image "ui\Glues\SinglePlayer\Campaign-Fade\Campaign-Fade.blp",
+	}
+}
+Materials 2 {
+	Material {
+		FullResolution,
+		Layer {
+			FilterMode Blend,
+			Unshaded,
+			static TextureID 0,
+			Alpha 4 {
+				Linear,
+				0: 0,
+				1000: 1,
+				2000: 1,
+				3000: 0,
+			}
+		}
+	}
+	Material {
+		FullResolution,
+		Layer {
+			FilterMode Blend,
+			Unshaded,
+			static TextureID 0,
+			static Alpha 0.75,
+		}
+	}
+}
+Geoset {
+	Vertices 4 {
+		{ -0.013, 0.60899, 499.948 },
+		{ -0.013, -0.008, 499.948 },
+		{ 0.81098, 0.60899, 499.948 },
+		{ 0.81098, -0.008, 499.948 },
+	}
+	Normals 4 {
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	}
+	TVertices 4 {
+		{ 0, 0 },
+		{ 0, 1 },
+		{ 0.5, 0 },
+		{ 0.5, 1 },
+	}
+	VertexGroup {
+		0,
+		0,
+		0,
+		0,
+	}
+	Faces 1 6 {
+		Triangles {
+			{ 0, 1, 2, 3, 2, 1 },
+		}
+	}
+	Groups 1 1 {
+		Matrices { 0 },
+	}
+	MinimumExtent { -0.01300000027, -0.008, 499.948 },
+	MaximumExtent { 0.810980022, 0.60899, 499.948 },
+	BoundsRadius 1.02938,
+	MaterialID 0,
+	SelectionGroup 0,
+}
+Geoset {
+	Vertices 4 {
+		{ 0.39897, 0.60899, 499.915 },
+		{ 0.39897, -0.008, 499.915 },
+		{ 0.81098, 0.60899, 499.915 },
+		{ 0.81098, -0.008, 499.915 },
+	}
+	Normals 4 {
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+		{ 0, 0, 1 },
+	}
+	TVertices 4 {
+		{ 0.505, 0 },
+		{ 0.505, 1 },
+		{ 1, 0 },
+		{ 1, 1 },
+	}
+	VertexGroup {
+		0,
+		0,
+		0,
+		0,
+	}
+	Faces 1 6 {
+		Triangles {
+			{ 0, 1, 2, 3, 2, 1 },
+		}
+	}
+	Groups 1 1 {
+		Matrices { 0 },
+	}
+	MinimumExtent { 0.3989700079, -0.008, 499.915 },
+	MaximumExtent { 0.810980022, 0.60899, 499.915 },
+	BoundsRadius 0.74191,
+	MaterialID 1,
+	SelectionGroup 0,
+}
+Bone "Plane01" {
+	ObjectId 0,
+	GeosetId Multiple,
+	GeosetAnimId None,
+}
+PivotPoints 1 {
+	{ 0.398987, 0.3, 499.948 },
+}

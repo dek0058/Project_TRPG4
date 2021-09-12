@@ -1,16 +1,26 @@
 library UIManager uses UserWidget, FVector
+
+    globals
+        private boolean IsShowUserInterface = false
+    endglobals
     
-    globals
-        constant real CenterX = JN_FRAME_MAX_WIDTH / 2.0
-        constant real CenterY = JN_FRAME_MAX_HEIGHT / 2.0
-    endglobals
+    function EnableUserInterface takes boolean inEnable returns nothing
+        if IsLocalPlayer() == false then
+            return
+        endif
 
-    globals
-        constant string DefaultFontPath = "Font\\Maplestory Light.ttf"
-        constant string DefaultBoldFontPath = "Font\\Maplestory Bold.ttf"
-    endglobals
+        call JNFrameSetVisible(LifeBarHandler, inEnable)
+        call JNFrameSetVisible(LifeBarTextHandler, inEnable)
 
+        call JNFrameSetVisible(ManaBarHandler, inEnable)
+        call JNFrameSetVisible(ManaBarTextHandler, inEnable)
 
+        set IsShowUserInterface = inEnable
+    endfunction
+
+    function IsUserInterface takes nothing returns boolean
+        return IsShowUserInterface
+    endfunction
 
     function InitUIManager takes nothing returns nothing
         local integer handler = NULL
@@ -24,7 +34,7 @@ library UIManager uses UserWidget, FVector
         debug call WriteLog("TRPG4", "UIManager", "InitUIManager", "Calling")
 
         // @기본 설정
-        call JNEnableWideScreen(true)
+        //call JNEnableWideScreen(true)
         //call EnablePreSelect(false, false)    // Tab시 페이탈 원인
         call EnableSelect(false, false)
         call EnableUserUI(false)
@@ -37,11 +47,11 @@ library UIManager uses UserWidget, FVector
         if IsSingleMode() == true then
             // [XXX] 오류가 나더라도 z-order 설정을 해주어야함.
             set handler = JNGetFrameByName("LogDialog", NULL)
-            call JNFrameSetLevel(handler, FMath.MaxInt)
+            //call JNFrameSetLevel(handler, FMath.MaxInt)
         else
             // [XXX] 오류가 나더라도 z-order 설정을 해주어야함.
             set handler = JNGetFrameByName("ChatDialog", NULL)
-            call JNFrameSetLevel(handler, FMath.MaxInt)
+            //call JNFrameSetLevel(handler, FMath.MaxInt)
         endif
 
         // 채팅
@@ -75,22 +85,31 @@ library UIManager uses UserWidget, FVector
         // Custom UI Load
         call JNLoadTOCFile("TRPG4.toc")
 
-        set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "TestBar", 0)
-        set x = 0.2
-        set y = 0.2
-        call topLeft.Set(CenterX - x, CenterY + y, 0.0)
-        call topRight.Set(CenterX + x, CenterY + y, 0.0)
-        call bottomLeft.Set(CenterX - x, CenterY - y, 0.0)
-        call bottomRight.Set(CenterX + x, CenterY - y, 0.0)
-        call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        //call JNFrameSetValue(handler, 50.0) // 얘는 안댐
-
+        set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "ULifeBar", 0)
+        set x = 0.1
+        set y = 0.53
+        call SetFramePosition(handler, x, y)
         call DzFrameSetAnimate(handler, 0, false)
         call DzFrameSetAnimateOffset(handler, 100.0)
-
-        //set handler = JNCreateFrameByType("GLUETEXTBUTTON", "TestDebugBTN", JNGetGameUI(), "DebugButton", NULL)
+        set LifeBarHandler = handler
         
+        set handler = JNCreateFrameByType("TEXT", "", JNGetGameUI(), "UIndicateText", 0)
+        call SetFramePosition(handler, x, y)
+        set LifeBarTextHandler = handler
 
+        set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "UManaBar", 0)
+        set x = 0.1
+        set y = 0.53 - 0.03
+        call SetFramePosition(handler, x, y)
+        call DzFrameSetAnimate(handler, 0, false)
+        call DzFrameSetAnimateOffset(handler, 100.0)
+        set ManaBarHandler = handler
+
+        set handler = JNCreateFrameByType("TEXT", "", JNGetGameUI(), "UIndicateText", 1)
+        call SetFramePosition(handler, x, y)
+        set ManaBarTextHandler = handler
+        
+        call EnableUserInterface(false)
 
         call topLeft.destroy()
         call topRight.destroy()

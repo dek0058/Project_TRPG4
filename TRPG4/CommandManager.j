@@ -50,5 +50,6 @@ library CommandManager uses ChatEvent
 
         call InitMasterCmd.evaluate()
         call InitUnitCommonCmd.evaluate()
+        call InitUnitStateCmd.evaluate()
     endfunction
 endlibrary
