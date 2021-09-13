@@ -29,7 +29,7 @@ library MainDefine initializer Start
     // @ Global Array
     globals
         TArrayShotEvent ShotEventList
-        TArrayShotEvent CreateUnitEventList
+        Table CreateUnitMap
     endglobals
 
      // @ Dynamic Varaible
@@ -82,6 +82,10 @@ library MainDefine initializer Start
 
     // @Common Functions
     function OnCallback takes boolexpr inCallback returns nothing
+        if inCallback == null then
+            return
+        endif
+
         if PreviousAction == null then
             set PreviousAction = TriggerAddCondition(DynamicTrigger, inCallback)
         else
@@ -95,6 +99,17 @@ library MainDefine initializer Start
             call TriggerRemoveCondition(DynamicTrigger, PreviousAction)
             set PreviousAction = null
         endif
+    endfunction
+
+    function AddSpawnEvent takes integer inId, boolexpr inCallback returns nothing
+        set CreateUnitMap.boolexpr[inId] = inCallback
+    endfunction
+
+    function GetSpawnEvent takes integer inId returns boolexpr
+        if CreateUnitMap.boolexpr.has(inId) == true then
+            return CreateUnitMap.boolexpr[inId]
+        endif
+        return null
     endfunction
     //
 
@@ -141,6 +156,6 @@ library MainDefine initializer Start
         set DynamicGroup = CreateGroup()
 
         set ShotEventList = TArrayShotEvent.create()
-        set CreateUnitEventList = TArrayShotEvent.create()
+        set CreateUnitMap = Table.create()
     endfunction
 endlibrary

@@ -1,15 +1,15 @@
-library DebugMachine initializer Start uses MainDefine
+library Megumin initializer Start uses MainDefine
 
     globals
-        public constant integer ID = 'EX01'
+        public constant integer ID = 'A000'
     endglobals
 
-    
     private function OnSpawn takes nothing returns boolean
         if ID != CreateUnitId then
             return false
         endif
 
+        call BJDebugMsg("메구밍 출현!")
         // TODO - - -
 
         return false

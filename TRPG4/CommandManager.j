@@ -15,7 +15,7 @@ library CommandManager uses ChatEvent
             return
         endif
 
-        if Map.boolexpr.has(hashKey) then
+        if Map.boolexpr.has(hashKey) == true then
             debug call ThrowWarning(true, "Main", "AddCommand", "", NULL, "이미 존재하는 Key Value입니다. [" + inCommand + "]")
             return
         endif
@@ -33,7 +33,7 @@ library CommandManager uses ChatEvent
 
         set hashKey = StringHash(StringCase(GetArgs(1), false))
 
-        if not Map.boolexpr.has(hashKey) then
+        if not Map.boolexpr.has(hashKey) == true then
             return false
         endif
 

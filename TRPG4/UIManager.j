@@ -30,6 +30,8 @@ library UIManager uses UserWidget, FVector
         local FVector bottomRight = FVector.create(0.0, 0.0, 0.0)
         local real x = 0.0
         local real y = 0.0
+        local real centerX = 0.0
+        local real centerY = 0.0
 
         debug call WriteLog("TRPG4", "UIManager", "InitUIManager", "Calling")
 
@@ -86,8 +88,8 @@ library UIManager uses UserWidget, FVector
         call JNLoadTOCFile("TRPG4.toc")
 
         set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "ULifeBar", 0)
-        set x = 0.1
-        set y = 0.53
+        set x = 0.08
+        set y = 0.55
         call SetFramePosition(handler, x, y)
         call DzFrameSetAnimate(handler, 0, false)
         call DzFrameSetAnimateOffset(handler, 100.0)
@@ -98,8 +100,8 @@ library UIManager uses UserWidget, FVector
         set LifeBarTextHandler = handler
 
         set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "UManaBar", 0)
-        set x = 0.1
-        set y = 0.53 - 0.03
+        set x = 0.08
+        set y = 0.55 - 0.03
         call SetFramePosition(handler, x, y)
         call DzFrameSetAnimate(handler, 0, false)
         call DzFrameSetAnimateOffset(handler, 100.0)
@@ -109,6 +111,34 @@ library UIManager uses UserWidget, FVector
         call SetFramePosition(handler, x, y)
         set ManaBarTextHandler = handler
         
+        set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
+        set x = 0.1
+        set y = 0.06
+        set centerX = 0.0703125
+        set centerY = 0.0703125
+        call topLeft.Set(x - centerX, y + centerY, 0.0)
+        call topRight.Set(x + centerX, y + centerY, 0.0)
+        call bottomLeft.Set(x - centerX, y - centerY, 0.0)
+        call bottomRight.Set(x + centerX, y - centerY, 0.0)
+        call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
+        set LeftMainSlot = handler
+
+        set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
+        set x = 0.7
+        set y = 0.06
+        set centerX = 0.0703125
+        set centerY = 0.0703125
+        call topLeft.Set(x - centerX, y + centerY, 0.0)
+        call topRight.Set(x + centerX, y + centerY, 0.0)
+        call bottomLeft.Set(x - centerX, y - centerY, 0.0)
+        call bottomRight.Set(x + centerX, y - centerY, 0.0)
+        call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
+        set RightMainSlot = handler
+
+
+        //call DzFrameSetTexture(handler, "UI\\ui_slot_comon.tga", 0)
+
+
         call EnableUserInterface(false)
 
         call topLeft.destroy()

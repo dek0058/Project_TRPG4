@@ -1,3 +1,6 @@
+// Width = 0.8, Height = 0.6
+// Multiplication = 0.00078125
+//
 
 Frame "TEXT" "UIndicateText" {
     FrameFont "Font\Maplestory Light.ttf", 0.013, "",
@@ -27,4 +30,12 @@ Frame "SPRITE" "UManaBar" {
     BackgroundArt "UI\Glues\BattleNet\BattlenetProfileLevelBar\BattlenetProfileLevelBar.mdl",
     SetAllPoints,
     LayerStyle "IGNORETRACKEVENTS",
+}
+
+// 슬롯
+// 메인 슬롯 width = 0.140625, height = 0.140625
+Frame "BACKDROP" "UEmptySlot" {
+    SetAllPoints,
+    BackdropBlendAll,
+    BackdropBackground "UI\ui_Slot.tga",
 }

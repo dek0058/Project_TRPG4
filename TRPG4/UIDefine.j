@@ -17,6 +17,8 @@ globals
         integer ManaBarHandler = 0
         integer ManaBarTextHandler = 0
 
+        integer RightMainSlot = 0
+        integer LeftMainSlot = 0
     endglobals
     
 

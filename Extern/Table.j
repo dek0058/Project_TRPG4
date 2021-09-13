@@ -17,48 +17,6 @@ library Table /* made by Bribe, special thanks to Vexorian & Nestharus, version 
     the ".flush(integer)" method. I use ".flush()" to flush a child hash-
     table, because I wanted the API in NewTable to reflect the API of real
     hashtables (I thought this would be more intuitive).
-   
-    API
-   
-    ------------
-    struct Table
-    | static method create takes nothing returns Table
-    |     create a new Table
-    |    
-    | method destroy takes nothing returns nothing
-    |     destroy it
-    |    
-    | method flush takes nothing returns nothing
-    |     flush all stored values inside of it
-    |    
-    | method remove takes integer key returns nothing
-    |     remove the value at index "key"
-    |    
-    | method operator []= takes integer key, $TYPE$ value returns nothing
-    |     assign "value" to index "key"
-    |    
-    | method operator [] takes integer key returns $TYPE$
-    |     load the value at index "key"
-    |    
-    | method has takes integer key returns boolean
-    |     whether or not the key was assigned
-    |
-    ----------------
-    struct TableArray
-    | static method operator [] takes integer array_size returns TableArray
-    |     create a new array of Tables of size "array_size"
-    |
-    | method destroy takes nothing returns nothing
-    |     destroy it
-    |
-    | method flush takes nothing returns nothing
-    |     flush and destroy it
-    |
-    | method operator size takes nothing returns integer
-    |     returns the size of the TableArray
-    |
-    | method operator [] takes integer key returns Table
-    |     returns a Table accessible exclusively to index "key"
 */
    
     globals

@@ -27,3 +27,4 @@
 
 // @Unit
 //! import "TRPG4\Unit\DebugMachine.j"
+//! import "TRPG4\Unit\Megumin.j"

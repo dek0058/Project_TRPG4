@@ -362,27 +362,17 @@ library ActorThread initializer Start uses MainThread, Actor, FMath, FTick
 
     private function OnEnterUnitAction takes nothing returns nothing
         local unit actor = GetTriggerUnit()
-        local integer i = 0
         call Actor.RegisterUnit(GetTriggerUnit())
         set CreateUnitId = GetUnitTypeId(actor)
-        loop
-            exitwhen i >= CreateUnitEventList.Size()
-            call CreateUnitEventList[i].Execute()
-            set i = i + 1
-        endloop
+        call OnCallback(GetSpawnEvent(CreateUnitId))
         set actor = null
     endfunction
 
     private function OnAllocateUnitCondition takes nothing returns boolean
         local unit actor = GetFilterUnit()
-        local integer i = 0
         call Actor.RegisterUnit(GetFilterUnit())
         set CreateUnitId = GetUnitTypeId(actor)
-        loop
-            exitwhen i >= CreateUnitEventList.Size()
-            call CreateUnitEventList[i].Execute()
-            set i = i + 1
-        endloop
+        call OnCallback(GetSpawnEvent(CreateUnitId))
         set actor = null
         return false
     endfunction
