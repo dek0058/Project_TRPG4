@@ -151,20 +151,11 @@ library PlayerController initializer Start uses AbilitySystem
                 endif
 
                 if IsUserInterface() == true then
-                    set handler = LifeBarHandler
                     set value = FMath.max(0.0, JNGetUnitHP(GetCharacter().Value()) / JNGetUnitMaxHP(GetCharacter().Value()))
-                    call DzFrameSetAnimateOffset(handler, value * 60.0)
+                    call ULifeBar_Set(value)
 
-                    set handler = LifeBarTextHandler
-                    call DzFrameSetText(handler, I2S(R2I(value * 100.0)) + "%")
-
-                    set handler = ManaBarHandler
                     set value = FMath.max(0.0, JNGetUnitMana(GetCharacter().Value()) / JNGetUnitMaxMana(GetCharacter().Value()))
-                    call FMath.max(0.0, value)
-                    call DzFrameSetAnimateOffset(handler, value * 60.0)
-
-                    set handler = ManaBarTextHandler
-                    call DzFrameSetText(handler, I2S(R2I(value * 100.0)) + "%")
+                    call UManaBar_Set(value)
                 else
                     call EnableUserInterface(true)
                 endif

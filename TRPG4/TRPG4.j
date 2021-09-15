@@ -28,3 +28,8 @@
 // @Unit
 //! import "TRPG4\Unit\DebugMachine.j"
 //! import "TRPG4\Unit\Megumin.j"
+
+// @UI
+//! import "TRPG4\UI\UAbilitySlot.j"
+//! import "TRPG4\UI\ULifeBar.j"
+//! import "TRPG4\UI\UManaBar.j"

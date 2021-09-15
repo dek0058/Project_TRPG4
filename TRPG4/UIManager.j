@@ -9,11 +9,8 @@ library UIManager uses UserWidget, FVector
             return
         endif
 
-        call JNFrameSetVisible(LifeBarHandler, inEnable)
-        call JNFrameSetVisible(LifeBarTextHandler, inEnable)
-
-        call JNFrameSetVisible(ManaBarHandler, inEnable)
-        call JNFrameSetVisible(ManaBarTextHandler, inEnable)
+        call ULifeBar_Enable(inEnable)
+        call UManaBar_Enable(inEnable)
 
         set IsShowUserInterface = inEnable
     endfunction
@@ -86,31 +83,16 @@ library UIManager uses UserWidget, FVector
 
         // Custom UI Load
         call JNLoadTOCFile("TRPG4.toc")
-
-        set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "ULifeBar", 0)
+    
         set x = 0.08
         set y = 0.55
-        call SetFramePosition(handler, x, y)
-        call DzFrameSetAnimate(handler, 0, false)
-        call DzFrameSetAnimateOffset(handler, 100.0)
-        set LifeBarHandler = handler
+        call ULifeBar_Create(x, y)
         
-        set handler = JNCreateFrameByType("TEXT", "", JNGetGameUI(), "UIndicateText", 0)
-        call SetFramePosition(handler, x, y)
-        set LifeBarTextHandler = handler
-
-        set handler = JNCreateFrameByType("SPRITE", "", JNGetGameUI(), "UManaBar", 0)
         set x = 0.08
         set y = 0.55 - 0.03
-        call SetFramePosition(handler, x, y)
-        call DzFrameSetAnimate(handler, 0, false)
-        call DzFrameSetAnimateOffset(handler, 100.0)
-        set ManaBarHandler = handler
-
-        set handler = JNCreateFrameByType("TEXT", "", JNGetGameUI(), "UIndicateText", 1)
-        call SetFramePosition(handler, x, y)
-        set ManaBarTextHandler = handler
+        call UManaBar_Create(x, y)
         
+        /*
         set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
         set x = 0.1
         set y = 0.06
@@ -121,7 +103,6 @@ library UIManager uses UserWidget, FVector
         call bottomLeft.Set(x - centerX, y - centerY, 0.0)
         call bottomRight.Set(x + centerX, y - centerY, 0.0)
         call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        set LeftMainSlot = handler
 
         set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
         set x = 0.7
@@ -133,8 +114,7 @@ library UIManager uses UserWidget, FVector
         call bottomLeft.Set(x - centerX, y - centerY, 0.0)
         call bottomRight.Set(x + centerX, y - centerY, 0.0)
         call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        set RightMainSlot = handler
-
+        */
 
         //call DzFrameSetTexture(handler, "UI\\ui_slot_comon.tga", 0)
 
