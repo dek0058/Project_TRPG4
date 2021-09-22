@@ -31,5 +31,8 @@
 
 // @UI
 //! import "TRPG4\UI\UAbilitySlot.j"
-//! import "TRPG4\UI\ULifeBar.j"
-//! import "TRPG4\UI\UManaBar.j"
+
+//! import "TRPG4\UI\UProgressBarWidget.j"
+//! import "TRPG4\UI\UProgressBar2Widget.j"
+//! import "TRPG4\UI\UUnitStateWidget.j"
+//! import "TRPG4\UI\UPortrait.Widget.j"

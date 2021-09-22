@@ -111,6 +111,34 @@ library MainDefine initializer Start
         endif
         return null
     endfunction
+
+    function s2r takes string inValue returns real
+        local real mul = 1.0
+        local string sStr = JNStringSplit(inValue, ".", 0)
+        local string eStr
+        local integer sLen = JNStringLength(sStr) + 1
+        local integer eLen
+        local integer sValue
+        local integer eValue
+        local real ret
+
+        if JNStringContains(JNStringSub(inValue, 0, 1), "-") == true then
+            set sStr = JNStringSub(sStr, 1, JNStringLength(sStr) - 1)
+            set mul = -1.0
+        endif
+
+        set eStr = JNStringSub(inValue, sLen, JNStringLength(inValue) - sLen)
+        set eLen = JNStringLength(eStr)
+        set sValue = S2I(sStr)
+        set eValue = S2I(eStr)
+
+        if eLen == 0 then
+            set ret = sValue * mul
+        else
+            set ret = ((eValue / Pow(10, eLen)) + sValue) * mul
+        endif
+        return ret
+    endfunction
     //
 
     // @Getter

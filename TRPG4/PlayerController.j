@@ -151,11 +151,11 @@ library PlayerController initializer Start uses AbilitySystem
                 endif
 
                 if IsUserInterface() == true then
-                    set value = FMath.max(0.0, JNGetUnitHP(GetCharacter().Value()) / JNGetUnitMaxHP(GetCharacter().Value()))
-                    call ULifeBar_Set(value)
+                    // set value = FMath.max(0.0, JNGetUnitHP(GetCharacter().Value()) / JNGetUnitMaxHP(GetCharacter().Value()))
+                    // call ULifeBar_Set(value)
 
-                    set value = FMath.max(0.0, JNGetUnitMana(GetCharacter().Value()) / JNGetUnitMaxMana(GetCharacter().Value()))
-                    call UManaBar_Set(value)
+                    // set value = FMath.max(0.0, JNGetUnitMana(GetCharacter().Value()) / JNGetUnitMaxMana(GetCharacter().Value()))
+                    // call UManaBar_Set(value)
                 else
                     call EnableUserInterface(true)
                 endif

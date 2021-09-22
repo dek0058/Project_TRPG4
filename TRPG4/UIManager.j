@@ -9,8 +9,8 @@ library UIManager uses UserWidget, FVector
             return
         endif
 
-        call ULifeBar_Enable(inEnable)
-        call UManaBar_Enable(inEnable)
+        // call ULifeBar_Enable(inEnable)
+        // call UManaBar_Enable(inEnable)
 
         set IsShowUserInterface = inEnable
     endfunction
@@ -27,8 +27,6 @@ library UIManager uses UserWidget, FVector
         local FVector bottomRight = FVector.create(0.0, 0.0, 0.0)
         local real x = 0.0
         local real y = 0.0
-        local real centerX = 0.0
-        local real centerY = 0.0
 
         debug call WriteLog("TRPG4", "UIManager", "InitUIManager", "Calling")
 
@@ -60,7 +58,7 @@ library UIManager uses UserWidget, FVector
         call bottomLeft.Set(0.02, 0.2, 0.0)
         call bottomRight.Set(JN_FRAME_MAX_WIDTH, 0.2, 0.0)
         call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        call JNFrameSetFont(handler, DefaultFontPath, 0.011, NULL)
+        call JNFrameSetFont(handler, Default_Font_Path, 0.011, NULL)
 
         // 트리거 메세지
         set handler = JNFrameGetUnitMessage()
@@ -69,7 +67,7 @@ library UIManager uses UserWidget, FVector
         call bottomLeft.Set(0.0, 0.2, 0.0)
         call bottomRight.Set(JN_FRAME_MAX_WIDTH, 0.2, 0.0)
         call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        call JNFrameSetFont(handler, DefaultBoldFontPath, 0.018, NULL)
+        call JNFrameSetFont(handler, Default_Bold_Font_Path, 0.018, NULL)
         call JNFrameSetTextAlignment(handler, JN_TEXT_JUSTIFY_CENTER, JN_TEXT_JUSTIFY_CENTER)
         
         // 버튼 설정
@@ -83,43 +81,10 @@ library UIManager uses UserWidget, FVector
 
         // Custom UI Load
         call JNLoadTOCFile("TRPG4.toc")
-    
-        set x = 0.08
-        set y = 0.55
-        call ULifeBar_Create(x, y)
-        
-        set x = 0.08
-        set y = 0.55 - 0.03
-        call UManaBar_Create(x, y)
-        
-        /*
-        set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
-        set x = 0.1
-        set y = 0.06
-        set centerX = 0.0703125
-        set centerY = 0.0703125
-        call topLeft.Set(x - centerX, y + centerY, 0.0)
-        call topRight.Set(x + centerX, y + centerY, 0.0)
-        call bottomLeft.Set(x - centerX, y - centerY, 0.0)
-        call bottomRight.Set(x + centerX, y - centerY, 0.0)
-        call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
 
-        set handler = JNCreateFrameByType("BACKDROP", "", JNGetGameUI(), "UEmptySlot", 0)
-        set x = 0.7
-        set y = 0.06
-        set centerX = 0.0703125
-        set centerY = 0.0703125
-        call topLeft.Set(x - centerX, y + centerY, 0.0)
-        call topRight.Set(x + centerX, y + centerY, 0.0)
-        call bottomLeft.Set(x - centerX, y - centerY, 0.0)
-        call bottomRight.Set(x + centerX, y - centerY, 0.0)
-        call SetFramePoint(handler, topLeft.x, topLeft.y, topRight.x, topRight.y, bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y)
-        */
+        call UUnitStateWidget_Create()
 
-        //call DzFrameSetTexture(handler, "UI\\ui_slot_comon.tga", 0)
-
-
-        call EnableUserInterface(false)
+        //call EnableUserInterface(false)
 
         call topLeft.destroy()
         call topRight.destroy()
