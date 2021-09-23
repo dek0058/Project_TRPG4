@@ -1,7 +1,19 @@
 library UIManager uses UserWidget, FVector
 
     globals
+        /*
+        Local 같은 경우에는 변수 값만이 다르다 하여도 Multi Struct에 사용 될 경우 방갈 위험이 있음!
+        안전성을 고려하여 global로 선언하여 변수의 값만이 각 플레이어마다 다르게 해주어야 함
+        */
         private boolean IsShowUserInterface = false
+
+        /*
+        유닛 상태 인터페이스
+        Design:체력바, 마나바, 경험치바, 닉네임, 포트레잇
+        */
+        public integer UnitStateWidgetPtr = NULL
+
+        
     endglobals
     
     function EnableUserInterface takes boolean inEnable returns nothing
@@ -9,8 +21,7 @@ library UIManager uses UserWidget, FVector
             return
         endif
 
-        // call ULifeBar_Enable(inEnable)
-        // call UManaBar_Enable(inEnable)
+        call JNFrameSetVisible(UUnitStateWidget_GetBorder(UnitStateWidgetPtr), false)
 
         set IsShowUserInterface = inEnable
     endfunction
@@ -82,9 +93,9 @@ library UIManager uses UserWidget, FVector
         // Custom UI Load
         call JNLoadTOCFile("TRPG4.toc")
 
-        call UUnitStateWidget_Create()
+        set UnitStateWidgetPtr = UUnitStateWidget_Create()
 
-        //call EnableUserInterface(false)
+        call EnableUserInterface(false)
 
         call topLeft.destroy()
         call topRight.destroy()

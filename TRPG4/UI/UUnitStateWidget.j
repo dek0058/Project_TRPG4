@@ -60,6 +60,7 @@ library UUnitStateWidget uses UserWidget
         call JNFrameSetPoint(handler, JN_FRAMEPOINT_BOTTOM, JNGetGameUI(), JN_FRAMEPOINT_TOPLEFT, hx, -y)
         set pBorderArray[ptr] = handler
 
+
         set handler = JNCreateFrameByType("TEXT", "", pBorderArray[ptr], "UNameText", Count)
         set x = ToUI(NameWidth) / 2.0
         set x = emptyX + ToUI(68) + x
@@ -108,7 +109,7 @@ library UUnitStateWidget uses UserWidget
         set pExpBarPtrArray[ptr] = handler
 
         set Count = Count + 1
-        return Count
+        return ptr
     endfunction
     
     //! runtextmacro GetUI("Border", "pBorderArray")
