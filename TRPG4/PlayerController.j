@@ -157,11 +157,11 @@ library PlayerController initializer Start uses AbilitySystem
                     // set value = FMath.max(0.0, JNGetUnitMana(GetCharacter().Value()) / JNGetUnitMaxMana(GetCharacter().Value()))
                     // call UManaBar_Set(value)
                 else
-                    call EnableUserInterface(true)
+                    //call EnableUserInterface(true)
                 endif
             else
                 if IsUserInterface() == true then
-                    call EnableUserInterface(false)
+                    //call EnableUserInterface(false)
                 endif
             endif
 
@@ -183,12 +183,13 @@ library PlayerController initializer Start uses AbilitySystem
         local real y = Regex.GetY(syncData)
         local integer clickData = Regex.GetClickData(syncData)
         local PlayerController pController = PlayerController[JNGetTriggerSyncPlayer()]
-
+        
+        // 여기서 방갈 일어남
         if pController.ExistCharacter() == true then
             if clickData == SyncRightClickData then
-                call pController.RightClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
+                //call pController.RightClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
             elseif clickData == SyncLeftClickData then
-                call pController.LeftClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
+                //call pController.LeftClickInfo.Evaluate(x, y, I2R(pController.GetCharacter().RecKey))
             endif
         endif
 

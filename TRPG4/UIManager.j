@@ -94,8 +94,9 @@ library UIManager uses UserWidget, FVector
         call JNLoadTOCFile("TRPG4.toc")
 
         set UnitStateWidgetPtr = UUnitStateWidget_Create()
+        call UUnitStateWidget_SetPortrait(UnitStateWidgetPtr, Portrait_Megumin_Path)
 
-        call EnableUserInterface(false)
+        //call EnableUserInterface(true)
 
         call topLeft.destroy()
         call topRight.destroy()

@@ -57,6 +57,11 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
             if IsLocalPlayer() == true then
                 set LocalPlayerIndex = inIndex
             endif
+
+            if IsPlayerPlaying() == true then
+
+            endif
+
             return this
         endmethod
 
@@ -207,12 +212,13 @@ library Controller initializer Start uses UnitGroup, ErrorMessage
         local trigger trig
         local integer i = 0
 
-
-        set trig = CreateTrigger()
         loop
             exitwhen i > DefaultPlayerIndex
             set controller[i] = Controller.create(i)
-            call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, Filter(function SelectedAction))
+            if controller[i].IsPlayerPlaying() == true then
+                set trig = CreateTrigger()
+                call TriggerRegisterPlayerUnitEvent(trig, Player(i), EVENT_PLAYER_UNIT_SELECTED, Filter(function SelectedAction))
+            endif
             set i = i + 1
         endloop
 

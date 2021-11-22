@@ -51,4 +51,20 @@ library UserWidget
     function IsEnableChatBox takes nothing returns boolean
         return JNMemoryGetByte(GetGameDll() + 0xD04FEC) == 1
     endfunction
+
+    function GetRelativeWidth takes nothing returns real
+        return I2R(JNMemoryGetInteger(GetGameDll() + 0xD05000))
+    endfunction
+
+    function GetRelativeHeight takes nothing returns real
+        return I2R(JNMemoryGetInteger(GetGameDll() + 0xD05004))
+    endfunction
+
+    function GetAbsWidth takes nothing returns real
+        return I2R(JNMemoryGetInteger(GetGameDll() + 0xCB2274))
+    endfunction
+
+    function GetAbsHeight takes nothing returns real
+        return I2R(JNMemoryGetInteger(GetGameDll() + 0xCB2278))
+    endfunction
 endlibrary

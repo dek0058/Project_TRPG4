@@ -21,7 +21,6 @@ library Main uses MainDefine
     // @Timer로 돌아가는 Upate (멀티)
     function OnTick takes nothing returns nothing
         //call BJDebugMsg(I2S(DzGetMouseFocus()))
-        
         set ClickTime = ClickTime + DeltaTime
         if ClickTime >= ClickResetTime then
             set ClickTime = 0.0
@@ -37,7 +36,6 @@ library Main uses MainDefine
         endif
         
         call PlayerController.OnLoop()
-
         //SetCameraPosition()
     endfunction
 
