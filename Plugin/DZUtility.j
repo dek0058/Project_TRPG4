@@ -1,7 +1,7 @@
 /*
     DZ Client API 라이브러리
 */
-library DZUtility
+library DzUtility
 
     globals
         
@@ -212,7 +212,7 @@ library DZUtility
     // World position Y
     native DzGetMouseTerrainY takes nothing returns real
 
-    // World position Z (Terrain standard. and include floor dooded)
+    // World position Z (Terrain standard. and include floor destructable object)
     native DzGetMouseTerrainZ takes nothing returns real
 
     // Mouse pointer hover in UI(interface)
@@ -268,19 +268,17 @@ library DZUtility
 
     native DzIsWindowActive takes nothing returns boolean
 
-    //设置可摧毁物位置
+    //Set destructable object position
     native DzDestructablePosition takes destructable d, real x, real y returns nothing
 
-    //设置单位位置-本地调用
     native DzSetUnitPosition takes unit whichUnit, real x, real y returns nothing
 
-    //异步执行函数
+    //Async execute callback
     native DzExecuteFunc takes string funcName returns nothing
 
-    //取鼠标指向的unit
+    //Find unit under mouse
     native DzGetUnitUnderMouse takes nothing returns unit
 
-    //设置unit的贴图
     native DzSetUnitTexture takes unit whichUnit, string path, integer texId returns nothing
 
     native DzSetMemory takes integer address, real value returns nothing
@@ -291,9 +289,12 @@ library DZUtility
 
     native DzSetWar3MapMap takes string path returns nothing
 
+    // Get map path
     native DzGetLocale takes nothing returns string
 
-    //注册数据同步trigger
+    // Register trigger to p2p packet data
+    // prefix = header
+    // server = use main server
     native DzTriggerRegisterSyncData takes trigger trig, string prefix, boolean server returns nothing
 
     //同步游戏数据
@@ -304,9 +305,5 @@ library DZUtility
 
     //获取同步数据的玩家
     native DzGetTriggerSyncPlayer takes nothing returns player
-
-
-    
-
 
 endlibrary

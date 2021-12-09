@@ -1,7 +1,7 @@
 /*
     DZ Client API FrameHandler(UI) 라이브러리
 */
-library DZFrameHandle
+library DzFrameHandle
     
     globals
         
